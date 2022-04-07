@@ -5,6 +5,7 @@ main.py
 created on 06.04.22
 by Tobias Welti, Luca Kaiser, Joshua Miller, Danny Seidel
 """
+
 import json
 import os
 import sys
@@ -21,7 +22,7 @@ def clear_console():
 def print_menu():
     """prints main menu"""
     print("Welcome to Yahtzee!\n")
-    print("Start game (s)")
+    print("Start new game (s)")
     print("Load game (l)")
     print("Quit (q)")
 
@@ -41,6 +42,7 @@ def menu_input():
 
 
 class Ui:
+    """handles ui data"""
     def __init__(self):
         self.current_game = None
 
@@ -51,12 +53,12 @@ class Ui:
 
     def save_game(self):
         """saves game date to json file"""
-        with open("games.json", "w") as file:
+        with open("games.json", "w", encoding="utf-8") as file:
             json.dump(self.current_game, file)
 
     def load_game(self):
         """loads game date from json file"""
-        with open("games.json", "r") as file:
+        with open("games.json", "r", encoding="utf-8") as file:
             data = json.load(file)
             game_id = data["uuid"]
             self.current_game = game.Game(game_id)

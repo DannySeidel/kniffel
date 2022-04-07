@@ -10,25 +10,19 @@ by Tobias Welti, Luca Kaiser, Joshua Miller, Danny Seidel
 class Score:
     """handles scores of one player"""
     def __init__(self):
-        self.ones = None
-        self.twos = None
-        self.threes = None
-        self.fours = None
-        self.fives = None
-        self.sixes = None
-
-        self.three_of_a_kind = None
-        self.four_of_a_kind = None
-        self.full_house = None
-        self.small_straight = None
-        self.large_straight = None
-        self.yahtzee = None
-        self.chance = None
+        self.upper_section = dict.fromkeys(["ones", "twos", "threes", "fours", "fives", "sixes"])
+        self.lower_section = dict.fromkeys(["three_of_a_kind", "four_of_a_kind", "full_house", "small_straight", "large_straight",
+                                            "yahtzee", "chance"])
 
     def get_sum(self) -> int:
         """returns sum of all scores"""
-        __upper_section_sum = self.ones + self.twos + self.threes + self.fours + self.fives + self.sixes
-        __lower_section_sum = self.three_of_a_kind + self.four_of_a_kind + self.full_house + self.small_straight +\
-                              self.large_straight + self.yahtzee + self.chance
+        upper_section_sum = sum(self.upper_section.values())
+        lower_section_sum = sum(self.lower_section.values())
 
-        return __upper_section_sum + __lower_section_sum
+        if upper_section_sum >= 63:
+            upper_section_sum += 35
+
+        return upper_section_sum + lower_section_sum
+
+    def get_current_turn(self):
+        """..."""

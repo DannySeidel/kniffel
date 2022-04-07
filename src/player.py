@@ -18,8 +18,14 @@ class Player:
         self.dice_put_aside = []
         self.score = score.Score()
 
-    def throw_dice(self, n_times) -> []:
+    def throw_dice(self, n_times):
         """returns an array with n random integers between 1 and 6"""
         for _ in range(n_times):
             random_int = random.randint(1, 6)
             self.dice_used.append(random_int)
+
+    def show_score(self):
+        """..."""
+
+    def keep_dice(self, *keep_indexes):
+        """appends dice to dice_put_aside"""
