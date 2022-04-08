@@ -42,26 +42,7 @@ def menu_input():
 
 
 class Ui:
-    """handles ui data"""
-    def __init__(self):
-        self.current_game = None
-
-    def create_game(self):
-        """..."""
-        game_id = uuid.uuid4()
-        self.current_game = game.Game(game_id)
-
-    def save_game(self):
-        """saves game date to json file"""
-        with open("games.json", "w", encoding="utf-8") as file:
-            json.dump(self.current_game, file)
-
-    def load_game(self):
-        """loads game date from json file"""
-        with open("games.json", "r", encoding="utf-8") as file:
-            data = json.load(file)
-            game_id = data["uuid"]
-            self.current_game = game.Game(game_id)
+    """handles ui"""
 
 
 if __name__ == "__main__":
