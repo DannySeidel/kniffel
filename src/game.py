@@ -16,6 +16,19 @@ class Game:
         self.player_1 = player.Player(1)
         self.player_2 = player.Player(2)
 
+    def create_new_game(self):
+        """..."""
+        input("Press enter to start a new game.")
+        self.player_1.name = input("Please enter the name of player 1: ")
+        self.player_2.name = input("Please enter the name of player 2: ")
+
+    def load_game(self):
+        input("Press enter to create a new game")
+
+    def get_current_turn(self):
+        """..."""
+
+
     def play_round(self):
         """..."""
 
