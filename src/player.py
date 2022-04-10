@@ -6,7 +6,7 @@ created on 07.04.22
 by Tobias Welti, Luca Kaiser, Joshua Miller, Danny Seidel
 """
 
-import random
+from random import randint
 
 
 class Player:
@@ -24,21 +24,30 @@ class Player:
         dice_count = 5 - len(self.dice_put_aside)
         self.dice_used = []
         for _ in range(dice_count):
-            random_int = random.randint(1, 6)
+            random_int = randint(1, 6)
             self.dice_used.append(random_int)
+        self.dice_used.sort()
 
     def get_all_possible_scores(self):
         """returns an array with all possible scores"""
-        upper_section_scores = [self.__get_number_score(1), self.__get_number_score(2), self.__get_number_score(3),
-                                self.__get_number_score(4), self.__get_number_score(5), self.__get_number_score(6)]
-        lower_section_scores = [self.__get_n_of_a_kind_score(3), self.__get_n_of_a_kind_score(4), self.__get_full_house_score(),
-                                self.__get_small_straight_score(), self.__get_large_straight_score(), self.__get_yahtzee_score(),
-                                self.__get_chance_score()]
+        upper_section_scores = [self.__get_number_score(1) if self.upper_section_score["ones"] is None else None,
+                                self.__get_number_score(2) if self.upper_section_score["twos"] is None else None,
+                                self.__get_number_score(3) if self.upper_section_score["threes"] is None else None,
+                                self.__get_number_score(4) if self.upper_section_score["fours"] is None else None,
+                                self.__get_number_score(5) if self.upper_section_score["fives"] is None else None,
+                                self.__get_number_score(6) if self.upper_section_score["sixes"] is None else None]
+
+        lower_section_scores = [self.__get_n_of_a_kind_score(3) if self.lower_section_score["three_of_a_kind"] is None else None,
+                                self.__get_n_of_a_kind_score(4) if self.lower_section_score["four_of_a_kind"] is None else None,
+                                self.__get_full_house_score() if self.lower_section_score["full_house"] is None else None,
+                                self.__get_small_straight_score() if self.lower_section_score["small_straight"] is None else None,
+                                self.__get_large_straight_score() if self.lower_section_score["large_straight"] is None else None,
+                                self.__get_yahtzee_score() if self.lower_section_score["yahtzee"] is None else None,
+                                self.__get_chance_score() if self.lower_section_score["chance"] is None else None]
 
         return upper_section_scores + lower_section_scores
 
     def __get_number_score(self, number) -> int:
-        """gets possible score for given number"""
         count = 0
         for value in self.dice_put_aside:
             if value == number:
