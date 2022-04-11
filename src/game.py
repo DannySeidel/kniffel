@@ -16,8 +16,25 @@ class Game:
         self.player_1 = player.Player(1)
         self.player_2 = player.Player(2)
 
-    def play_round(self):
-        """..."""
+    def get_current_turn(self) -> int:
+        """returns number of current turn"""
+        turn = 0
+        for value in self.player_1.upper_section_score.values():
+            if value is not None:
+                turn += 1
+        for value in self.player_1.lower_section_score.values():
+            if value is not None:
+                turn += 1
+
+        return turn
 
     def get_winner(self) -> int:
         """returns id of the winner"""
+        player_1_score = self.player_1.get_total_score()
+        player_2_score = self.player_2.get_total_score()
+        if player_1_score > player_2_score:
+            return 1
+        if player_1_score < player_2_score:
+            return 2
+
+        return 0
