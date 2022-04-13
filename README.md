@@ -1,8 +1,8 @@
 # Kniffel
 
 ## Used Software Versions
-- Python 3.9
-- Pylint 2.13.4
+- Python 3.10
+- Pylint 2.13.5
 
 ## Used Libraries
 
