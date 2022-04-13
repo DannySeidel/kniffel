@@ -15,8 +15,17 @@ from enum import Enum
 import game
 
 
-def error_handler():
+def error_handler(error):
     """handles errors"""
+    match error:
+        case "unsupported input":
+            print("Input not supported.")
+        case "already set":
+            print("This value is already set. Enter a different number.")
+        case "number not found":
+            print("The given number was not found.")
+        case _:
+            print("A unknown error occurred.")
 
 
 class Color(str, Enum):
@@ -35,6 +44,7 @@ class Color(str, Enum):
 
 class Terminal:
     """handles terminal data"""
+
     def __init__(self):
         self.current_game = None
         self.clear_console()
@@ -67,7 +77,8 @@ class Terminal:
         elif action == "q":
             sys.exit(0)
         else:
-            pass
+            error_handler("unsupported input")
+            self.menu_input()
 
     def create_new_game(self):
         """creates a new game object"""
@@ -115,7 +126,7 @@ class Terminal:
                     player.reuse_dice()
                 for value in player.dice_used:
                     print(f"Do you want rethrow the dice with current value {value}?")
-                    action = input("Enter action yes/no (y/n): ")
+                    action = input("Enter 'n' to not rethrow: ")
                     if action == "n":
                         player.put_dice_aside(value)
                 attempt += 1
@@ -136,69 +147,82 @@ class Terminal:
         print("Your scores are:")
         print("  Upper Section:")
         print(f"""  1) Ones:               {Color.BOLD + str(upper['ones']) + Color.END if scores[0] is None
-                                            else Color.RED + str(scores[0]) + Color.END}""")
+        else Color.RED + str(scores[0]) + Color.END}""")
         print(f"""  2) Twos:               {Color.BOLD + str(upper['twos']) + Color.END if scores[1] is None
-                                            else Color.RED + str(scores[1]) + Color.END}""")
+        else Color.RED + str(scores[1]) + Color.END}""")
         print(f"""  3) Threes:             {Color.BOLD + str(upper['threes']) + Color.END if scores[2] is None
-                                            else Color.RED + str(scores[2]) + Color.END}""")
+        else Color.RED + str(scores[2]) + Color.END}""")
         print(f"""  4) Fours:              {Color.BOLD + str(upper['fours']) + Color.END if scores[3] is None
-                                            else Color.RED + str(scores[3]) + Color.END}""")
+        else Color.RED + str(scores[3]) + Color.END}""")
         print(f"""  5) Fives:              {Color.BOLD + str(upper['fives']) + Color.END if scores[4] is None
-                                            else Color.RED + str(scores[4]) + Color.END}""")
+        else Color.RED + str(scores[4]) + Color.END}""")
         print(f"""  6) Sixes:              {Color.BOLD + str(upper['sixes']) + Color.END if scores[5] is None
-                                            else Color.RED + str(scores[5]) + Color.END}""")
+        else Color.RED + str(scores[5]) + Color.END}""")
         print("  Lower Section:")
         print(f"""  7) Three of a Kind:    {Color.BOLD + str(lower['three_of_a_kind']) + Color.END if scores[6] is None
-                                            else Color.RED + str(scores[6]) + Color.END}""")
+        else Color.RED + str(scores[6]) + Color.END}""")
         print(f"""  8) Four of a Kind:     {Color.BOLD + str(lower['four_of_a_kind']) + Color.END if scores[7] is None
-                                            else Color.RED + str(scores[7]) + Color.END}""")
+        else Color.RED + str(scores[7]) + Color.END}""")
         print(f"""  9) Full House:         {Color.BOLD + str(lower['full_house']) + Color.END if scores[8] is None
-                                            else Color.RED + str(scores[8]) + Color.END}""")
+        else Color.RED + str(scores[8]) + Color.END}""")
         print(f"""  10) Small Straight:    {Color.BOLD + str(lower['small_straight']) + Color.END if scores[9] is None
-                                            else Color.RED + str(scores[9]) + Color.END}""")
+        else Color.RED + str(scores[9]) + Color.END}""")
         print(f"""  11) Large Straight:    {Color.BOLD + str(lower['large_straight']) + Color.END if scores[10] is None
-                                            else Color.RED + str(scores[10]) + Color.END}""")
+        else Color.RED + str(scores[10]) + Color.END}""")
         print(f"""  12) Yahtzee:           {Color.BOLD + str(lower['yahtzee']) + Color.END if scores[11] is None
-                                            else Color.RED + str(scores[11]) + Color.END}""")
-        print(f"""  13) Chance:            {Color.BOLD + str(lower['Chance']) + Color.END if scores[12] is None
-                                            else Color.RED + str(scores[12]) + Color.END}""")
+        else Color.RED + str(scores[11]) + Color.END}""")
+        print(f"""  13) Chance:            {Color.BOLD + str(lower['chance']) + Color.END if scores[12] is None
+        else Color.RED + str(scores[12]) + Color.END}""")
 
         self.save_round_score(scores, upper, lower)
 
-    @staticmethod
-    def save_round_score(scores, upper, lower):
+    def save_round_score(self, scores, upper, lower):
         """saves score of current round to dict"""
         score_number = input("Enter the matching number to save the score: ")
 
         match score_number:
             case "1":
-                upper["ones"] = str(scores[0]) if upper["ones"] is None else error_handler()
+                upper["ones"] = str(scores[0]) if upper["ones"] is None else (
+                    error_handler("already set"), self.save_round_score(scores, upper, lower))
             case "2":
-                upper["twos"] = scores[1] if upper["twos"] is None else error_handler()
+                upper["twos"] = scores[1] if upper["twos"] is None else (
+                    error_handler("already set"), self.save_round_score(scores, upper, lower))
             case "3":
-                upper["threes"] = scores[2] if upper["threes"] is None else error_handler()
+                upper["threes"] = scores[2] if upper["threes"] is None else (
+                    error_handler("already set"), self.save_round_score(scores, upper, lower))
             case "4":
-                upper["fours"] = scores[3] if upper["fours"] is None else error_handler()
+                upper["fours"] = scores[3] if upper["fours"] is None else (
+                    error_handler("already set"), self.save_round_score(scores, upper, lower))
             case "5":
-                upper["fives"] = scores[4] if upper["fives"] is None else error_handler()
+                upper["fives"] = scores[4] if upper["fives"] is None else (
+                    error_handler("already set"), self.save_round_score(scores, upper, lower))
             case "6":
-                upper["sixes"] = scores[5] if upper["sixes"] is None else error_handler()
+                upper["sixes"] = scores[5] if upper["sixes"] is None else (
+                    error_handler("already set"), self.save_round_score(scores, upper, lower))
             case "7":
-                lower["three_of_a_kind"] = scores[6] if lower["three_of_a_kind"] is None else error_handler()
+                lower["three_of_a_kind"] = scores[6] if lower["three_of_a_kind"] is None else (
+                    error_handler("already set"), self.save_round_score(scores, upper, lower))
             case "8":
-                lower["four_of_a_kind"] = scores[7] if lower["four_of_a_kind"] is None else error_handler()
+                lower["four_of_a_kind"] = scores[7] if lower["four_of_a_kind"] is None else (
+                    error_handler("already set"), self.save_round_score(scores, upper, lower))
             case "9":
-                lower["full_house"] = scores[8] if lower["full_house"] is None else error_handler()
+                lower["full_house"] = scores[8] if lower["full_house"] is None else (
+                    error_handler("already set"), self.save_round_score(scores, upper, lower))
             case "10":
-                lower["small_straight"] = scores[9] if lower["small_straight"] is None else error_handler()
+                lower["small_straight"] = scores[9] if lower["small_straight"] is None else (
+                    error_handler("already set"), self.save_round_score(scores, upper, lower))
             case "11":
-                lower["large_straight"] = scores[10] if lower["large_straight"] is None else error_handler()
+                lower["large_straight"] = scores[10] if lower["large_straight"] is None else (
+                    error_handler("already set"), self.save_round_score(scores, upper, lower))
             case "12":
-                lower["yahtzee"] = scores[11] if lower["yahtzee"] is None else error_handler()
+                lower["yahtzee"] = scores[11] if lower["yahtzee"] is None else (
+                    error_handler("already set"), self.save_round_score(scores, upper, lower))
             case "13":
-                lower["chance"] = scores[12] if lower["chance"] is None else error_handler()
+                lower["chance"] = scores[12] if lower["chance"] is None else (
+                    error_handler("already set"), self.save_round_score(scores, upper, lower))
             case _:
-                error_handler()
+                error_handler("number not found")
+                self.save_round_score(scores, upper, lower)
 
     def save_game(self):
         """saves game date to json file"""
