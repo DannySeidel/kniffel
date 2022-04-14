@@ -108,7 +108,7 @@ class Player:
         Returns:
             int: _description_
         """
-        
+
         dice_without_duplicates = list(dict.fromkeys(self.dice_put_aside))
 
         if len(dice_without_duplicates) == 2 and self.__get_n_of_a_kind_score(3) != 0 and self.__get_n_of_a_kind_score(4) == 0:
@@ -161,7 +161,7 @@ class Player:
         """
 
         dice = self.dice_put_aside
-        
+
         if dice[0] == dice[1] == dice[2] == dice[3] == dice[4]:
             return 50
 
