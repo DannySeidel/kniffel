@@ -13,7 +13,7 @@ class Player:
     """handling player actions and playerscore"""
 
     def __init__(self, player_id):
-        """BRUUUH
+        """_summary_
 
         Args:
             player_id (_type_): _description_
@@ -26,9 +26,8 @@ class Player:
                                                   "yahtzee", "chance"])
 
     def throw_dice(self):
-        """
-        returns an array with random integers between 1 and 6
-        """
+        """Player throwing his dices.
+        Creating an array with random integers between 1 and 6"""
 
         dice_count = 5 - len(self.dice_put_aside)
         self.dice_used = []
@@ -42,7 +41,7 @@ class Player:
         """returns an array with all possible scores
 
         Returns:
-            _type_: _description_
+            _type_: combining the uppersection and lowersection array of scores 
         """
 
         upper_section_scores = [self.__get_number_score(1) if self.upper_section_score["ones"] is None else None,

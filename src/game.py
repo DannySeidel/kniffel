@@ -10,7 +10,7 @@ import player
 
 
 class Game:
-    """handles game data"""
+    """handles game data and current game state"""
 
     def __init__(self, uuid):
         self.uuid = uuid
@@ -22,7 +22,7 @@ class Game:
         """returns number of current turn
 
         Returns:
-            int: _description_
+            int: which turn is currently active
         """
 
         turn = 0
@@ -37,10 +37,10 @@ class Game:
 
 
     def get_winner(self) -> int:
-        """returns id of the winner
+        """returns winner of game / returns 0 if noone has won (for draw)
 
         Returns:
-            int: _description_
+            int: id/number of the winner
         """
 
         player_1_score = self.player_1.get_total_score()
