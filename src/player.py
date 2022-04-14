@@ -10,9 +10,14 @@ from random import randint
 
 
 class Player:
-    """handles player actions and data"""
+    """handling player actions and playerscore"""
 
     def __init__(self, player_id):
+        """BRUUUH
+
+        Args:
+            player_id (_type_): _description_
+        """
         self.player_id = player_id
         self.dice_used = []
         self.dice_put_aside = []
@@ -21,7 +26,9 @@ class Player:
                                                   "yahtzee", "chance"])
 
     def throw_dice(self):
-        """returns an array with random integers between 1 and 6"""
+        """
+        returns an array with random integers between 1 and 6
+        """
 
         dice_count = 5 - len(self.dice_put_aside)
         self.dice_used = []
@@ -32,7 +39,11 @@ class Player:
 
 
     def get_all_possible_scores(self):
-        """returns an array with all possible scores"""
+        """returns an array with all possible scores
+
+        Returns:
+            _type_: _description_
+        """
 
         upper_section_scores = [self.__get_number_score(1) if self.upper_section_score["ones"] is None else None,
                                 self.__get_number_score(2) if self.upper_section_score["twos"] is None else None,
@@ -53,6 +64,15 @@ class Player:
 
 
     def __get_number_score(self, number) -> int:
+        """_summary_
+
+        Args:
+            number (_type_): _description_
+
+        Returns:
+            int: _description_
+        """
+
         count = 0
         for value in self.dice_put_aside:
             if value == number:
@@ -62,6 +82,15 @@ class Player:
 
 
     def __get_n_of_a_kind_score(self, n_times) -> int:
+        """_summary_
+
+        Args:
+            n_times (_type_): _description_
+
+        Returns:
+            int: _description_
+        """
+
         most_common_dice = max(set(self.dice_put_aside), key=self.dice_put_aside.count)
         if self.dice_put_aside.count(most_common_dice) >= n_times:
             return sum(self.dice_put_aside)
@@ -70,6 +99,12 @@ class Player:
 
 
     def __get_full_house_score(self) -> int:
+        """_summary_
+
+        Returns:
+            int: _description_
+        """
+        
         dice_without_duplicates = list(dict.fromkeys(self.dice_put_aside))
         if len(dice_without_duplicates) == 2 and self.__get_n_of_a_kind_score(3) != 0 and self.__get_n_of_a_kind_score(4) == 0:
             return 25
@@ -78,6 +113,12 @@ class Player:
 
 
     def __get_small_straight_score(self) -> int:
+        """_summary_
+
+        Returns:
+            int: _description_
+        """
+
         dice = self.dice_put_aside
         if (1 in dice) and (2 in dice) and (3 in dice) and (4 in dice):
             return 30
@@ -90,6 +131,12 @@ class Player:
 
 
     def __get_large_straight_score(self) -> int:
+        """_summary_
+
+        Returns:
+            int: _description_
+        """
+
         dice = self.dice_put_aside
         if (1 in dice) and (2 in dice) and (3 in dice) and (4 in dice) and (5 in dice):
             return 40
@@ -100,6 +147,12 @@ class Player:
 
 
     def __get_yahtzee_score(self) -> int:
+        """_summary_
+
+        Returns:
+            int: _description_
+        """
+
         dice = self.dice_put_aside
         if dice[0] == dice[1] == dice[2] == dice[3] == dice[4]:
             return 50
@@ -108,11 +161,21 @@ class Player:
 
 
     def __get_chance_score(self) -> int:
+        """_summary_
+
+        Returns:
+            int: _description_
+        """
+
         return sum(self.dice_put_aside)
 
 
     def get_total_score(self) -> int:
-        """returns sum of all scores"""
+        """returns sum of all scores
+
+        Returns:
+            int: _description_
+        """
 
         upper_section_sum = sum(self.upper_section_score.values())
         lower_section_sum = sum(self.lower_section_score.values())
@@ -124,7 +187,11 @@ class Player:
 
 
     def put_dice_aside(self, value):
-        """appends dice to dice_put_aside"""
+        """appends dice to dice_put_aside
+
+        Args:
+            value (_type_): _description_
+        """
 
         self.dice_put_aside.append(value)
 

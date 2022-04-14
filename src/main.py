@@ -16,7 +16,11 @@ from enum import Enum
 
 
 def error_handler(error):
-    """handles all errors for the program"""
+    """handles all errors for the program
+
+    Args:
+        error (_type_): _description_
+    """
 
     match error:
         case "unsupported input":
@@ -30,7 +34,12 @@ def error_handler(error):
 
 
 class Color(str, Enum):
-    """contains data for colering the output"""
+    """contains data for colering the output
+
+    Args:
+        str (_type_): _description_
+        Enum (_type_): _description_
+    """
 
     PURPLE = '\033[95m'
     CYAN = '\033[96m'
@@ -48,6 +57,8 @@ class Terminal:
     """handles terminal data"""
 
     def __init__(self):
+        """_summary_"""
+
         self.current_game = None
         self.clear_console()
         self.print_menu()
@@ -123,7 +134,12 @@ class Terminal:
 
 
     def player_action(self, player_id):
-        """actions for one player turn"""
+        """actions for one player turn
+
+        Args:
+            player_id (_type_): _description_
+        """
+
         if player_id == 1:
             player = self.current_game.player_1
         else:
@@ -159,7 +175,6 @@ class Terminal:
         scores = player.get_all_possible_scores()
         upper = player.upper_section_score
         lower = player.lower_section_score
-
         print(f"You have thrown {str(player.dice_put_aside)[1:-1]}.")
         print("Your scores are:")
         print("  Upper Section:")
@@ -195,7 +210,14 @@ class Terminal:
 
 
     def save_round_score(self, scores, upper, lower):
-        """saves score of current round to dict"""
+        """saves score of current round to dict
+
+        Args:
+            scores (_type_): _description_
+            upper (_type_): _description_
+            lower (_type_): _description_
+        """
+
         score_number = input("Enter the matching number to save the score: ")
 
         match score_number:
@@ -245,12 +267,14 @@ class Terminal:
 
     def save_game(self):
         """saves game date to json file"""
+
         with open("games.json", "w", encoding="utf-8") as file:
             json.dump(self.current_game, file)
 
 
     def load_game(self):
         """loads game date from json file"""
+
         with open("games.json", "r", encoding="utf-8") as file:
             data = json.load(file)
             game_id = data["uuid"]
