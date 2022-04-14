@@ -170,7 +170,11 @@ class Terminal:
 
 
     def show_results(self, player):
-        """shows score table"""
+        """shows results for one player
+
+        Args:
+            player (_type_): _description_
+        """
 
         scores = player.get_all_possible_scores()
         upper = player.upper_section_score
