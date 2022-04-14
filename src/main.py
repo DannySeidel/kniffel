@@ -16,7 +16,8 @@ import game
 
 
 def error_handler(error):
-    """handles errors"""
+    """handles all errors for the program"""
+
     match error:
         case "unsupported input":
             print("Input not supported.")
@@ -29,7 +30,8 @@ def error_handler(error):
 
 
 class Color(str, Enum):
-    """contains formatting data"""
+    """contains data for colering the output"""
+
     PURPLE = '\033[95m'
     CYAN = '\033[96m'
     DARKCYAN = '\033[36m'
@@ -51,21 +53,27 @@ class Terminal:
         self.print_menu()
         self.menu_input()
 
+
     @staticmethod
     def clear_console():
         """clears console based on operating system"""
+
         os.system("cls" if os.name == "nt" else "clear")
+
 
     @staticmethod
     def print_menu():
-        """prints main menu"""
-        print("Welcome to Yahtzee!\n")
+        """prints main menu after program start"""
+
+        print(f"{Color.BOLD}{Color.YELLOW}Welcome to kniffel!{Color.END}")
         print("Start new game (s)")
         print("Load game (l)")
         print("Quit (q)")
 
+
     def menu_input(self):
         """handles inputs for main menu"""
+
         action = input("\nEnter action: ")
 
         if action == "s":
@@ -80,14 +88,19 @@ class Terminal:
             error_handler("unsupported input")
             self.menu_input()
 
+
     def create_new_game(self):
         """creates a new game object"""
+
         game_id = uuid.uuid4()
         self.current_game = game.Game(game_id)
 
+
     def play_game(self):
         """looping through game turns and showing winner"""
+
         turn = self.current_game.get_current_turn()
+
         while turn < 13:
             self.player_action(1)
             self.player_action(2)
@@ -100,12 +113,14 @@ class Terminal:
         print(self.current_game.player_2.get_total_score)
 
         winner_id = self.current_game.get_winner()
+
         if winner_id == 1:
             print("Player 1 has won!")
         elif winner_id == 2:
             print("Player 2 has won!")
         else:
             print("It's a draw!")
+
 
     def player_action(self, player_id):
         """actions for one player turn"""
@@ -137,8 +152,10 @@ class Terminal:
 
         self.show_results(player)
 
+
     def show_results(self, player):
         """shows score table"""
+
         scores = player.get_all_possible_scores()
         upper = player.upper_section_score
         lower = player.lower_section_score
@@ -175,6 +192,7 @@ class Terminal:
         else Color.RED + str(scores[12]) + Color.END}""")
 
         self.save_round_score(scores, upper, lower)
+
 
     def save_round_score(self, scores, upper, lower):
         """saves score of current round to dict"""
@@ -224,10 +242,12 @@ class Terminal:
                 error_handler("number not found")
                 self.save_round_score(scores, upper, lower)
 
+
     def save_game(self):
         """saves game date to json file"""
         with open("games.json", "w", encoding="utf-8") as file:
             json.dump(self.current_game, file)
+            
 
     def load_game(self):
         """loads game date from json file"""
