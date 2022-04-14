@@ -6,7 +6,6 @@ created on 07.04.22
 by Tobias Welti, Luca Kaiser, Joshua Miller, Danny Seidel
 """
 
-
 from random import randint
 
 
@@ -39,7 +38,6 @@ class Player:
 
         self.dice_used.sort()
 
-
     def get_all_possible_scores(self):
         """returns an array with all possible scores
 
@@ -64,7 +62,6 @@ class Player:
 
         return upper_section_scores + lower_section_scores
 
-
     def __get_number_score(self, number) -> int:
         """_summary_
 
@@ -83,7 +80,6 @@ class Player:
 
         return count * number
 
-
     def __get_n_of_a_kind_score(self, n_times) -> int:
         """_summary_
 
@@ -101,7 +97,6 @@ class Player:
 
         return 0
 
-
     def __get_full_house_score(self) -> int:
         """_summary_
 
@@ -115,7 +110,6 @@ class Player:
             return 25
 
         return 0
-
 
     def __get_small_straight_score(self) -> int:
         """_summary_
@@ -135,7 +129,6 @@ class Player:
 
         return 0
 
-
     def __get_large_straight_score(self) -> int:
         """_summary_
 
@@ -152,7 +145,6 @@ class Player:
 
         return 0
 
-
     def __get_yahtzee_score(self) -> int:
         """_summary_
 
@@ -167,7 +159,6 @@ class Player:
 
         return 0
 
-
     def __get_chance_score(self) -> int:
         """_summary_
 
@@ -176,7 +167,6 @@ class Player:
         """
 
         return sum(self.dice_put_aside)
-
 
     def get_total_score(self) -> int:
         """returns sum of all scores
@@ -193,7 +183,6 @@ class Player:
 
         return upper_section_sum + lower_section_sum
 
-
     def put_dice_aside(self, value):
         """appends dice to dice_put_aside
 
@@ -202,7 +191,6 @@ class Player:
         """
 
         self.dice_put_aside.append(value)
-
 
     def reuse_dice(self):
         """appends dice_put_aside to dice_used to reuse them"""

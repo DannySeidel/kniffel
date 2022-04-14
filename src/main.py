@@ -6,7 +6,6 @@ created on 06.04.22
 by Tobias Welti, Luca Kaiser, Joshua Miller, Danny Seidel
 """
 
-
 import json
 import os
 import sys
@@ -34,12 +33,7 @@ def error_handler(error):
 
 
 class Color(str, Enum):
-    """contains data for colering the output
-
-    Args:
-        str (_type_): _description_
-        Enum (_type_): _description_
-    """
+    """contains data for coloring the output"""
 
     PURPLE = '\033[95m'
     CYAN = '\033[96m'
@@ -57,20 +51,16 @@ class Terminal:
     """handles terminal data"""
 
     def __init__(self):
-        """_summary_"""
-
         self.current_game = None
         self.clear_console()
         self.print_menu()
         self.menu_input()
-
 
     @staticmethod
     def clear_console():
         """clears console based on operating system"""
 
         os.system("cls" if os.name == "nt" else "clear")
-
 
     @staticmethod
     def print_menu():
@@ -80,7 +70,6 @@ class Terminal:
         print("Start new game (s)")
         print("Load game (l)")
         print("Quit (q)")
-
 
     def menu_input(self):
         """handles inputs for main menu"""
@@ -99,13 +88,11 @@ class Terminal:
             error_handler("unsupported input")
             self.menu_input()
 
-
     def create_new_game(self):
         """creates a new game object"""
 
         game_id = uuid.uuid4()
         self.current_game = game.Game(game_id)
-
 
     def play_game(self):
         """looping through game turns and showing winner"""
@@ -131,7 +118,6 @@ class Terminal:
             print("Player 2 has won!")
         else:
             print("It's a draw!")
-
 
     def player_action(self, player_id):
         """actions for one player turn
@@ -169,7 +155,6 @@ class Terminal:
             player.dice_put_aside.sort()
 
         self.show_results(player)
-
 
     def show_results(self, player):
         """shows results for one player
@@ -214,7 +199,6 @@ class Terminal:
         else Color.RED + str(scores[12]) + Color.END}""")
 
         self.save_round_score(scores, upper, lower)
-
 
     def save_round_score(self, scores, upper, lower):
         """saves score of current round to dict
@@ -271,13 +255,11 @@ class Terminal:
                 error_handler("number not found")
                 self.save_round_score(scores, upper, lower)
 
-
     def save_game(self):
         """saves game date to json file"""
 
         with open("games.json", "w", encoding="utf-8") as file:
             json.dump(self.current_game, file)
-
 
     def load_game(self):
         """loads game date from json file"""

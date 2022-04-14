@@ -6,7 +6,6 @@ created on 07.04.22
 by Tobias Welti, Luca Kaiser, Joshua Miller, Danny Seidel
 """
 
-
 import player
 
 
@@ -17,7 +16,6 @@ class Game:
         self.uuid = uuid
         self.player_1 = player.Player(1)
         self.player_2 = player.Player(2)
-
 
     def get_current_turn(self) -> int:
         """returns number of current turn
@@ -37,9 +35,8 @@ class Game:
 
         return turn
 
-
     def get_winner(self) -> int:
-        """returns winner of game / returns 0 if noone has won (for draw)
+        """returns winner of game / returns 0 if none has won (for draw)
 
         Returns:
             int: id/number of the winner
