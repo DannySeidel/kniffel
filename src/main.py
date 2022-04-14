@@ -6,13 +6,13 @@ created on 06.04.22
 by Tobias Welti, Luca Kaiser, Joshua Miller, Danny Seidel
 """
 
+
 import json
 import os
 import sys
 import uuid
-import game
-
 from enum import Enum
+import game
 
 
 def error_handler(error):
