@@ -17,7 +17,7 @@ class Player:
         """_summary_
 
         Args:
-            player_id (_type_): _description_
+            player_id (int): used for identification of the player
         """
         self.player_id = player_id
         self.dice_used = []
@@ -69,7 +69,7 @@ class Player:
         """_summary_
 
         Args:
-            number (_type_): _description_
+            number (int): _description_
 
         Returns:
             int: _description_
