@@ -39,7 +39,7 @@ class Game:
         player_2_score = self.player_2.get_total_score()
         if player_1_score > player_2_score:
             return 1
-        elif player_1_score < player_2_score:
+        if player_1_score < player_2_score:
             return 2
 
         return 0
