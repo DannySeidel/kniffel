@@ -145,9 +145,11 @@ class Terminal:
         else:
             player = self.current_game.player_2
 
-        print(f"\nPlayer {player_id} is on:")
         attempt = 1
         player.dice_put_aside = []
+
+        print(f"\nPlayer {player_id} is on:")
+        
         while attempt <= 3 and len(player.dice_put_aside) != 5:
             player.throw_dice()
             if attempt < 3:
@@ -179,6 +181,7 @@ class Terminal:
         scores = player.get_all_possible_scores()
         upper = player.upper_section_score
         lower = player.lower_section_score
+        
         print(f"You have thrown {str(player.dice_put_aside)[1:-1]}.")
         print("Your scores are:")
         print("  Upper Section:")

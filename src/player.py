@@ -32,9 +32,11 @@ class Player:
 
         dice_count = 5 - len(self.dice_put_aside)
         self.dice_used = []
+
         for _ in range(dice_count):
             random_int = randint(1, 6)
             self.dice_used.append(random_int)
+
         self.dice_used.sort()
 
 
@@ -74,6 +76,7 @@ class Player:
         """
 
         count = 0
+
         for value in self.dice_put_aside:
             if value == number:
                 count += 1
@@ -92,6 +95,7 @@ class Player:
         """
 
         most_common_dice = max(set(self.dice_put_aside), key=self.dice_put_aside.count)
+
         if self.dice_put_aside.count(most_common_dice) >= n_times:
             return sum(self.dice_put_aside)
 
@@ -106,6 +110,7 @@ class Player:
         """
         
         dice_without_duplicates = list(dict.fromkeys(self.dice_put_aside))
+
         if len(dice_without_duplicates) == 2 and self.__get_n_of_a_kind_score(3) != 0 and self.__get_n_of_a_kind_score(4) == 0:
             return 25
 
@@ -120,6 +125,7 @@ class Player:
         """
 
         dice = self.dice_put_aside
+
         if (1 in dice) and (2 in dice) and (3 in dice) and (4 in dice):
             return 30
         if (2 in dice) and (3 in dice) and (4 in dice) and (5 in dice):
@@ -138,6 +144,7 @@ class Player:
         """
 
         dice = self.dice_put_aside
+
         if (1 in dice) and (2 in dice) and (3 in dice) and (4 in dice) and (5 in dice):
             return 40
         if (2 in dice) and (3 in dice) and (4 in dice) and (5 in dice) and (6 in dice):
@@ -154,6 +161,7 @@ class Player:
         """
 
         dice = self.dice_put_aside
+        
         if dice[0] == dice[1] == dice[2] == dice[3] == dice[4]:
             return 50
 

@@ -27,6 +27,7 @@ class Game:
         """
 
         turn = 0
+
         for value in self.player_1.upper_section_score.values():
             if value is not None:
                 turn += 1
@@ -46,6 +47,7 @@ class Game:
 
         player_1_score = self.player_1.get_total_score()
         player_2_score = self.player_2.get_total_score()
+        
         if player_1_score > player_2_score:
             return 1
         if player_1_score < player_2_score:
