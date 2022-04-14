@@ -10,9 +10,8 @@ import json
 import os
 import sys
 import uuid
-from enum import Enum
-
 import game
+from enum import Enum
 
 
 def error_handler(error):
@@ -247,7 +246,7 @@ class Terminal:
         """saves game date to json file"""
         with open("games.json", "w", encoding="utf-8") as file:
             json.dump(self.current_game, file)
-            
+
 
     def load_game(self):
         """loads game date from json file"""
