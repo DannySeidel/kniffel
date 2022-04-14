@@ -226,15 +226,21 @@ class Terminal:
 
     def save_game(self):
         """saves game date to json file"""
-        with open("games.json", "w", encoding="utf-8") as file:
-            json.dump(self.current_game, file)
+        try:
+            with open("games.json", "w", encoding="utf-8") as file:
+                json.dump(self.current_game, file)
+        except FileExistsError:
+            print("File already exists")
 
     def load_game(self):
         """loads game date from json file"""
-        with open("games.json", "r", encoding="utf-8") as file:
-            data = json.load(file)
-            game_id = data["uuid"]
-            self.current_game = game.Game(game_id)
+        try:
+            with open("games.json", "r", encoding="utf-8") as file:
+                data = json.load(file)
+                game_id = data["uuid"]
+                self.current_game = game.Game(game_id)
+        except FileNotFoundError:
+            print("File not found")
 
 
 if __name__ == "__main__":
