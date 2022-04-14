@@ -44,7 +44,7 @@ class Player:
         """returns an array with all possible scores
 
         Returns:
-            _type_: combining the uppersection and lowersection array of scores 
+            _type_: combining the uppersection and lowersection array of scores
         """
 
         upper_section_scores = [self.__get_number_score(1) if self.upper_section_score["ones"] is None else None,
