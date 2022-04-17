@@ -18,7 +18,7 @@ class Game:
         self.player_2 = player.Player(2)
 
     def get_current_turn(self) -> int:
-        """returns number of current turn
+        """returns the number of the current turn
 
         Returns:
             int: which turn is currently active

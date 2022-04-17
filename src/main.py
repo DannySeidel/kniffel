@@ -18,7 +18,7 @@ def error_handler(error):
     """handles all errors for the program
 
     Args:
-        error (_type_): _description_
+        error (String): the error that python throwes
     """
 
     match error:
@@ -95,7 +95,7 @@ class Terminal:
         self.current_game = game.Game(game_id)
 
     def play_game(self):
-        """looping through game turns and showing winner"""
+        """looping through game turns and printing the winner"""
 
         turn = self.current_game.get_current_turn()
 
@@ -120,10 +120,10 @@ class Terminal:
             print("It's a draw!")
 
     def player_action(self, player_id):
-        """actions for one player turn
+        """handling the actions for one players turn
 
         Args:
-            player_id (_type_): _description_
+            player_id (int): current player id (player 1 or 2)
         """
 
         if player_id == 1:
@@ -160,7 +160,7 @@ class Terminal:
         """shows results for one player
 
         Args:
-            player (_type_): _description_
+            player (dynamic): player object of player 1 or 2
         """
 
         scores = player.get_all_possible_scores()
@@ -256,13 +256,13 @@ class Terminal:
                 self.save_round_score(scores, upper, lower)
 
     def save_game(self):
-        """saves game date to json file"""
+        """saves current game state in json file"""
 
         with open("games.json", "w", encoding="utf-8") as file:
             json.dump(self.current_game, file)
 
     def load_game(self):
-        """loads game date from json file"""
+        """loads old game state from json file"""
 
         with open("games.json", "r", encoding="utf-8") as file:
             data = json.load(file)

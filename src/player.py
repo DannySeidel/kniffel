@@ -13,7 +13,7 @@ class Player:
     """handling player actions and playerscore"""
 
     def __init__(self, player_id):
-        """_summary_
+        """initializing the player
 
         Args:
             player_id (int): used for identification of the player
@@ -42,7 +42,7 @@ class Player:
         """returns an array with all possible scores
 
         Returns:
-            _type_: combining the uppersection and lowersection array of scores
+            array: combining the uppersection and lowersection array of scores
         """
 
         upper_section_scores = [self.__get_number_score(1) if self.upper_section_score["ones"] is None else None,
@@ -63,13 +63,13 @@ class Player:
         return upper_section_scores + lower_section_scores
 
     def __get_number_score(self, number) -> int:
-        """_summary_
+        """creating a score for a specific number/dice
 
         Args:
-            number (int): _description_
+            number (int): the dice number
 
         Returns:
-            int: _description_
+            int: score for the number
         """
 
         count = 0
@@ -81,13 +81,13 @@ class Player:
         return count * number
 
     def __get_n_of_a_kind_score(self, n_times) -> int:
-        """_summary_
+        """get the score for a specific of the same kind
 
         Args:
-            n_times (_type_): _description_
+            n_times (int): number of times a dicenum has been thrown
 
         Returns:
-            int: _description_
+            int: score for the dices that have been thrown
         """
 
         most_common_dice = max(set(self.dice_put_aside), key=self.dice_put_aside.count)
@@ -98,10 +98,10 @@ class Player:
         return 0
 
     def __get_full_house_score(self) -> int:
-        """_summary_
+        """get the score of a full house
 
         Returns:
-            int: _description_
+            int: score for the full house
         """
 
         dice_without_duplicates = list(dict.fromkeys(self.dice_put_aside))
@@ -112,10 +112,10 @@ class Player:
         return 0
 
     def __get_small_straight_score(self) -> int:
-        """_summary_
+        """get the score for a small straight
 
         Returns:
-            int: _description_
+            int: score for the small straight
         """
 
         dice = self.dice_put_aside
@@ -130,10 +130,10 @@ class Player:
         return 0
 
     def __get_large_straight_score(self) -> int:
-        """_summary_
+        """get the score for a large straight
 
         Returns:
-            int: _description_
+            int: score for the large straight
         """
 
         dice = self.dice_put_aside
@@ -146,10 +146,10 @@ class Player:
         return 0
 
     def __get_yahtzee_score(self) -> int:
-        """_summary_
+        """get the score for a yahtzee
 
         Returns:
-            int: _description_
+            int: score for the yahtzee
         """
 
         dice = self.dice_put_aside
@@ -160,19 +160,19 @@ class Player:
         return 0
 
     def __get_chance_score(self) -> int:
-        """_summary_
+        """get the score for a chance
 
         Returns:
-            int: _description_
+            int: score for the chance
         """
 
         return sum(self.dice_put_aside)
 
     def get_total_score(self) -> int:
-        """returns sum of all scores
+        """returns the total score of the player
 
         Returns:
-            int: _description_
+            int: total score of the player
         """
 
         upper_section_sum = sum(self.upper_section_score.values())
@@ -187,7 +187,7 @@ class Player:
         """appends dice to dice_put_aside
 
         Args:
-            value (_type_): _description_
+            value (int): the value of the dice to be put aside
         """
 
         self.dice_put_aside.append(value)
