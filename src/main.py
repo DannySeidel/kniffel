@@ -6,7 +6,7 @@ created on 06.04.22
 by Tobias Welti, Luca Kaiser, Joshua Miller, Danny Seidel
 """
 
-import json
+import pickle
 import os
 import sys
 import uuid
@@ -18,18 +18,25 @@ def error_handler(error):
     """handles all errors for the program
 
     Args:
-        error (String): the error that python throwes
+        error (String): the error that python throws
     """
 
     match error:
         case "unsupported input":
-            print("Input not supported.")
+            print("Error: Input not supported.")
         case "already set":
-            print("This value is already set. Enter a different number.")
+            print("Error: This value is already set. Enter a different number.")
         case "number not found":
-            print("The given number was not found.")
+            print("Error: The given number was not found.")
+        case "file not found":
+            print("Error: File 'games.json' was not found. Please make sure this file exists in /src. ")
+        case "permission error":
+            print("Error: This programme does not have the necessary permissions to access the file 'games.json'."
+                  "Please make sure that the programme has full access to the file.")
+        case "game not found":
+            print("Error: There is no saved game.")
         case _:
-            print("A unknown error occurred.")
+            print("Error: A unknown error occurred.")
 
 
 class Color(str, Enum):
@@ -81,7 +88,7 @@ class Terminal:
             self.play_game()
         elif action == "l":
             self.load_game()
-            # self.play_game()
+            self.play_game()
         elif action == "q":
             sys.exit(0)
         else:
@@ -102,7 +109,7 @@ class Terminal:
         while turn < 13:
             self.player_action(1)
             self.player_action(2)
-            # self.save_game()
+            self.save_game()
             turn += 1
 
         self.show_results(self.current_game.player_1)
@@ -120,7 +127,7 @@ class Terminal:
             print("It's a draw!")
 
     def player_action(self, player_id):
-        """handling the actions for one players turn
+        """handling the actions for one player turn
 
         Args:
             player_id (int): current player id (player 1 or 2)
@@ -256,18 +263,28 @@ class Terminal:
                 self.save_round_score(scores, upper, lower)
 
     def save_game(self):
-        """saves current game state in json file"""
+        """saves game data to json file"""
 
-        with open("games.json", "w", encoding="utf-8") as file:
-            json.dump(self.current_game, file)
+        try:
+            with open("games.json", "wb") as file:
+                pickle.dump(self.current_game, file)
+        except PermissionError:
+            error_handler("permission error")
 
     def load_game(self):
-        """loads old game state from json file"""
+        """loads game data from json file"""
 
-        with open("games.json", "r", encoding="utf-8") as file:
-            data = json.load(file)
-            game_id = data["uuid"]
-            self.current_game = game.Game(game_id)
+        try:
+            with open("games.json", "rb") as file:
+                data = pickle.load(file)
+            if data is not None:
+                self.current_game = data
+            else:
+                error_handler("game not found")
+        except FileNotFoundError:
+            error_handler("file not found")
+        except PermissionError:
+            error_handler("permission error")
 
 
 if __name__ == "__main__":
