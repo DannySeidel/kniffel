@@ -73,7 +73,7 @@ class Terminal:
     def print_menu():
         """prints main menu after program start"""
 
-        print(f"{Color.BOLD}{Color.YELLOW}Welcome to kniffel!{Color.END}")
+        print(f"{Color.BOLD + Color.YELLOW}Welcome to kniffel!{Color.END}")
         print("Start new game (s)")
         print("Load game (l)")
         print("Quit (q)")
@@ -107,6 +107,7 @@ class Terminal:
         turn = self.current_game.get_current_turn()
 
         while turn < 13:
+            print(f"\n\n{Color.BOLD + Color.PURPLE}Turn {turn + 1}{Color.END}")
             self.player_action(1)
             self.player_action(2)
             self.save_game()
@@ -141,18 +142,18 @@ class Terminal:
         attempt = 1
         player.dice_put_aside = []
 
-        print(f"\nPlayer {player_id} is on:")
+        print(f"\n{Color.BOLD + Color.DARKCYAN}Player {player_id}{Color.END} is on:")
 
         while attempt <= 3 and len(player.dice_put_aside) != 5:
             player.throw_dice()
             if attempt < 3:
-                print(f"Your thrown {str(player.dice_used)[1:-1]}.")
+                print(f"Your thrown {Color.BOLD + Color.GREEN + str(player.dice_used)[1:-1] + Color.END}.")
                 if len(player.dice_put_aside) > 0:
-                    print(f"Your have {str(player.dice_put_aside)[1:-1]} put aside.")
+                    print(f"Your have {Color.BOLD + Color.BLUE + str(player.dice_put_aside)[1:-1] + Color.END} put aside.")
                     player.reuse_dice()
                 for value in player.dice_used:
-                    print(f"Do you want rethrow the dice with current value {value}?")
-                    action = input("Enter 'n' to not rethrow: ")
+                    print(f"Do you want rethrow the dice with current value {Color.BOLD + Color.YELLOW + str(value) + Color.END}?")
+                    action = input(f"Enter 'n' to {Color.BOLD + Color.RED + 'not' + Color.END} rethrow: ")
                     if action == "n":
                         player.put_dice_aside(value)
                 attempt += 1
@@ -174,7 +175,7 @@ class Terminal:
         upper = player.upper_section_score
         lower = player.lower_section_score
 
-        print(f"You have thrown {str(player.dice_put_aside)[1:-1]}.")
+        print(f"You have thrown {Color.BOLD + Color.GREEN + str(player.dice_put_aside)[1:-1] + Color.END}.")
         print("Your scores are:")
         print("  Upper Section:")
         print(f"""  1) Ones:               {Color.BOLD + str(upper['ones']) + Color.END if scores[0] is None
