@@ -5,8 +5,9 @@ main.py
 created on 06.04.22
 by Tobias Welti, Luca Kaiser, Joshua Miller, Danny Seidel
 """
-
+import hmac
 import pickle
+import hashlib
 import os
 import sys
 import uuid
@@ -29,11 +30,11 @@ def error_handler(error):
         case "number not found":
             print("Error: The given number was not found.")
         case "file not found":
-            print("Error: File 'games.json' was not found. Please make sure this file exists in /src. ")
+            print("Error: File 'games.bin' was not found. Please make sure this file exists in /src. ")
         case "permission error":
-            print("Error: This programme does not have the necessary permissions to access the file 'games.json'."
+            print("Error: This programme does not have the necessary permissions to access the file 'games.bin'."
                   "Please make sure that the programme has full access to the file.")
-        case "game not found":
+        case "eof error":
             print("Error: There is no saved game.")
         case _:
             print("Error: A unknown error occurred.")
@@ -271,11 +272,15 @@ class Terminal:
                 self.save_round_score(player)
 
     def save_game(self):
-        """saves game data to json file"""
+        """saves game data to a binary file"""
 
+        pickled_game = pickle.dumps(self.current_game)
+        mac = hmac.new("bad key".encode(), pickled_game, hashlib.sha1).digest()
+        game_data = mac + " ".encode() + pickled_game
         try:
-            with open("games.json", "wb") as file:
-                pickle.dump(self.current_game, file)
+            with open("games.bin", "wb") as file:
+                pickle.dump(game_data, file)
+                print("Game saved.")
         except FileNotFoundError:
             error_handler("file not found")
             self.menu_input()
@@ -284,15 +289,28 @@ class Terminal:
             self.menu_input()
 
     def load_game(self):
-        """loads game data from json file"""
+        """loads game data from binary file"""
 
         try:
-            with open("games.json", "rb") as file:
+            with open("games.bin", "rb") as file:
                 data = pickle.load(file)
-            if data is not None:
                 self.current_game = data
-            else:
-                error_handler("game not found")
+        except FileNotFoundError:
+            error_handler("file not found")
+            self.menu_input()
+        except PermissionError:
+            error_handler("permission error")
+            self.menu_input()
+        except EOFError:
+            error_handler("eof error")
+            self.menu_input()
+
+    def delete_game(self):
+        """ removes game save from binary file"""
+
+        try:
+            open("games.bin", "wb").close()
+            print("Completed game was removed from save file.")
         except FileNotFoundError:
             error_handler("file not found")
             self.menu_input()

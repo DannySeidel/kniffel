@@ -6,4 +6,6 @@
 
 ## Used Libraries
 - Pickle
+- Hashlib
+- Hmac
 

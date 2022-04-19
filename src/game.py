@@ -13,6 +13,7 @@ class Game:
     """handles game data and current game state"""
 
     def __init__(self, uuid):
+        # TODO: add randomly generated encryption key
         self.uuid = uuid
         self.player_1 = player.Player(1)
         self.player_2 = player.Player(2)
