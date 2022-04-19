@@ -175,8 +175,8 @@ class Player:
             int: total score of the player
         """
 
-        upper_section_sum = sum(self.upper_section_score.values())
-        lower_section_sum = sum(self.lower_section_score.values())
+        upper_section_sum = sum(self.upper_section_score.values()) if None not in self.upper_section_score.values() else 0
+        lower_section_sum = sum(self.lower_section_score.values()) if None not in self.lower_section_score.values() else 0
 
         if upper_section_sum >= 63:
             upper_section_sum += 35
