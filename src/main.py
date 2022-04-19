@@ -44,7 +44,6 @@ class Color(str, Enum):
 
     PURPLE = '\033[95m'
     CYAN = '\033[96m'
-    DARKCYAN = '\033[36m'
     BLUE = '\033[94m'
     GREEN = '\033[92m'
     YELLOW = '\033[93m'
@@ -107,25 +106,31 @@ class Terminal:
         turn = self.current_game.get_current_turn()
 
         while turn < 13:
+            self.clear_console()
             print(f"\n\n{Color.BOLD + Color.PURPLE}Turn {turn + 1}{Color.END}")
             self.player_action(1)
+            self.clear_console()
+            print(f"\n\n{Color.BOLD + Color.PURPLE}Turn {turn + 1}{Color.END}")
             self.player_action(2)
             self.save_game()
             turn += 1
 
+        self.clear_console()
+        print(f"{Color.BOLD + Color.CYAN}Player 1:{Color.END}")
         self.show_results(self.current_game.player_1)
-        print(self.current_game.player_1.get_total_score)
+        print(f"{Color.BOLD + Color.YELLOW}      Total:             {self.current_game.player_1.get_total_score()}{Color.END}")
+        print(f"{Color.BOLD + Color.CYAN}\nPlayer 2:{Color.END}")
         self.show_results(self.current_game.player_2)
-        print(self.current_game.player_2.get_total_score)
+        print(f"{Color.BOLD + Color.YELLOW}      Total:             {self.current_game.player_2.get_total_score()}{Color.END}")
 
         winner_id = self.current_game.get_winner()
 
         if winner_id == 1:
-            print("Player 1 has won!")
+            print(f"{Color.BOLD + Color.RED}\n        Player 1 has won!{Color.END}")
         elif winner_id == 2:
-            print("Player 2 has won!")
+            print(f"{Color.BOLD + Color.RED}\n        Player 2 has won!{Color.END}")
         else:
-            print("It's a draw!")
+            print(f"{Color.BOLD + Color.RED}\n          It's a draw!{Color.END}")
 
     def player_action(self, player_id):
         """handling the actions for one player turn
@@ -142,7 +147,7 @@ class Terminal:
         attempt = 1
         player.dice_put_aside = []
 
-        print(f"\n{Color.BOLD + Color.DARKCYAN}Player {player_id}{Color.END} is on:")
+        print(f"\n{Color.BOLD + Color.CYAN}Player {player_id}{Color.END} is on:")
 
         while attempt <= 3 and len(player.dice_put_aside) != 5:
             player.throw_dice()
@@ -162,9 +167,12 @@ class Terminal:
                     player.put_dice_aside(value)
             player.dice_put_aside.sort()
 
+        print(f"You have thrown {Color.BOLD + Color.GREEN + str(player.dice_put_aside)[1:-1] + Color.END}.")
         self.show_results(player)
+        self.save_round_score(player)
 
-    def show_results(self, player):
+    @staticmethod
+    def show_results(player):
         """shows results for one player
 
         Args:
@@ -175,7 +183,6 @@ class Terminal:
         upper = player.upper_section_score
         lower = player.lower_section_score
 
-        print(f"You have thrown {Color.BOLD + Color.GREEN + str(player.dice_put_aside)[1:-1] + Color.END}.")
         print("Your scores are:")
         print("  Upper Section:")
         print(f"""  1) Ones:               {Color.BOLD + str(upper['ones']) + Color.END if scores[0] is None
@@ -206,62 +213,62 @@ class Terminal:
         print(f"""  13) Chance:            {Color.BOLD + str(lower['chance']) + Color.END if scores[12] is None
         else Color.RED + str(scores[12]) + Color.END}""")
 
-        self.save_round_score(scores, upper, lower)
-
-    def save_round_score(self, scores, upper, lower):
+    def save_round_score(self, player):
         """saves score of current round to dict
 
         Args:
-            scores (_type_): _description_
-            upper (_type_): _description_
-            lower (_type_): _description_
+            player (dynamic): player object of player 1 or 2
         """
+
+        scores = player.get_all_possible_scores()
+        upper = player.upper_section_score
+        lower = player.lower_section_score
 
         score_number = input("Enter the matching number to save the score: ")
 
         match score_number:
             case "1":
-                upper["ones"] = str(scores[0]) if upper["ones"] is None else (
-                    error_handler("already set"), self.save_round_score(scores, upper, lower))
+                upper["ones"] = scores[0] if upper["ones"] is None else (
+                    error_handler("already set"), self.save_round_score(player))
             case "2":
                 upper["twos"] = scores[1] if upper["twos"] is None else (
-                    error_handler("already set"), self.save_round_score(scores, upper, lower))
+                    error_handler("already set"), self.save_round_score(player))
             case "3":
                 upper["threes"] = scores[2] if upper["threes"] is None else (
-                    error_handler("already set"), self.save_round_score(scores, upper, lower))
+                    error_handler("already set"), self.save_round_score(player))
             case "4":
                 upper["fours"] = scores[3] if upper["fours"] is None else (
-                    error_handler("already set"), self.save_round_score(scores, upper, lower))
+                    error_handler("already set"), self.save_round_score(player))
             case "5":
                 upper["fives"] = scores[4] if upper["fives"] is None else (
-                    error_handler("already set"), self.save_round_score(scores, upper, lower))
+                    error_handler("already set"), self.save_round_score(player))
             case "6":
                 upper["sixes"] = scores[5] if upper["sixes"] is None else (
-                    error_handler("already set"), self.save_round_score(scores, upper, lower))
+                    error_handler("already set"), self.save_round_score(player))
             case "7":
                 lower["three_of_a_kind"] = scores[6] if lower["three_of_a_kind"] is None else (
-                    error_handler("already set"), self.save_round_score(scores, upper, lower))
+                    error_handler("already set"), self.save_round_score(player))
             case "8":
                 lower["four_of_a_kind"] = scores[7] if lower["four_of_a_kind"] is None else (
-                    error_handler("already set"), self.save_round_score(scores, upper, lower))
+                    error_handler("already set"), self.save_round_score(player))
             case "9":
                 lower["full_house"] = scores[8] if lower["full_house"] is None else (
-                    error_handler("already set"), self.save_round_score(scores, upper, lower))
+                    error_handler("already set"), self.save_round_score(player))
             case "10":
                 lower["small_straight"] = scores[9] if lower["small_straight"] is None else (
-                    error_handler("already set"), self.save_round_score(scores, upper, lower))
+                    error_handler("already set"), self.save_round_score(player))
             case "11":
                 lower["large_straight"] = scores[10] if lower["large_straight"] is None else (
-                    error_handler("already set"), self.save_round_score(scores, upper, lower))
+                    error_handler("already set"), self.save_round_score(player))
             case "12":
                 lower["yahtzee"] = scores[11] if lower["yahtzee"] is None else (
-                    error_handler("already set"), self.save_round_score(scores, upper, lower))
+                    error_handler("already set"), self.save_round_score(player))
             case "13":
                 lower["chance"] = scores[12] if lower["chance"] is None else (
-                    error_handler("already set"), self.save_round_score(scores, upper, lower))
+                    error_handler("already set"), self.save_round_score(player))
             case _:
                 error_handler("number not found")
-                self.save_round_score(scores, upper, lower)
+                self.save_round_score(player)
 
     def save_game(self):
         """saves game data to json file"""
@@ -271,6 +278,7 @@ class Terminal:
                 pickle.dump(self.current_game, file)
         except PermissionError:
             error_handler("permission error")
+            self.menu_input()
 
     def load_game(self):
         """loads game data from json file"""
@@ -284,8 +292,10 @@ class Terminal:
                 error_handler("game not found")
         except FileNotFoundError:
             error_handler("file not found")
+            self.menu_input()
         except PermissionError:
             error_handler("permission error")
+            self.menu_input()
 
 
 if __name__ == "__main__":
