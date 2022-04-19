@@ -276,6 +276,9 @@ class Terminal:
         try:
             with open("games.json", "wb") as file:
                 pickle.dump(self.current_game, file)
+        except FileNotFoundError:
+            error_handler("file not found")
+            self.menu_input()
         except PermissionError:
             error_handler("permission error")
             self.menu_input()
