@@ -6,7 +6,7 @@ created on 07.04.22
 by Tobias Welti, Luca Kaiser, Joshua Miller, Danny Seidel
 """
 
-import player
+from src import player
 
 
 class Game:

@@ -11,7 +11,7 @@ import os
 import sys
 import uuid
 from enum import Enum
-import game
+from src import game
 
 
 def error_handler(error):
