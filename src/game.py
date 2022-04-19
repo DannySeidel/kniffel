@@ -6,7 +6,8 @@ created on 07.04.22
 by Tobias Welti, Luca Kaiser, Joshua Miller, Danny Seidel
 """
 
-from src import player
+
+from player import Player
 
 
 class Game:
@@ -14,8 +15,8 @@ class Game:
 
     def __init__(self, uuid):
         self.uuid = uuid
-        self.player_1 = player.Player(1)
-        self.player_2 = player.Player(2)
+        self.player_1 = Player(1)
+        self.player_2 = Player(2)
 
     def get_current_turn(self) -> int:
         """returns the number of the current turn

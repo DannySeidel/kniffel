@@ -11,7 +11,7 @@ import os
 import sys
 import uuid
 from enum import Enum
-from src import game
+from game import Game
 
 
 def error_handler(error):
@@ -98,7 +98,7 @@ class Terminal:
         """creates a new game object"""
 
         game_id = uuid.uuid4()
-        self.current_game = game.Game(game_id)
+        self.current_game = Game(game_id)
 
     def play_game(self):
         """looping through game turns and printing the winner"""
