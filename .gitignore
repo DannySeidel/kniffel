@@ -4,6 +4,7 @@
 
 __pycache__
 games.json
+games.bin
 
 htmlcov
 .coverage

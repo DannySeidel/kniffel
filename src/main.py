@@ -309,7 +309,9 @@ class Terminal:
         """ removes game save from binary file"""
 
         try:
-            open("games.bin", "wb").close()
+            with open("games.bin", "wb") as file:
+                file.truncate()
+                file.close()
             print("Completed game was removed from save file.")
         except FileNotFoundError:
             error_handler("file not found")
