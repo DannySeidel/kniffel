@@ -1,12 +1,12 @@
 # pylint: disable=C
 # pylint: disable=protected-access
 
-import unittest
-from src import player
+from unittest import TestCase
+from src.player import Player
 
 
-class TestPlayer(unittest.TestCase):
-    test_player = player.Player(1)
+class TestPlayer(TestCase):
+    test_player = Player(1)
 
     def test_throw_dice(self):
         self.test_player.dice_put_aside = [3, 3]
@@ -51,29 +51,6 @@ class TestPlayer(unittest.TestCase):
         expected_value = [0, 0, 15, 0, 0, 0, 15, 15, 0, 0, 0, 50, 15]
 
         self.assertEqual(expected_value, self.test_player.get_all_possible_scores())
-
-    def test_get_total_score1(self):
-        self.test_player.upper_section_score["ones"] = 3
-        self.test_player.upper_section_score["twos"] = 4
-        self.test_player.upper_section_score["threes"] = 6
-        self.test_player.upper_section_score["fours"] = 12
-        self.test_player.upper_section_score["fives"] = 20
-        self.test_player.upper_section_score["sixes"] = 18
-
-        self.test_player.lower_section_score["three_of_a_kind"] = 12
-        self.test_player.lower_section_score["four_of_a_kind"] = 16
-        self.test_player.lower_section_score["full_house"] = 25
-        self.test_player.lower_section_score["small_straight"] = 0
-        self.test_player.lower_section_score["large_straight"] = 40
-        self.test_player.lower_section_score["yahtzee"] = 50
-        self.test_player.lower_section_score["chance"] = 23
-
-        expected_value = sum(self.test_player.upper_section_score.values()) + sum(self.test_player.lower_section_score.values())
-
-        if sum(self.test_player.upper_section_score.values()) >= 63:
-            expected_value += 35
-
-        self.assertEqual(expected_value, self.test_player.get_total_score())
 
     def test_put_dice_aside(self):
         self.test_player.dice_put_aside = [2, 4, 5]
