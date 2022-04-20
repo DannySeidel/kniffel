@@ -7,7 +7,6 @@ by Tobias Welti, Luca Kaiser, Joshua Miller, Danny Seidel
 """
 import hmac
 import pickle
-import json
 import hashlib
 import os
 import sys
@@ -35,7 +34,7 @@ def error_handler(error):
         case "permission error":
             print("Error: This programme does not have the necessary permissions to access the file 'games.json'."
                   "Please make sure that the programme has full access to the file.")
-        case "eof error":
+        case "no saved game":
             print("Error: There is no saved game.")
         case "integrity fail":
             print("Error: The game save file has been tampered with. The game is not recoverable and has to be deleted.")
@@ -91,7 +90,10 @@ class Terminal:
             self.play_game()
         elif action == "l":
             self.load_game()
-            self.play_game()
+            if self.current_game:
+                self.play_game()
+            else:
+                self.menu_input()
         elif action == "q":
             sys.exit(0)
         else:
@@ -275,17 +277,15 @@ class Terminal:
                 self.save_round_score(player)
 
     def save_game(self):
-        """saves game data to a json file"""
+        """pickles the current game, creates a Message Authentication code and saves everything into a binary file"""
 
         pickled_game = pickle.dumps(self.current_game)
-        mac = hmac.new(self.current_game.key.encode(), pickled_game, hashlib.sha256).digest()
-        print(self.current_game.key.encode())
-        print(mac)
+        mac = hmac.new(str(self.current_game.key).encode(), pickled_game, hashlib.sha256).digest()
         print(pickled_game)
-        game_data = str(mac) + " " + str(self.current_game.key) + " " + str(pickled_game)
+        game_data_b = mac + str(self.current_game.key).encode() + pickled_game
         try:
-            with open("games.json", "w") as file:
-                json.dump(game_data, file)
+            with open("games.bin", "wb") as file:
+                pickle.dump(game_data_b, file)
                 print("Game saved.")
         except FileNotFoundError:
             error_handler("file not found")
@@ -295,40 +295,37 @@ class Terminal:
             self.menu_input()
 
     def load_game(self):
-        """loads game data from json file"""
+        """loads game data from binary file and checks Message Authentication codes.
+        If the codes are the same, the game gets loaded, otherwise it gets deleted."""
 
         try:
-            with open("games.json", "r") as file:
-                data = json.load(file)
+            with open("games.bin", "rb") as file:
+                data = file.read()
         except FileNotFoundError:
             error_handler("file not found")
-            self.menu_input()
         except PermissionError:
             error_handler("permission error")
-            self.menu_input()
         except EOFError:
-            error_handler("eof error")
-            self.menu_input()
-        mac, key, game_data = data.split(" ")
-        print(mac)
-        print(key)
-        print(game_data)
-
-        # mac = hmac.new(bin(self.current_game.key).encode(), pickled_game, hashlib.sha256).digest()
-        mac_new = hmac.new(int(key).encode(), game_data.encode(), hashlib.sha256).digest()
-        print(mac_new)
-        print(mac.encode)
-        if mac.encode() is not mac_new:
-            error_handler("integrity fail")
-            self.delete_game()
+            error_handler("no saved game")
+        if data:
+            mac = data[16:48]
+            key = data[48:52]
+            game_data = data[52:(len(data)-2)]
+            mac_new = hmac.new(key, game_data, hashlib.sha256).digest()
+            if hmac.compare_digest(mac, mac_new):
+                print("Game was successfully loaded.")
+                self.current_game = pickle.loads(game_data)
+            else:
+                error_handler("integrity fail")
+                self.delete_game()
         else:
-            self.current_game = pickle.load(game_data.encode)
+            error_handler("no saved game")
 
     def delete_game(self):
-        """ removes game save from json file"""
+        """ removes game save from binary file"""
 
         try:
-            with open("games.json", "w") as file:
+            with open("games.bin", "wb") as file:
                 file.truncate()
                 file.close()
             print("Game was removed from save file.")

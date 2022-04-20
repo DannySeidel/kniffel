@@ -15,7 +15,7 @@ class Game:
 
     def __init__(self, uuid):
         self.uuid = uuid
-        self.key = random.randint(0, 16384)
+        self.key = random.randint(1000, 9999)
         self.player_1 = Player(1)
         self.player_2 = Player(2)
 
