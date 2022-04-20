@@ -7,6 +7,7 @@ by Tobias Welti, Luca Kaiser, Joshua Miller, Danny Seidel
 """
 import hmac
 import pickle
+import json
 import hashlib
 import os
 import sys
@@ -21,7 +22,7 @@ def error_handler(error):
     Args:
         error (String): the error that python throws
     """
-
+    # TODO: move error handler to terminal class
     match error:
         case "unsupported input":
             print("Error: Input not supported.")
@@ -30,12 +31,14 @@ def error_handler(error):
         case "number not found":
             print("Error: The given number was not found.")
         case "file not found":
-            print("Error: File 'games.bin' was not found. Please make sure this file exists in /src. ")
+            print("Error: File 'games.json' was not found. Please make sure this file exists in /src. ")
         case "permission error":
-            print("Error: This programme does not have the necessary permissions to access the file 'games.bin'."
+            print("Error: This programme does not have the necessary permissions to access the file 'games.json'."
                   "Please make sure that the programme has full access to the file.")
         case "eof error":
             print("Error: There is no saved game.")
+        case "integrity fail":
+            print("Error: The game save file has been tampered with. The game is not recoverable and has to be deleted.")
         case _:
             print("Error: A unknown error occurred.")
 
@@ -272,14 +275,17 @@ class Terminal:
                 self.save_round_score(player)
 
     def save_game(self):
-        """saves game data to a binary file"""
+        """saves game data to a json file"""
 
         pickled_game = pickle.dumps(self.current_game)
-        mac = hmac.new("bad key".encode(), pickled_game, hashlib.sha1).digest()
-        game_data = mac + " ".encode() + pickled_game
+        mac = hmac.new(self.current_game.key.encode(), pickled_game, hashlib.sha256).digest()
+        print(self.current_game.key.encode())
+        print(mac)
+        print(pickled_game)
+        game_data = str(mac) + " " + str(self.current_game.key) + " " + str(pickled_game)
         try:
-            with open("games.bin", "wb") as file:
-                pickle.dump(game_data, file)
+            with open("games.json", "w") as file:
+                json.dump(game_data, file)
                 print("Game saved.")
         except FileNotFoundError:
             error_handler("file not found")
@@ -289,12 +295,11 @@ class Terminal:
             self.menu_input()
 
     def load_game(self):
-        """loads game data from binary file"""
+        """loads game data from json file"""
 
         try:
-            with open("games.bin", "rb") as file:
-                data = pickle.load(file)
-                self.current_game = data
+            with open("games.json", "r") as file:
+                data = json.load(file)
         except FileNotFoundError:
             error_handler("file not found")
             self.menu_input()
@@ -304,15 +309,29 @@ class Terminal:
         except EOFError:
             error_handler("eof error")
             self.menu_input()
+        mac, key, game_data = data.split(" ")
+        print(mac)
+        print(key)
+        print(game_data)
+
+        # mac = hmac.new(bin(self.current_game.key).encode(), pickled_game, hashlib.sha256).digest()
+        mac_new = hmac.new(int(key).encode(), game_data.encode(), hashlib.sha256).digest()
+        print(mac_new)
+        print(mac.encode)
+        if mac.encode() is not mac_new:
+            error_handler("integrity fail")
+            self.delete_game()
+        else:
+            self.current_game = pickle.load(game_data.encode)
 
     def delete_game(self):
-        """ removes game save from binary file"""
+        """ removes game save from json file"""
 
         try:
-            with open("games.bin", "wb") as file:
+            with open("games.json", "w") as file:
                 file.truncate()
                 file.close()
-            print("Completed game was removed from save file.")
+            print("Game was removed from save file.")
         except FileNotFoundError:
             error_handler("file not found")
             self.menu_input()

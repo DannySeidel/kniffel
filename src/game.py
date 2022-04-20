@@ -6,7 +6,7 @@ created on 07.04.22
 by Tobias Welti, Luca Kaiser, Joshua Miller, Danny Seidel
 """
 
-
+import random
 from player import Player
 
 
@@ -14,8 +14,8 @@ class Game:
     """handles game data and current game state"""
 
     def __init__(self, uuid):
-        # TODO: add randomly generated encryption key
         self.uuid = uuid
+        self.key = random.randint(0, 16384)
         self.player_1 = Player(1)
         self.player_2 = Player(2)
 
