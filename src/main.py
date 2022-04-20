@@ -278,7 +278,7 @@ class Terminal:
 
     def save_game(self):
         """pickles the current game, creates a Message Authentication code and saves everything into a binary file"""
-
+        # TODO: encrypt key
         pickled_game = pickle.dumps(self.current_game)
         mac = hmac.new(str(self.current_game.key).encode(), pickled_game, hashlib.sha256).digest()
         print(pickled_game)
