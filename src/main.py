@@ -91,6 +91,17 @@ class Terminal:
                 █▄▄█▄▄█▄▄▄██▄▄█▄▄▄█▄▄▄███▄▄▄███▄▄▄▄▄█▄▄▄▄▄█
         """
         )
+        print(f"""
+                            {Color.BOLD + Color.BLUE}Start new game [S]{Color.END}""")
+        print(f"""
+                              {Color.BOLD + Color.BLUE}Load game [L]{Color.END}""")
+        print(f"""
+                                {Color.BOLD + Color.RED}Quit [Q]{Color.END}""")
+
+    def wuerfel(self):
+        """
+        Nur Platzhalter
+        """
         print(
         f"""{Color.RED}
                 ▄▀▀▀▀▀▀▀▀▀▀▄
@@ -145,12 +156,6 @@ class Terminal:
                 ▀▄▄▄▄▄▄▄▄▄▄▀
         """
         )
-        print(f"""
-                            {Color.BOLD + Color.BLUE}Start new game [S]{Color.END}""")
-        print(f"""
-                              {Color.BOLD + Color.BLUE}Load game [L]{Color.END}""")
-        print(f"""
-                                {Color.BOLD + Color.RED}Quit [Q]{Color.END}""")
 
     def menu_input(self):
         """handles inputs for main menu"""
