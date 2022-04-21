@@ -73,23 +73,95 @@ class Terminal:
     def print_menu():
         """prints main menu after program start"""
 
-        print(f"{Color.BOLD + Color.YELLOW}Welcome to kniffel!{Color.END}")
-        print("Start new game (s)")
-        print("Load game (l)")
-        print("Quit (q)")
+        print(
+        f"""{Color.RED}
+▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+█▄─█▀▀▀█─▄█▄─▄█▄─▄███▄─▄███▄─█─▄█─▄▄─█▄─▀█▀─▄█▄─▀█▀─▄█▄─▄▄─█▄─▀█▄─▄███░▄▄░▄█▄─██─▄█
+██─█─█─█─███─███─██▀██─██▀██─▄▀██─██─██─█▄█─███─█▄█─███─▄█▀██─█▄▀─█████▀▄█▀██─██─██
+██▄▄▄█▄▄▄██▄▄▄█▄▄▄▄▄█▄▄▄▄▄█▄▄█▄▄█▄▄▄▄█▄▄▄█▄▄▄█▄▄▄█▄▄▄█▄▄▄▄▄█▄▄▄██▄▄███▄▄▄▄▄██▄▄▄▄██
+        """
+        )
+        print(
+        f"""{Color.RED}
+                ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+                █▄─█─▄█▄─▀█▄─▄█▄─▄█▄─▄▄─█▄─▄▄─█▄─▄▄─█▄─▄███
+                ██─▄▀███─█▄▀─███─███─▄████─▄████─▄█▀██─██▀█
+                █▄▄█▄▄█▄▄▄██▄▄█▄▄▄█▄▄▄███▄▄▄███▄▄▄▄▄█▄▄▄▄▄█
+        """
+        )
+        print(
+        f"""{Color.RED}
+                ▄▀▀▀▀▀▀▀▀▀▀▄
+                █          █
+                █    ██    █
+                █          █
+                ▀▄▄▄▄▄▄▄▄▄▄▀
+        """
+        )
+        print(
+        f"""{Color.RED}
+                ▄▀▀▀▀▀▀▀▀▀▀▄
+                █  ▄▄      █
+                █  ▀▀  ▄▄  █
+                █      ▀▀  █
+                ▀▄▄▄▄▄▄▄▄▄▄▀
+        """
+        )
+        print(
+        f"""{Color.RED}
+                ▄▀▀▀▀▀▀▀▀▀▀▄
+                █ ██       █
+                █    ██    █
+                █       ██ █
+                ▀▄▄▄▄▄▄▄▄▄▄▀
+        """
+        )
+        print(
+        f"""{Color.RED}
+                ▄▀▀▀▀▀▀▀▀▀▀▄
+                █  ██  ██  █
+                █          █
+                █  ██  ██  █
+                ▀▄▄▄▄▄▄▄▄▄▄▀
+        """
+        )
+        print(
+        f"""{Color.RED}
+                ▄▀▀▀▀▀▀▀▀▀▀▄
+                █ ██    ██ █
+                █    ██    █
+                █ ██    ██ █
+                ▀▄▄▄▄▄▄▄▄▄▄▀
+        """
+        )
+        print(
+        f"""{Color.RED}
+                ▄▀▀▀▀▀▀▀▀▀▀▄
+                █  ▀▀  ▀▀  █
+                █  ██  ██  █
+                █  ▄▄  ▄▄  █
+                ▀▄▄▄▄▄▄▄▄▄▄▀
+        """
+        )
+        print(f"""
+                            {Color.BOLD + Color.BLUE}Start new game [S]{Color.END}""")
+        print(f"""
+                              {Color.BOLD + Color.BLUE}Load game [L]{Color.END}""")
+        print(f"""
+                                {Color.BOLD + Color.RED}Quit [Q]{Color.END}""")
 
     def menu_input(self):
         """handles inputs for main menu"""
 
         action = input("\nEnter action: ")
 
-        if action == "s":
+        if action == "s" or action == "S":
             self.create_new_game()
             self.play_game()
-        elif action == "l":
+        elif action == "l" or action == "L":
             self.load_game()
             self.play_game()
-        elif action == "q":
+        elif action == "q" or action == "Q":
             sys.exit(0)
         else:
             error_handler("unsupported input")
