@@ -157,7 +157,7 @@ class Terminal:
 
         action = input("\nEnter action: ")
 
-        if action == "s":
+        if action == "s" or "S":
             if self.check_for_game():
                 overwrite_query = input("There is a currently a saved game. If you start a new game, the saved game will be lost."
                                         "Do you want to continue?(y/n)")
@@ -174,13 +174,13 @@ class Terminal:
                 self.create_new_game()
                 self.play_game()
 
-        elif action == "l":
+        elif action == "l" or "L":
             self.load_game()
             if self.current_game:
                 self.play_game()
             else:
                 self.menu_input()
-        elif action == "q":
+        elif action == "q" or "Q":
             sys.exit(0)
         else:
             error_handler("unsupported input")
