@@ -24,22 +24,22 @@ def error_handler(error):
     # TODO: move error handler to terminal class
     match error:
         case "unsupported input":
-            print("Error: Input not supported.")
+            print("    Error: Input not supported.")
         case "already set":
-            print("Error: This value is already set. Enter a different number.")
+            print("    Error: This value is already set. Enter a different number.")
         case "number not found":
-            print("Error: The given number was not found.")
+            print("    Error: The given number was not found.")
         case "file not found":
-            print("Error: File 'games.bin' was not found. Please make sure this file exists in /src. ")
+            print("    Error: File 'games.bin' was not found. Please make sure this file exists in /src. ")
         case "permission error":
-            print("Error: This programme does not have the necessary permissions to access the file 'games.bin'."
-                  "Please make sure that the programme has full access to the file.")
+            print("    Error: This programme does not have the necessary permissions to access the file 'games.bin'."
+                  "    Please make sure that the programme has full access to the file.")
         case "no saved game":
-            print("Error: There is no saved game.")
+            print("    Error: There is no saved game.")
         case "integrity fail":
-            print("Error: The game save file has been tampered with. The game is not recoverable and has to be deleted.")
+            print("    Error: The game save file has been tampered with. The game is not recoverable and has to be deleted.")
         case _:
-            print("Error: A unknown error occurred.")
+            print("    Error: A unknown error occurred.")
 
 
 class Color(str, Enum):
@@ -54,6 +54,69 @@ class Color(str, Enum):
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
     END = '\033[0m'
+
+
+class Text(str, Enum):
+    """contains text styles"""
+
+    IMPORTANT = Color.BOLD + Color.RED
+    REGULAR = Color.BOLD + Color.BLUE
+    TURN = Color.BOLD + Color.PURPLE
+    PLAYER = Color.BOLD + Color.CYAN
+    DICE = Color.BOLD + Color.GREEN
+    SCORE = Color.BOLD + Color.YELLOW
+
+
+class Dice(str, Enum):
+    """contains dice symbols"""
+
+    ONE = f"""{Text.DICE}
+    ▄▀▀▀▀▀▀▀▀▀▀▄
+    █          █
+    █    ██    █
+    █          █
+    ▀▄▄▄▄▄▄▄▄▄▄▀
+    """
+
+    TWO = f"""{Text.DICE}
+    ▄▀▀▀▀▀▀▀▀▀▀▄
+    █  ▄▄      █
+    █  ▀▀  ▄▄  █
+    █      ▀▀  █
+    ▀▄▄▄▄▄▄▄▄▄▄▀
+    """
+
+    THREE = f"""{Text.DICE}
+    ▄▀▀▀▀▀▀▀▀▀▀▄
+    █ ██       █
+    █    ██    █
+    █       ██ █
+    ▀▄▄▄▄▄▄▄▄▄▄▀
+    """
+
+    FOUR = f"""{Text.DICE}
+    ▄▀▀▀▀▀▀▀▀▀▀▄
+    █  ██  ██  █
+    █          █
+    █  ██  ██  █
+    ▀▄▄▄▄▄▄▄▄▄▄▀
+    """
+
+    FIVES = f"""{Text.DICE}
+    ▄▀▀▀▀▀▀▀▀▀▀▄
+    █ ██    ██ █
+    █    ██    █
+    █ ██    ██ █
+    ▀▄▄▄▄▄▄▄▄▄▄▀
+    """
+
+    SIX = f"""{Text.DICE}
+    ▄▀▀▀▀▀▀▀▀▀▀▄
+    █  ▀▀  ▀▀  █
+    █  ██  ██  █
+    █  ▄▄  ▄▄  █
+    ▀▄▄▄▄▄▄▄▄▄▄▀
+    """
 
 
 class Terminal:
@@ -75,97 +138,42 @@ class Terminal:
     def print_menu():
         """prints main menu after program start"""
 
-        print(
-        f"""{Color.RED}
-▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-█▄─█▀▀▀█─▄█▄─▄█▄─▄███▄─▄███▄─█─▄█─▄▄─█▄─▀█▀─▄█▄─▀█▀─▄█▄─▄▄─█▄─▀█▄─▄███░▄▄░▄█▄─██─▄█
-██─█─█─█─███─███─██▀██─██▀██─▄▀██─██─██─█▄█─███─█▄█─███─▄█▀██─█▄▀─█████▀▄█▀██─██─██
-██▄▄▄█▄▄▄██▄▄▄█▄▄▄▄▄█▄▄▄▄▄█▄▄█▄▄█▄▄▄▄█▄▄▄█▄▄▄█▄▄▄█▄▄▄█▄▄▄▄▄█▄▄▄██▄▄███▄▄▄▄▄██▄▄▄▄██
-        """
-        )
-        print(
-        f"""{Color.RED}
-                ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-                █▄─█─▄█▄─▀█▄─▄█▄─▄█▄─▄▄─█▄─▄▄─█▄─▄▄─█▄─▄███
-                ██─▄▀███─█▄▀─███─███─▄████─▄████─▄█▀██─██▀█
-                █▄▄█▄▄█▄▄▄██▄▄█▄▄▄█▄▄▄███▄▄▄███▄▄▄▄▄█▄▄▄▄▄█
-        """
-        )
-        print(f"""
-                            {Color.BOLD + Color.BLUE}Start new game [S]{Color.END}""")
-        print(f"""
-                              {Color.BOLD + Color.BLUE}Load game [L]{Color.END}""")
-        print(f"""
-                                {Color.BOLD + Color.RED}Quit [Q]{Color.END}""")
+        print(f"""{Text.IMPORTANT}
+    ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+    █▄─█▀▀▀█─▄█▄─▄█▄─▄███▄─▄███▄─█─▄█─▄▄─█▄─▀█▀─▄█▄─▀█▀─▄█▄─▄▄─█▄─▀█▄─▄███░▄▄░▄█▄─██─▄█
+    ██─█─█─█─███─███─██▀██─██▀██─▄▀██─██─██─█▄█─███─█▄█─███─▄█▀██─█▄▀─█████▀▄█▀██─██─██
+    ██▄▄▄█▄▄▄██▄▄▄█▄▄▄▄▄█▄▄▄▄▄█▄▄█▄▄█▄▄▄▄█▄▄▄█▄▄▄█▄▄▄█▄▄▄█▄▄▄▄▄█▄▄▄██▄▄███▄▄▄▄▄██▄▄▄▄██
+        """)
 
-    def wuerfel(self):
-        """
-        Nur Platzhalter
-        """
-        print(
-        f"""{Color.RED}
-                ▄▀▀▀▀▀▀▀▀▀▀▄
-                █          █
-                █    ██    █
-                █          █
-                ▀▄▄▄▄▄▄▄▄▄▄▀
-        """
-        )
-        print(
-        f"""{Color.RED}
-                ▄▀▀▀▀▀▀▀▀▀▀▄
-                █  ▄▄      █
-                █  ▀▀  ▄▄  █
-                █      ▀▀  █
-                ▀▄▄▄▄▄▄▄▄▄▄▀
-        """
-        )
-        print(
-        f"""{Color.RED}
-                ▄▀▀▀▀▀▀▀▀▀▀▄
-                █ ██       █
-                █    ██    █
-                █       ██ █
-                ▀▄▄▄▄▄▄▄▄▄▄▀
-        """
-        )
-        print(
-        f"""{Color.RED}
-                ▄▀▀▀▀▀▀▀▀▀▀▄
-                █  ██  ██  █
-                █          █
-                █  ██  ██  █
-                ▀▄▄▄▄▄▄▄▄▄▄▀
-        """
-        )
-        print(
-        f"""{Color.RED}
-                ▄▀▀▀▀▀▀▀▀▀▀▄
-                █ ██    ██ █
-                █    ██    █
-                █ ██    ██ █
-                ▀▄▄▄▄▄▄▄▄▄▄▀
-        """
-        )
-        print(
-        f"""{Color.RED}
-                ▄▀▀▀▀▀▀▀▀▀▀▄
-                █  ▀▀  ▀▀  █
-                █  ██  ██  █
-                █  ▄▄  ▄▄  █
-                ▀▄▄▄▄▄▄▄▄▄▄▀
-        """
-        )
+        print(f"""
+                        ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+                        █▄─█─▄█▄─▀█▄─▄█▄─▄█▄─▄▄─█▄─▄▄─█▄─▄▄─█▄─▄███
+                        ██─▄▀███─█▄▀─███─███─▄████─▄████─▄█▀██─██▀█
+                        █▄▄█▄▄█▄▄▄██▄▄█▄▄▄█▄▄▄███▄▄▄███▄▄▄▄▄█▄▄▄▄▄█
+        """)
+
+        print(f"""
+                                    {Text.REGULAR}Start new game [S]""")
+        print(f"""
+                                      {Text.REGULAR}Load game [L]""")
+        print(f"""
+                                        {Text.IMPORTANT}Quit [Q]""")
 
     def menu_input(self):
         """handles inputs for main menu"""
 
-        action = input("\nEnter action: ")
+        print(f"{Text.REGULAR}")
+        action = input(f"\n\n    Enter action: ")
 
-        if action == "s" or "S":
+        if action == ("s" or "S"):
             if self.check_for_game():
-                overwrite_query = input("There is a currently a saved game. If you start a new game, the saved game will be lost."
-                                        "Do you want to continue?(y/n)")
+                overwrite_query = input(
+                    """
+    There is a currently a saved game.
+    If you start a new game, the saved game will be lost.
+    
+    Do you want to continue? [Y/N]: """
+                )
                 if overwrite_query == "y":
                     self.create_new_game()
                     self.play_game()
@@ -179,13 +187,13 @@ class Terminal:
                 self.create_new_game()
                 self.play_game()
 
-        elif action == "l" or "L":
+        elif action == ("l" or "L"):
             self.load_game()
             if self.current_game:
                 self.play_game()
             else:
                 self.menu_input()
-        elif action == "q" or "Q":
+        elif action == ("q" or "Q"):
             sys.exit(0)
         else:
             error_handler("unsupported input")
@@ -204,30 +212,30 @@ class Terminal:
 
         while turn < 13:
             self.clear_console()
-            print(f"\n\n{Color.BOLD + Color.PURPLE}Turn {turn + 1}{Color.END}")
+            print(f"\n\n{Text.TURN}Turn {turn + 1}{Color.END}")
             self.player_action(1)
             self.clear_console()
-            print(f"\n\n{Color.BOLD + Color.PURPLE}Turn {turn + 1}{Color.END}")
+            print(f"\n\n{Text.TURN}Turn {turn + 1}{Color.END}")
             self.player_action(2)
             self.save_game()
             turn += 1
 
         self.clear_console()
-        print(f"{Color.BOLD + Color.CYAN}Player 1:{Color.END}")
+        print(f"{Text.PLAYER}Player 1:{Color.END}")
         self.show_results(self.current_game.player_1)
-        print(f"{Color.BOLD + Color.YELLOW}      Total:             {self.current_game.player_1.get_total_score()}{Color.END}")
-        print(f"{Color.BOLD + Color.CYAN}\nPlayer 2:{Color.END}")
+        print(f"{Text.SCORE}      Total:             {self.current_game.player_1.get_total_score()}{Color.END}")
+        print(f"{Text.PLAYER}\nPlayer 2:{Color.END}")
         self.show_results(self.current_game.player_2)
-        print(f"{Color.BOLD + Color.YELLOW}      Total:             {self.current_game.player_2.get_total_score()}{Color.END}")
+        print(f"{Text.SCORE}      Total:             {self.current_game.player_2.get_total_score()}{Color.END}")
 
         winner_id = self.current_game.get_winner()
 
         if winner_id == 1:
-            print(f"{Color.BOLD + Color.RED}\n        Player 1 has won!{Color.END}")
+            print(f"{Text.IMPORTANT}\n        Player 1 has won!{Color.END}")
         elif winner_id == 2:
-            print(f"{Color.BOLD + Color.RED}\n        Player 2 has won!{Color.END}")
+            print(f"{Text.IMPORTANT}\n        Player 2 has won!{Color.END}")
         else:
-            print(f"{Color.BOLD + Color.RED}\n          It's a draw!{Color.END}")
+            print(f"{Text.IMPORTANT}\n          It's a draw!{Color.END}")
         self.delete_game()
 
     def player_action(self, player_id):
@@ -245,18 +253,20 @@ class Terminal:
         attempt = 1
         player.dice_put_aside = []
 
-        print(f"\n{Color.BOLD + Color.CYAN}Player {player_id}{Color.END} is on:")
+        print(f"\n{Text.PLAYER}Player {player_id} is on:{Color.END}")
 
         while attempt <= 3 and len(player.dice_put_aside) != 5:
             player.throw_dice()
             if attempt < 3:
-                print(f"Your thrown {Color.BOLD + Color.GREEN + str(player.dice_used)[1:-1] + Color.END}.")
+                print(f"{Text.REGULAR}You thrown:")
+                self.print_dice_symbols(player.dice_used)
                 if len(player.dice_put_aside) > 0:
-                    print(f"Your have {Color.BOLD + Color.BLUE + str(player.dice_put_aside)[1:-1] + Color.END} put aside.")
+                    print(f"The following dice are put aside:\n")
+                    self.print_dice_symbols(player.dice_put_aside)
                     player.reuse_dice()
                 for value in player.dice_used:
-                    print(f"Do you want rethrow the dice with current value {Color.BOLD + Color.YELLOW + str(value) + Color.END}?")
-                    action = input(f"Enter 'n' to {Color.BOLD + Color.RED + 'not' + Color.END} rethrow: ")
+                    print(f"{Text.REGULAR}Do you want rethrow the dice with current value {Text.SCORE + str(value) + Color.END}?")
+                    action = input(f"Enter 'n' to {Text.IMPORTANT + 'not' + Color.END} rethrow: ")
                     if action == "n":
                         player.put_dice_aside(value)
                 attempt += 1
@@ -265,9 +275,44 @@ class Terminal:
                     player.put_dice_aside(value)
             player.dice_put_aside.sort()
 
-        print(f"You have thrown {Color.BOLD + Color.GREEN + str(player.dice_put_aside)[1:-1] + Color.END}.")
+        print(f"You have thrown {Text.DICE + str(player.dice_put_aside)[1:-1] + Color.END}.")
         self.show_results(player)
         self.save_round_score(player)
+
+    @staticmethod
+    def print_dice_symbols(array):
+        dice = []
+
+        for element in array:
+            match element:
+                case 1:
+                    dice.append(Dice.ONE)
+                case 2:
+                    dice.append(Dice.TWO)
+                case 3:
+                    dice.append(Dice.THREE)
+                case 4:
+                    dice.append(Dice.FOUR)
+                case 5:
+                    dice.append(Dice.FIVES)
+                case 6:
+                    dice.append(Dice.SIX)
+
+        columns = [column.split('\n') for column in dice]
+
+        lines = zip(*columns)
+
+        max_length_of_column = [
+            max([len(element) for element in column])
+            for column in columns
+        ]
+
+        for parts in lines:
+            padded_dice = [
+                parts[i].ljust(max_length_of_column[i])
+                for i in range(len(parts))
+            ]
+            print(''.join(padded_dice))
 
     @staticmethod
     def show_results(player):
@@ -418,8 +463,8 @@ class Terminal:
             error_handler("no saved game")
         if data:
             return data
-        else:
-            return None
+
+        return None
 
     def delete_game(self):
         """ removes game save from binary file"""
