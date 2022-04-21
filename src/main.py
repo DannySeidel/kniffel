@@ -5,14 +5,16 @@ main.py
 created on 06.04.22
 by Tobias Welti, Luca Kaiser, Joshua Miller, Danny Seidel
 """
+
 import hmac
 import pickle
 import hashlib
 import os
 import sys
 import uuid
-from enum import Enum
+
 from game import Game
+from formatting import Color, Text, Dice
 
 
 def error_handler(error):
@@ -42,83 +44,6 @@ def error_handler(error):
             print("    Error: A unknown error occurred.")
 
 
-class Color(str, Enum):
-    """contains data for coloring the output"""
-
-    PURPLE = '\033[95m'
-    CYAN = '\033[96m'
-    BLUE = '\033[94m'
-    GREEN = '\033[92m'
-    YELLOW = '\033[93m'
-    RED = '\033[91m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
-    END = '\033[0m'
-
-
-class Text(str, Enum):
-    """contains text styles"""
-
-    IMPORTANT = Color.BOLD + Color.RED
-    REGULAR = Color.BOLD + Color.BLUE
-    TURN = Color.BOLD + Color.PURPLE
-    PLAYER = Color.BOLD + Color.CYAN
-    DICE = Color.BOLD + Color.GREEN
-    SCORE = Color.BOLD + Color.YELLOW
-
-
-class Dice(str, Enum):
-    """contains dice symbols"""
-
-    ONE = f"""{Text.DICE}
-    ▄▀▀▀▀▀▀▀▀▀▀▄
-    █          █
-    █    ██    █
-    █          █
-    ▀▄▄▄▄▄▄▄▄▄▄▀
-    """
-
-    TWO = f"""{Text.DICE}
-    ▄▀▀▀▀▀▀▀▀▀▀▄
-    █  ▄▄      █
-    █  ▀▀  ▄▄  █
-    █      ▀▀  █
-    ▀▄▄▄▄▄▄▄▄▄▄▀
-    """
-
-    THREE = f"""{Text.DICE}
-    ▄▀▀▀▀▀▀▀▀▀▀▄
-    █ ██       █
-    █    ██    █
-    █       ██ █
-    ▀▄▄▄▄▄▄▄▄▄▄▀
-    """
-
-    FOUR = f"""{Text.DICE}
-    ▄▀▀▀▀▀▀▀▀▀▀▄
-    █  ██  ██  █
-    █          █
-    █  ██  ██  █
-    ▀▄▄▄▄▄▄▄▄▄▄▀
-    """
-
-    FIVES = f"""{Text.DICE}
-    ▄▀▀▀▀▀▀▀▀▀▀▄
-    █ ██    ██ █
-    █    ██    █
-    █ ██    ██ █
-    ▀▄▄▄▄▄▄▄▄▄▄▀
-    """
-
-    SIX = f"""{Text.DICE}
-    ▄▀▀▀▀▀▀▀▀▀▀▄
-    █  ▀▀  ▀▀  █
-    █  ██  ██  █
-    █  ▄▄  ▄▄  █
-    ▀▄▄▄▄▄▄▄▄▄▄▀
-    """
-
-
 class Terminal:
     """handles terminal data"""
 
@@ -145,7 +70,7 @@ class Terminal:
     ██▄▄▄█▄▄▄██▄▄▄█▄▄▄▄▄█▄▄▄▄▄█▄▄█▄▄█▄▄▄▄█▄▄▄█▄▄▄█▄▄▄█▄▄▄█▄▄▄▄▄█▄▄▄██▄▄███▄▄▄▄▄██▄▄▄▄██
         """)
 
-        print(f"""
+        print("""
                         ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
                         █▄─█─▄█▄─▀█▄─▄█▄─▄█▄─▄▄─█▄─▄▄─█▄─▄▄─█▄─▄███
                         ██─▄▀███─█▄▀─███─███─▄████─▄████─▄█▀██─██▀█
@@ -163,7 +88,7 @@ class Terminal:
         """handles inputs for main menu"""
 
         print(f"{Text.REGULAR}")
-        action = input(f"\n\n    Enter action: ")
+        action = input("\n\n    Enter action: ")
 
         if action == ("s" or "S"):
             if self.check_for_game():
@@ -171,7 +96,7 @@ class Terminal:
                     """
     There is a currently a saved game.
     If you start a new game, the saved game will be lost.
-    
+
     Do you want to continue? [Y/N]: """
                 )
                 if overwrite_query == "y":
@@ -261,7 +186,7 @@ class Terminal:
                 print(f"{Text.REGULAR}You thrown:")
                 self.print_dice_symbols(player.dice_used)
                 if len(player.dice_put_aside) > 0:
-                    print(f"The following dice are put aside:\n")
+                    print("The following dice are put aside:\n")
                     self.print_dice_symbols(player.dice_put_aside)
                     player.reuse_dice()
                 for value in player.dice_used:
@@ -281,6 +206,8 @@ class Terminal:
 
     @staticmethod
     def print_dice_symbols(array):
+        """print dice symbols for given int array"""
+
         dice = []
 
         for element in array:
