@@ -26,22 +26,22 @@ def error_handler(error):
     # TODO: move error handler to terminal class
     match error:
         case "unsupported input":
-            print("    Error: Input not supported.")
+            print("\n    Error: Input not supported.")
         case "already set":
-            print("    Error: This value is already set. Enter a different number.")
+            print("\n    Error: This value is already set. Enter a different number.")
         case "number not found":
-            print("    Error: The given number was not found.")
+            print("\n    Error: The given number was not found.")
         case "file not found":
-            print("    Error: File 'games.bin' was not found. Please make sure this file exists in /src. ")
+            print("\n    Error: File 'games.bin' was not found. Please make sure this file exists in /src. ")
         case "permission error":
-            print("    Error: This programme does not have the necessary permissions to access the file 'games.bin'."
+            print("\n    Error: This programme does not have the necessary permissions to access the file 'games.bin'."
                   "    Please make sure that the programme has full access to the file.")
         case "no saved game":
-            print("    Error: There is no saved game.")
+            print("\n    Error: There is no saved game.")
         case "integrity fail":
-            print("    Error: The game save file has been tampered with. The game is not recoverable and has to be deleted.")
+            print("\n    Error: The game save file has been tampered with. The game is not recoverable and has to be deleted.")
         case _:
-            print("    Error: A unknown error occurred.")
+            print("\n    Error: A unknown error occurred.")
 
 
 class Terminal:
@@ -87,8 +87,7 @@ class Terminal:
     def menu_input(self):
         """handles inputs for main menu"""
 
-        print(f"{Text.REGULAR}")
-        action = input("\n\n    Enter action: ")
+        action = input(f"\n{Text.REGULAR}    Enter action: ")
 
         if action == ("s" or "S"):
             if self.check_for_game():
@@ -99,11 +98,11 @@ class Terminal:
 
     Do you want to continue? [Y/N]: """
                 )
-                if overwrite_query == "y":
+                if overwrite_query == ("y" or "Y"):
                     self.create_new_game()
                     self.play_game()
-                elif overwrite_query == "n":
-                    print("Game creation was cancelled.")
+                elif overwrite_query == ("n" or "N"):
+                    print("    Game creation was cancelled.")
                     self.menu_input()
                 else:
                     error_handler("unsupported input")
@@ -136,22 +135,21 @@ class Terminal:
         turn = self.current_game.get_current_turn()
 
         while turn < 13:
-            self.clear_console()
-            print(f"\n\n{Text.TURN}Turn {turn + 1}{Color.END}")
-            self.player_action(1)
-            self.clear_console()
-            print(f"\n\n{Text.TURN}Turn {turn + 1}{Color.END}")
-            self.player_action(2)
+            for index in range(1, 3):
+                self.player_action(index, turn)
             self.save_game()
             turn += 1
 
         self.clear_console()
-        print(f"{Text.PLAYER}Player 1:{Color.END}")
-        self.show_results(self.current_game.player_1)
-        print(f"{Text.SCORE}      Total:             {self.current_game.player_1.get_total_score()}{Color.END}")
-        print(f"{Text.PLAYER}\nPlayer 2:{Color.END}")
-        self.show_results(self.current_game.player_2)
-        print(f"{Text.SCORE}      Total:             {self.current_game.player_2.get_total_score()}{Color.END}")
+        for index in range(1, 3):
+            if index == 1:
+                player = self.current_game.player_1
+            else:
+                player = self.current_game.player_2
+
+            print(f"{Text.PLAYER}    Player {index}:{Color.END}")
+            self.show_scoreboard(player)
+            print(f"{Text.SCORE}      Total:             {player.get_total_score()}{Color.END}")
 
         winner_id = self.current_game.get_winner()
 
@@ -161,13 +159,15 @@ class Terminal:
             print(f"{Text.IMPORTANT}\n        Player 2 has won!{Color.END}")
         else:
             print(f"{Text.IMPORTANT}\n          It's a draw!{Color.END}")
+
         self.delete_game()
 
-    def player_action(self, player_id):
+    def player_action(self, player_id, turn):
         """handling the actions for one player turn
 
         Args:
-            player_id (int): current player id (player 1 or 2)
+            :param player_id: current player id (player 1 or 2)
+            :param turn: current game turn
         """
 
         if player_id == 1:
@@ -178,21 +178,24 @@ class Terminal:
         attempt = 1
         player.dice_put_aside = []
 
-        print(f"\n{Text.PLAYER}Player {player_id} is on:{Color.END}")
-
         while attempt <= 3 and len(player.dice_put_aside) != 5:
+            self.clear_console()
+            print(f"\n{Text.TURN}    Turn {turn + 1}{Color.END}")
+            print(f"\n{Text.PLAYER}    Player {player_id} is on:{Color.END}")
+            self.show_scoreboard(player)
             player.throw_dice()
+
             if attempt < 3:
-                print(f"{Text.REGULAR}You thrown:")
+                print(f"\n{Text.REGULAR}    You have thrown:")
                 self.print_dice_symbols(player.dice_used)
                 if len(player.dice_put_aside) > 0:
-                    print("The following dice are put aside:\n")
+                    print(f"{Text.REGULAR}    The following dice are put aside:\n")
                     self.print_dice_symbols(player.dice_put_aside)
                     player.reuse_dice()
                 for value in player.dice_used:
-                    print(f"{Text.REGULAR}Do you want rethrow the dice with current value {Text.SCORE + str(value) + Color.END}?")
-                    action = input(f"Enter 'n' to {Text.IMPORTANT + 'not' + Color.END} rethrow: ")
-                    if action == "n":
+                    print(f"{Text.REGULAR}    Do you want rethrow the dice with current value {Text.SCORE + str(value) + Color.END}?")
+                    action = input(f"{Text.REGULAR}    Enter action [Y/N]: ")
+                    if action == ("n" or "N"):
                         player.put_dice_aside(value)
                 attempt += 1
             else:
@@ -200,8 +203,10 @@ class Terminal:
                     player.put_dice_aside(value)
             player.dice_put_aside.sort()
 
-        print(f"You have thrown {Text.DICE + str(player.dice_put_aside)[1:-1] + Color.END}.")
-        self.show_results(player)
+        self.clear_console()
+        print(f"\n{Text.IMPORTANT}    Results {Text.TURN}Turn {turn + 1} {Text.IMPORTANT}| {Text.PLAYER}Player {player_id}")
+        self.print_dice_symbols(player.dice_put_aside)
+        self.show_scoreboard(player, calculate_possible_scores=True)
         self.save_round_score(player)
 
     @staticmethod
@@ -242,46 +247,46 @@ class Terminal:
             print(''.join(padded_dice))
 
     @staticmethod
-    def show_results(player):
+    def show_scoreboard(player, calculate_possible_scores=False):
         """shows results for one player
 
         Args:
-            player (dynamic): player object of player 1 or 2
+            :param player: player object of player 1 or 2
+            :param calculate_possible_scores:
         """
 
-        scores = player.get_all_possible_scores()
+        keys = ["ones", "twos", "threes", "fours", "fives", "sixes", "three_of_a_kind", "four_of_a_kind", "full_house", "small_straight", "large_straight",
+                "yahtzee", "chance"]
+
         upper = player.upper_section_score
         lower = player.lower_section_score
+        scores = []
+        if calculate_possible_scores:
+            scores = player.get_all_possible_scores()
+        else:
+            for index in range(13):
+                if index < 6:
+                    scores.append("--" if upper[keys[index]] is None else upper[keys[index]])
+                else:
+                    scores.append("--" if lower[keys[index]] is None else lower[keys[index]])
 
-        print("Your scores are:")
-        print("  Upper Section:")
-        print(f"""  1) Ones:               {Color.BOLD + str(upper['ones']) + Color.END if scores[0] is None
-        else Color.RED + str(scores[0]) + Color.END}""")
-        print(f"""  2) Twos:               {Color.BOLD + str(upper['twos']) + Color.END if scores[1] is None
-        else Color.RED + str(scores[1]) + Color.END}""")
-        print(f"""  3) Threes:             {Color.BOLD + str(upper['threes']) + Color.END if scores[2] is None
-        else Color.RED + str(scores[2]) + Color.END}""")
-        print(f"""  4) Fours:              {Color.BOLD + str(upper['fours']) + Color.END if scores[3] is None
-        else Color.RED + str(scores[3]) + Color.END}""")
-        print(f"""  5) Fives:              {Color.BOLD + str(upper['fives']) + Color.END if scores[4] is None
-        else Color.RED + str(scores[4]) + Color.END}""")
-        print(f"""  6) Sixes:              {Color.BOLD + str(upper['sixes']) + Color.END if scores[5] is None
-        else Color.RED + str(scores[5]) + Color.END}""")
-        print("  Lower Section:")
-        print(f"""  7) Three of a Kind:    {Color.BOLD + str(lower['three_of_a_kind']) + Color.END if scores[6] is None
-        else Color.RED + str(scores[6]) + Color.END}""")
-        print(f"""  8) Four of a Kind:     {Color.BOLD + str(lower['four_of_a_kind']) + Color.END if scores[7] is None
-        else Color.RED + str(scores[7]) + Color.END}""")
-        print(f"""  9) Full House:         {Color.BOLD + str(lower['full_house']) + Color.END if scores[8] is None
-        else Color.RED + str(scores[8]) + Color.END}""")
-        print(f"""  10) Small Straight:    {Color.BOLD + str(lower['small_straight']) + Color.END if scores[9] is None
-        else Color.RED + str(scores[9]) + Color.END}""")
-        print(f"""  11) Large Straight:    {Color.BOLD + str(lower['large_straight']) + Color.END if scores[10] is None
-        else Color.RED + str(scores[10]) + Color.END}""")
-        print(f"""  12) Yahtzee:           {Color.BOLD + str(lower['yahtzee']) + Color.END if scores[11] is None
-        else Color.RED + str(scores[11]) + Color.END}""")
-        print(f"""  13) Chance:            {Color.BOLD + str(lower['chance']) + Color.END if scores[12] is None
-        else Color.RED + str(scores[12]) + Color.END}""")
+        strings = ["      1) Ones:           ", "      2) Twos:           ", "      3) Threes:         ", "      4) Fours:          ",
+                   "      5) Fives:          ", "      6) Sixes:          ", "      7) Three of a Kind:", "      8) Four of a Kind: ",
+                   "      9) Full House:     ", "      10) Small Straight:", "      11) Large Straight:", "      12) Yahtzee:       ",
+                   "      13) Chance:        "]
+
+        print(f"{Text.REGULAR}    Your scores are:")
+        print("      Upper Section:")
+        for index in range(13):
+            if index < 6:
+                print(f""" {Text.REGULAR}{strings[index]}   {Color.BOLD + str(upper[keys[index]]) if scores[index] is None
+                else Text.IMPORTANT + str(scores[index])}""")
+            else:
+                print(f""" {Text.REGULAR}{strings[index]}   {Color.BOLD + str(lower[keys[index]]) if scores[index] is None
+                else Text.IMPORTANT + str(scores[index])}""")
+
+            if index == 5:
+                print(f"{Text.REGULAR}      Lower Section:")
 
     def save_round_score(self, player):
         """saves score of current round to dict
@@ -294,51 +299,27 @@ class Terminal:
         upper = player.upper_section_score
         lower = player.lower_section_score
 
-        score_number = input("Enter the matching number to save the score: ")
+        score_number = input(f"\n{Text.REGULAR}    Enter the matching number to save the score: ")
 
-        match score_number:
-            case "1":
-                upper["ones"] = scores[0] if upper["ones"] is None else (
-                    error_handler("already set"), self.save_round_score(player))
-            case "2":
-                upper["twos"] = scores[1] if upper["twos"] is None else (
-                    error_handler("already set"), self.save_round_score(player))
-            case "3":
-                upper["threes"] = scores[2] if upper["threes"] is None else (
-                    error_handler("already set"), self.save_round_score(player))
-            case "4":
-                upper["fours"] = scores[3] if upper["fours"] is None else (
-                    error_handler("already set"), self.save_round_score(player))
-            case "5":
-                upper["fives"] = scores[4] if upper["fives"] is None else (
-                    error_handler("already set"), self.save_round_score(player))
-            case "6":
-                upper["sixes"] = scores[5] if upper["sixes"] is None else (
-                    error_handler("already set"), self.save_round_score(player))
-            case "7":
-                lower["three_of_a_kind"] = scores[6] if lower["three_of_a_kind"] is None else (
-                    error_handler("already set"), self.save_round_score(player))
-            case "8":
-                lower["four_of_a_kind"] = scores[7] if lower["four_of_a_kind"] is None else (
-                    error_handler("already set"), self.save_round_score(player))
-            case "9":
-                lower["full_house"] = scores[8] if lower["full_house"] is None else (
-                    error_handler("already set"), self.save_round_score(player))
-            case "10":
-                lower["small_straight"] = scores[9] if lower["small_straight"] is None else (
-                    error_handler("already set"), self.save_round_score(player))
-            case "11":
-                lower["large_straight"] = scores[10] if lower["large_straight"] is None else (
-                    error_handler("already set"), self.save_round_score(player))
-            case "12":
-                lower["yahtzee"] = scores[11] if lower["yahtzee"] is None else (
-                    error_handler("already set"), self.save_round_score(player))
-            case "13":
-                lower["chance"] = scores[12] if lower["chance"] is None else (
-                    error_handler("already set"), self.save_round_score(player))
-            case _:
-                error_handler("number not found")
-                self.save_round_score(player)
+        keys = ["ones", "twos", "threes", "fours", "fives", "sixes", "three_of_a_kind", "four_of_a_kind", "full_house", "small_straight", "large_straight",
+                "yahtzee", "chance"]
+
+        found = False
+        for index in range(13):
+            if score_number == str(index + 1):
+                if index < 6:
+                    upper[keys[index]] = scores[index] if upper[keys[index]] is None else (
+                        error_handler("already set"), self.save_round_score(player))
+                else:
+                    lower[keys[index]] = scores[index] if lower[keys[index]] is None else (
+                        error_handler("already set"), self.save_round_score(player))
+
+                found = True
+                break
+
+        if not found:
+            error_handler("number not found")
+            self.save_round_score(player)
 
     def save_game(self):
         """pickles the current game, creates a Message Authentication code and saves everything into a binary file"""
@@ -349,7 +330,7 @@ class Terminal:
         try:
             with open("games.bin", "wb") as file:
                 pickle.dump(game_data_b, file)
-                print("Game saved.")
+            print("saved")
         except FileNotFoundError:
             error_handler("file not found")
             self.menu_input()
