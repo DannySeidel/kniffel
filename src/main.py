@@ -195,9 +195,9 @@ class Terminal:
                     print(f"{Text.REGULAR}    Do you want rethrow the dice with current value {Text.SCORE + str(value) + Color.END}?")
                     action = input(f"{Text.REGULAR}    Enter action [Y/N]:\n"
                                    f"   Enter 'K' to keep all remaining dice: ")
-                    if action in ("n" or "N"):
+                    if action == ("n" or "N"):
                         player.put_dice_aside(value)
-                    elif action in ("k" or "K"):
+                    elif action == ("k" or "K"):
                         for value2 in player.dice_used:
                             player.put_dice_aside(value2)
                         break
