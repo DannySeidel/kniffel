@@ -6,7 +6,7 @@ created on 07.04.22
 by Tobias Welti, Luca Kaiser, Joshua Miller, Danny Seidel
 """
 
-import random
+from random import randint
 from player import Player
 
 
@@ -15,7 +15,7 @@ class Game:
 
     def __init__(self, uuid):
         self.uuid = uuid
-        self.key = random.randint(1000, 9999)
+        self.key = randint(1000, 9999)
         self.player_1 = Player(1)
         self.player_2 = Player(2)
 

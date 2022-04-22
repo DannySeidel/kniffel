@@ -11,7 +11,7 @@ import pickle
 import hashlib
 import os
 import sys
-import uuid
+from uuid import uuid4
 
 from game import Game
 from formatting import Color, Text, Dice
@@ -125,7 +125,7 @@ class Terminal:
     def create_new_game(self):
         """creates a new game object"""
 
-        game_id = uuid.uuid4()
+        game_id = uuid4()
         self.current_game = Game(game_id)
 
     def play_game(self):
