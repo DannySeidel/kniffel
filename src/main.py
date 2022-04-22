@@ -194,7 +194,7 @@ class Terminal:
                 for value in player.dice_used:
                     print(f"{Text.REGULAR}    Do you want rethrow the dice with current value {Text.SCORE + str(value) + Color.END}?")
                     action = input(f"{Text.REGULAR}    Enter action [Y/N]:\n"
-                                   f"Enter 'K' to keep all remaining dice: ")
+                                   f"   Enter 'K' to keep all remaining dice: ")
                     if action in ("n" or "N"):
                         player.put_dice_aside(value)
                     elif action in ("k" or "K"):
@@ -373,8 +373,6 @@ class Terminal:
         except EOFError:
             self.error_handler("no saved game")
         return data
-
-
 
     def delete_game(self):
         """ removes game save from binary file"""
