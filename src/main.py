@@ -194,12 +194,13 @@ class Terminal:
                 for value in player.dice_used:
                     print(f"{Text.REGULAR}    Do you want rethrow the dice with current value {Text.SCORE + str(value) + Color.END}?")
                     action = input(f"{Text.REGULAR}    Enter action [Y/N]:\n"
-                                   f"Enter 'K' to keep all dice: ")
+                                   f"Enter 'K' to keep all remaining dice: ")
                     if action in ("n" or "N"):
                         player.put_dice_aside(value)
                     elif action in ("k" or "K"):
                         for value2 in player.dice_used:
                             player.put_dice_aside(value2)
+                        break
                 attempt += 1
             else:
                 for value in player.dice_used:
@@ -361,6 +362,7 @@ class Terminal:
 
     def check_for_game(self):
         """ checks if a game is saved in the binary file"""
+        data = None
         try:
             with open("games.bin", "rb") as file:
                 data = file.read()
@@ -370,10 +372,9 @@ class Terminal:
             self.error_handler("permission error")
         except EOFError:
             self.error_handler("no saved game")
-        if data:
-            return data
+        return data
 
-        return None
+
 
     def delete_game(self):
         """ removes game save from binary file"""
