@@ -3,6 +3,7 @@
 .vscode/*
 
 __pycache__
+games.bin
 
 htmlcov
 .coverage

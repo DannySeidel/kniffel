@@ -41,7 +41,7 @@ class Terminal:
             case "number not found":
                 print("\n    Error: The given number was not found.")
             case "file not found":
-                print("\n    Error: File 'games.bin' was not found. Please make sure this file exists in /src. ")
+                print("\n    Error: File 'games.bin' was not found. Please make sure this file exists. ")
             case "permission error":
                 print("\n    Error: This programme does not have the necessary permissions to access the file 'games.bin'."
                       "    Please make sure that the programme has full access to the file.")
@@ -192,14 +192,13 @@ class Terminal:
                     self.print_dice_symbols(player.dice_put_aside)
                     player.reuse_dice()
                 for value in player.dice_used:
-                    print(f"{Text.REGULAR}    Do you want rethrow the dice with current value {Text.SCORE + str(value) + Color.END}?")
-                    action = input(f"{Text.REGULAR}    Enter action [Y/N]:\n"
-                                   f"   Enter 'K' to keep all remaining dice: ")
+                    print(f"{Text.REGULAR}    Keep all remaining dice [K]: ")
+                    print(f"    Do you want rethrow the dice with current value {Text.SCORE + str(value) + Color.END}?")
+                    action = input(f"{Text.REGULAR}    Enter action [Y/N/K]: ")
                     if action == ("n" or "N"):
                         player.put_dice_aside(value)
                     elif action == ("k" or "K"):
-                        for value2 in player.dice_used:
-                            player.put_dice_aside(value2)
+                        player.dice_put_aside += player.dice_used
                         break
                 attempt += 1
             else:
