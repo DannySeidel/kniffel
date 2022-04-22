@@ -193,9 +193,13 @@ class Terminal:
                     player.reuse_dice()
                 for value in player.dice_used:
                     print(f"{Text.REGULAR}    Do you want rethrow the dice with current value {Text.SCORE + str(value) + Color.END}?")
-                    action = input(f"{Text.REGULAR}    Enter action [Y/N]: ")
-                    if action == ("n" or "N"):
+                    action = input(f"{Text.REGULAR}    Enter action [Y/N]:\n"
+                                   f"Enter 'K' to keep all dice: ")
+                    if action in ("n" or "N"):
                         player.put_dice_aside(value)
+                    elif action in ("k" or "K"):
+                        for value2 in player.dice_used:
+                            player.put_dice_aside(value2)
                 attempt += 1
             else:
                 for value in player.dice_used:
