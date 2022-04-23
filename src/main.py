@@ -86,7 +86,7 @@ class Terminal:
 
         action = input(f"\n{Text.REGULAR}    Enter action: ")
 
-        if action == "s" or action == "S":
+        if action in ("s", "S"):
             if self.check_for_game():
                 overwrite_query = input(
                     """
@@ -95,10 +95,10 @@ class Terminal:
 
     Do you want to continue? [Y/N]: """
                 )
-                if overwrite_query == "y" or overwrite_query == "Y":
+                if overwrite_query in ("y", "Y"):
                     self.create_new_game()
                     self.play_game()
-                elif overwrite_query == "n" or overwrite_query == "N":
+                elif overwrite_query in ("n", "N"):
                     print("    Game creation was cancelled.")
                     self.menu_input()
                 else:
@@ -108,13 +108,13 @@ class Terminal:
                 self.create_new_game()
                 self.play_game()
 
-        elif action == "l" or action == "L":
+        elif action == ("l", "L"):
             self.load_game()
             if self.current_game:
                 self.play_game()
             else:
                 self.menu_input()
-        elif action == "q" or action == "Q":
+        elif action == ("q", "Q"):
             sys.exit(0)
         else:
             self.error_handler("unsupported input")
@@ -193,9 +193,9 @@ class Terminal:
                     print(f"{Text.REGULAR}    Keep all remaining dice [K]: ")
                     print(f"    Do you want rethrow the dice with current value {Text.SCORE + str(value) + Color.END}?")
                     action = input(f"{Text.REGULAR}    Enter action [Y/N/K]: ")
-                    if action == "n" or action == "N":
+                    if action == ("n", "N"):
                         player.put_dice_aside(value)
-                    elif action == "k" or action == "K":
+                    elif action == ("k", "K"):
                         for value2 in player.dice_used:
                             player.put_dice_aside(value2)
                         break
