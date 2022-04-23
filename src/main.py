@@ -108,13 +108,13 @@ class Terminal:
                 self.create_new_game()
                 self.play_game()
 
-        elif action == ("l", "L"):
+        elif action in ("l", "L"):
             self.load_game()
             if self.current_game:
                 self.play_game()
             else:
                 self.menu_input()
-        elif action == ("q", "Q"):
+        elif action in ("q", "Q"):
             sys.exit(0)
         else:
             self.error_handler("unsupported input")
@@ -193,9 +193,9 @@ class Terminal:
                     print(f"{Text.REGULAR}    Keep all remaining dice [K]: ")
                     print(f"    Do you want rethrow the dice with current value {Text.SCORE + str(value) + Color.END}?")
                     action = input(f"{Text.REGULAR}    Enter action [Y/N/K]: ")
-                    if action == ("n", "N"):
+                    if action in ("n", "N"):
                         player.put_dice_aside(value)
-                    elif action == ("k", "K"):
+                    elif action in ("k", "K"):
                         for value2 in player.dice_used:
                             player.put_dice_aside(value2)
                         break
@@ -260,17 +260,13 @@ class Terminal:
         keys = ["ones", "twos", "threes", "fours", "fives", "sixes", "three_of_a_kind", "four_of_a_kind",
                 "full_house", "small_straight", "large_straight", "yahtzee", "chance"]
 
-        upper = player.upper_section_score
-        lower = player.lower_section_score
-        scores = []
+        saved_scores = player.scores
+        possible_scores = []
         if calculate_possible_scores:
-            scores = player.get_all_possible_scores()
+            possible_scores = player.get_all_possible_scores()
         else:
             for index in range(13):
-                if index < 6:
-                    scores.append("--" if upper[keys[index]] is None else upper[keys[index]])
-                else:
-                    scores.append("--" if lower[keys[index]] is None else lower[keys[index]])
+                possible_scores.append("--" if saved_scores[keys[index]] is None else saved_scores[keys[index]])
 
         strings = ["      1) Ones:           ", "      2) Twos:           ", "      3) Threes:         ", "      4) Fours:          ",
                    "      5) Fives:          ", "      6) Sixes:          ", "      7) Three of a Kind:", "      8) Four of a Kind: ",
@@ -280,12 +276,8 @@ class Terminal:
         print(f"{Text.REGULAR}    Your scores are:")
         print("      Upper Section:")
         for index in range(13):
-            if index < 6:
-                print(f""" {Text.REGULAR}{strings[index]}   {Text.SCORE + str(upper[keys[index]]) if scores[index] is None
-                else Text.IMPORTANT + str(scores[index])}""")
-            else:
-                print(f""" {Text.REGULAR}{strings[index]}   {Text.SCORE + str(lower[keys[index]]) if scores[index] is None
-                else Text.IMPORTANT + str(scores[index])}""")
+            print(f""" {Text.REGULAR}{strings[index]}   {Text.SCORE + str(saved_scores[keys[index]]) if possible_scores[index] is None
+            else Text.IMPORTANT + str(possible_scores[index])}""")
 
             if index == 5:
                 print(f"{Text.REGULAR}      Lower Section:")
@@ -297,9 +289,8 @@ class Terminal:
             player (dynamic): player object of player 1 or 2
         """
 
-        scores = player.get_all_possible_scores()
-        upper = player.upper_section_score
-        lower = player.lower_section_score
+        possible_scores = player.get_all_possible_scores()
+        saved_scores = player.scores
 
         score_number = input(f"\n{Text.REGULAR}    Enter the matching number to save the score: ")
 
@@ -309,12 +300,8 @@ class Terminal:
         found = False
         for index in range(13):
             if score_number == str(index + 1):
-                if index < 6:
-                    upper[keys[index]] = scores[index] if upper[keys[index]] is None else (
-                        self.error_handler("already set"), self.save_round_score(player))
-                else:
-                    lower[keys[index]] = scores[index] if lower[keys[index]] is None else (
-                        self.error_handler("already set"), self.save_round_score(player))
+                saved_scores[keys[index]] = possible_scores[index] if saved_scores[keys[index]] is None else (
+                    self.error_handler("already set"), self.save_round_score(player))
 
                 found = True
                 break

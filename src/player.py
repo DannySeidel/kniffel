@@ -21,9 +21,8 @@ class Player:
         self.player_id = player_id
         self.dice_used = []
         self.dice_put_aside = []
-        self.upper_section_score = dict.fromkeys(["ones", "twos", "threes", "fours", "fives", "sixes"])
-        self.lower_section_score = dict.fromkeys(["three_of_a_kind", "four_of_a_kind", "full_house", "small_straight", "large_straight",
-                                                  "yahtzee", "chance"])
+        self.scores = dict.fromkeys(["ones", "twos", "threes", "fours", "fives", "sixes", "three_of_a_kind", "four_of_a_kind", "full_house", "small_straight",
+                                     "large_straight", "yahtzee", "chance"])
 
     def throw_dice(self):
         """Player throwing his dices.
@@ -45,22 +44,21 @@ class Player:
             array: combining the uppersection and lowersection array of scores
         """
 
-        upper_section_scores = [self.__get_number_score(1) if self.upper_section_score["ones"] is None else None,
-                                self.__get_number_score(2) if self.upper_section_score["twos"] is None else None,
-                                self.__get_number_score(3) if self.upper_section_score["threes"] is None else None,
-                                self.__get_number_score(4) if self.upper_section_score["fours"] is None else None,
-                                self.__get_number_score(5) if self.upper_section_score["fives"] is None else None,
-                                self.__get_number_score(6) if self.upper_section_score["sixes"] is None else None]
+        scores = [self.__get_number_score(1) if self.scores["ones"] is None else None,
+                  self.__get_number_score(2) if self.scores["twos"] is None else None,
+                  self.__get_number_score(3) if self.scores["threes"] is None else None,
+                  self.__get_number_score(4) if self.scores["fours"] is None else None,
+                  self.__get_number_score(5) if self.scores["fives"] is None else None,
+                  self.__get_number_score(6) if self.scores["sixes"] is None else None,
+                  self.__get_n_of_a_kind_score(3) if self.scores["three_of_a_kind"] is None else None,
+                  self.__get_n_of_a_kind_score(4) if self.scores["four_of_a_kind"] is None else None,
+                  self.__get_full_house_score() if self.scores["full_house"] is None else None,
+                  self.__get_small_straight_score() if self.scores["small_straight"] is None else None,
+                  self.__get_large_straight_score() if self.scores["large_straight"] is None else None,
+                  self.__get_yahtzee_score() if self.scores["yahtzee"] is None else None,
+                  self.__get_chance_score() if self.scores["chance"] is None else None]
 
-        lower_section_scores = [self.__get_n_of_a_kind_score(3) if self.lower_section_score["three_of_a_kind"] is None else None,
-                                self.__get_n_of_a_kind_score(4) if self.lower_section_score["four_of_a_kind"] is None else None,
-                                self.__get_full_house_score() if self.lower_section_score["full_house"] is None else None,
-                                self.__get_small_straight_score() if self.lower_section_score["small_straight"] is None else None,
-                                self.__get_large_straight_score() if self.lower_section_score["large_straight"] is None else None,
-                                self.__get_yahtzee_score() if self.lower_section_score["yahtzee"] is None else None,
-                                self.__get_chance_score() if self.lower_section_score["chance"] is None else None]
-
-        return upper_section_scores + lower_section_scores
+        return scores
 
     def __get_number_score(self, number) -> int:
         """creating a score for a specific number/dice
@@ -175,13 +173,13 @@ class Player:
             int: total score of the player
         """
 
-        upper_section_sum = sum(self.upper_section_score.values()) if None not in self.upper_section_score.values() else 0
-        lower_section_sum = sum(self.lower_section_score.values()) if None not in self.lower_section_score.values() else 0
+        bonus = 0
+        upper_sum = self.scores["ones"] + self.scores["twos"] + self.scores["threes"] + self.scores["fours"] + self.scores["fives"] + self.scores["sixes"]
 
-        if upper_section_sum >= 63:
-            upper_section_sum += 35
+        if upper_sum >= 63:
+            bonus = 35
 
-        return upper_section_sum + lower_section_sum
+        return sum(self.scores.values()) + bonus
 
     def put_dice_aside(self, value):
         """appends dice to dice_put_aside
