@@ -280,10 +280,10 @@ class Terminal:
         print("      Upper Section:")
         for index in range(13):
             if index < 6:
-                print(f""" {Text.REGULAR}{strings[index]}   {Color.BOLD + str(upper[keys[index]]) if scores[index] is None
+                print(f""" {Text.REGULAR}{strings[index]}   {Text.SCORE + str(upper[keys[index]]) if scores[index] is None
                 else Text.IMPORTANT + str(scores[index])}""")
             else:
-                print(f""" {Text.REGULAR}{strings[index]}   {Color.BOLD + str(lower[keys[index]]) if scores[index] is None
+                print(f""" {Text.REGULAR}{strings[index]}   {Text.SCORE + str(lower[keys[index]]) if scores[index] is None
                 else Text.IMPORTANT + str(scores[index])}""")
 
             if index == 5:
