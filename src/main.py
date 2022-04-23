@@ -196,7 +196,8 @@ class Terminal:
                     if action == ("n" or "N"):
                         player.put_dice_aside(value)
                     elif action == ("k" or "K"):
-                        player.dice_put_aside += player.dice_used
+                        for value2 in player.dice_used:
+                            player.put_dice_aside(value2)
                         break
                 attempt += 1
             else:
