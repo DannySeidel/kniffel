@@ -2,7 +2,7 @@
 kniffel
 main.py
 
-created on 06.04.22
+created on 21.04.22
 by Tobias Welti, Luca Kaiser, Joshua Miller, Danny Seidel
 """
 

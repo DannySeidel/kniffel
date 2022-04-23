@@ -22,18 +22,16 @@ class Terminal:
 
     def __init__(self):
         self.current_game = None
-        self.clear_console()
-        self.print_menu()
-        self.menu_input()
 
     @staticmethod
-    def error_handler(error):
+    def error_handler(error_str):
         """handles all errors for the program
 
         Args:
-            error (String): the error that python throws
+            error_str (String): the error that python throws
         """
-        match error:
+
+        match error_str:
             case "unsupported input":
                 print("\n    Error: Input not supported.")
             case "already set":
@@ -41,7 +39,7 @@ class Terminal:
             case "number not found":
                 print("\n    Error: The given number was not found.")
             case "file not found":
-                print("\n    Error: File 'games.bin' was not found. Please make sure this file exists. ")
+                print("\n    Error: File 'games.bin' was not found. Please make sure this file exists.")
             case "permission error":
                 print("\n    Error: This programme does not have the necessary permissions to access the file 'games.bin'."
                       "    Please make sure that the programme has full access to the file.")
@@ -67,7 +65,7 @@ class Terminal:
     █▄─█▀▀▀█─▄█▄─▄█▄─▄███▄─▄███▄─█─▄█─▄▄─█▄─▀█▀─▄█▄─▀█▀─▄█▄─▄▄─█▄─▀█▄─▄███░▄▄░▄█▄─██─▄█
     ██─█─█─█─███─███─██▀██─██▀██─▄▀██─██─██─█▄█─███─█▄█─███─▄█▀██─█▄▀─█████▀▄█▀██─██─██
     ██▄▄▄█▄▄▄██▄▄▄█▄▄▄▄▄█▄▄▄▄▄█▄▄█▄▄█▄▄▄▄█▄▄▄█▄▄▄█▄▄▄█▄▄▄█▄▄▄▄▄█▄▄▄██▄▄███▄▄▄▄▄██▄▄▄▄██
-        """)
+    """)
 
         print("""
                         ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
@@ -351,7 +349,6 @@ class Terminal:
             game_data = data[52:(len(data) - 2)]
             mac_new = hmac.new(key, game_data, hashlib.sha256).digest()
             if hmac.compare_digest(mac, mac_new):
-                print("Game was successfully loaded.")
                 self.current_game = pickle.loads(game_data)
             else:
                 self.error_handler("integrity fail")
@@ -361,6 +358,7 @@ class Terminal:
 
     def check_for_game(self):
         """ checks if a game is saved in the binary file"""
+
         data = None
         try:
             with open("games.bin", "rb") as file:
@@ -390,4 +388,7 @@ class Terminal:
 
 
 if __name__ == "__main__":
-    Terminal()
+    terminal = Terminal()
+    terminal.clear_console()
+    terminal.print_menu()
+    terminal.menu_input()
