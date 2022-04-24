@@ -35,7 +35,7 @@ class Game:
         return turn
 
     def get_winner(self) -> int:
-        """returns winner of game / returns 0 if none has won (for draw)
+        """returns winner of game / returns 0 if game is a draw
 
         Returns:
             int: id/number of the winner

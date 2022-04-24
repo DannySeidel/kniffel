@@ -10,13 +10,13 @@ from random import randint
 
 
 class Player:
-    """handling player actions and playerscore"""
+    """handling player actions and player score"""
 
     def __init__(self, player_id):
         """initializing the player
 
         Args:
-            player_id (int): used for identification of the player
+            :param player_id: used for identification of the player
         """
         self.player_id = player_id
         self.dice_used = []
@@ -37,11 +37,11 @@ class Player:
 
         self.dice_used.sort()
 
-    def get_all_possible_scores(self):
+    def get_all_possible_scores(self) -> list[int | None]:
         """returns an array with all possible scores
 
         Returns:
-            array: combining the uppersection and lowersection array of scores
+            list: array of scores or None if score already assigned
         """
 
         scores = [self.__get_number_score(1) if self.scores["ones"] is None else None,
@@ -64,7 +64,7 @@ class Player:
         """creating a score for a specific number/dice
 
         Args:
-            number (int): the dice number
+            :param number: the dice number
 
         Returns:
             int: score for the number
@@ -82,7 +82,7 @@ class Player:
         """get the score for a specific of the same kind
 
         Args:
-            n_times (int): number of times a dicenum has been thrown
+            :param n_times: number of times a dice number has been thrown
 
         Returns:
             int: score for the dices that have been thrown
@@ -185,7 +185,7 @@ class Player:
         """appends dice to dice_put_aside
 
         Args:
-            value (int): the value of the dice to be put aside
+            :param value: the value of the dice to be put aside
         """
 
         self.dice_put_aside.append(value)

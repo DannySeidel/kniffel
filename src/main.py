@@ -22,13 +22,14 @@ class Terminal:
 
     def __init__(self):
         self.current_game = None
+        self.score_keys = list(Game(uuid4()).player_1.scores.keys())
 
     @staticmethod
     def error_handler(error_str):
         """handles all errors for the program
 
         Args:
-            error_str (String): the error that python throws
+            :param error_str: the type of error represented by a string
         """
 
         match error_str:
@@ -248,17 +249,13 @@ class Terminal:
             ]
             print(''.join(padded_dice))
 
-    @staticmethod
-    def show_scoreboard(player, calculate_possible_scores=False):
+    def show_scoreboard(self, player, calculate_possible_scores=False):
         """shows results for one player
 
         Args:
             :param player: player object of player 1 or 2
-            :param calculate_possible_scores:
+            :param calculate_possible_scores: if true possible scores of current round are calculated
         """
-
-        keys = ["ones", "twos", "threes", "fours", "fives", "sixes", "three_of_a_kind", "four_of_a_kind",
-                "full_house", "small_straight", "large_straight", "yahtzee", "chance"]
 
         saved_scores = player.scores
         possible_scores = []
@@ -266,7 +263,7 @@ class Terminal:
             possible_scores = player.get_all_possible_scores()
         else:
             for index in range(13):
-                possible_scores.append("--" if saved_scores[keys[index]] is None else saved_scores[keys[index]])
+                possible_scores.append("--" if saved_scores[self.score_keys[index]] is None else saved_scores[self.score_keys[index]])
 
         strings = ["      1) Ones:           ", "      2) Twos:           ", "      3) Threes:         ", "      4) Fours:          ",
                    "      5) Fives:          ", "      6) Sixes:          ", "      7) Three of a Kind:", "      8) Four of a Kind: ",
@@ -276,7 +273,7 @@ class Terminal:
         print(f"{Text.REGULAR}    Your scores are:")
         print("      Upper Section:")
         for index in range(13):
-            print(f""" {Text.REGULAR}{strings[index]}   {Text.SCORE + str(saved_scores[keys[index]]) if possible_scores[index] is None
+            print(f""" {Text.REGULAR}{strings[index]}   {Text.SCORE + str(saved_scores[self.score_keys[index]]) if possible_scores[index] is None
             else Text.IMPORTANT + str(possible_scores[index])}""")
 
             if index == 5:
@@ -286,7 +283,7 @@ class Terminal:
         """saves score of current round to dict
 
         Args:
-            player (dynamic): player object of player 1 or 2
+            :param player: player object of player 1 or 2
         """
 
         possible_scores = player.get_all_possible_scores()
@@ -294,13 +291,10 @@ class Terminal:
 
         score_number = input(f"\n{Text.REGULAR}    Enter the matching number to save the score: ")
 
-        keys = ["ones", "twos", "threes", "fours", "fives", "sixes", "three_of_a_kind", "four_of_a_kind",
-                "full_house", "small_straight", "large_straight", "yahtzee", "chance"]
-
         found = False
         for index in range(13):
             if score_number == str(index + 1):
-                saved_scores[keys[index]] = possible_scores[index] if saved_scores[keys[index]] is None else (
+                saved_scores[self.score_keys[index]] = possible_scores[index] if saved_scores[self.score_keys[index]] is None else (
                     self.error_handler("already set"), self.save_round_score(player))
 
                 found = True
@@ -327,8 +321,7 @@ class Terminal:
             self.menu_input()
 
     def load_game(self):
-        """Checks Message Authentication codes. If the codes are the same,
-         the game gets loaded, otherwise it gets deleted."""
+        """Checks Message Authentication codes. If the codes are the same, the game gets loaded, otherwise it gets deleted."""
 
         data = self.check_for_game()
         if data:
