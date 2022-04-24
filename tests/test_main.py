@@ -89,7 +89,7 @@ class TestMain(unittest.TestCase):
     def test_create_game(self):
         self.test_terminal._create_new_game()
 
-        self.assertTrue(self.test_terminal.current_game)
+        self.assertTrue(self.test_terminal._current_game)
 
     def test_print_menu(self):
         captured_output = io.StringIO()

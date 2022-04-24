@@ -18,7 +18,7 @@ class Player:
         Args:
             :param player_id: used for identification of the player
         """
-        self.player_id = player_id
+        self._player_id = player_id
         self.dice_used = []
         self.dice_put_aside = []
         self.scores = dict.fromkeys(["ones", "twos", "threes", "fours", "fives", "sixes", "three_of_a_kind", "four_of_a_kind", "full_house", "small_straight",

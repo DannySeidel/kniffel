@@ -14,7 +14,7 @@ class Game:
     """handles game data and current game state"""
 
     def __init__(self, uuid):
-        self.uuid = uuid
+        self._uuid = uuid
         self.key = randint(1000, 9999)
         self.player_1 = Player(1)
         self.player_2 = Player(2)

@@ -21,8 +21,8 @@ class Terminal:
     """handles terminal data"""
 
     def __init__(self):
-        self.current_game = None
-        self.score_keys = list(Game(uuid4()).player_1.scores.keys())
+        self._current_game = None
+        self.__score_keys = list(Game(uuid4()).player_1.scores.keys())
 
     @staticmethod
     def _error_handler(error_str):
@@ -111,7 +111,7 @@ class Terminal:
 
         elif action in ("l", "L"):
             self._load_game()
-            if self.current_game:
+            if self._current_game:
                 self._play_game()
             else:
                 self.menu_input()
@@ -125,12 +125,12 @@ class Terminal:
         """creates a new game object"""
 
         game_id = uuid4()
-        self.current_game = Game(game_id)
+        self._current_game = Game(game_id)
 
     def _play_game(self):
         """looping through game turns and printing the winner"""
 
-        turn = self.current_game.get_current_turn()
+        turn = self._current_game.get_current_turn()
 
         while turn < 13:
             for index in range(1, 3):
@@ -141,15 +141,15 @@ class Terminal:
         self.clear_console()
         for index in range(1, 3):
             if index == 1:
-                player = self.current_game.player_1
+                player = self._current_game.player_1
             else:
-                player = self.current_game.player_2
+                player = self._current_game.player_2
 
             print(f"{Text.PLAYER}    Player {index}:{Color.END}")
             self._show_scoreboard(player)
             print(f"{Text.SCORE}      Total:             {player.get_total_score()}{Color.END}")
 
-        winner_id = self.current_game.get_winner()
+        winner_id = self._current_game.get_winner()
 
         if winner_id == 1:
             print(f"{Text.IMPORTANT}\n        Player 1 has won!{Color.END}")
@@ -169,9 +169,9 @@ class Terminal:
         """
 
         if player_id == 1:
-            player = self.current_game.player_1
+            player = self._current_game.player_1
         else:
-            player = self.current_game.player_2
+            player = self._current_game.player_2
 
         attempt = 1
         player.dice_put_aside = []
@@ -263,7 +263,7 @@ class Terminal:
             possible_scores = player.get_all_possible_scores()
         else:
             for index in range(13):
-                possible_scores.append("--" if saved_scores[self.score_keys[index]] is None else saved_scores[self.score_keys[index]])
+                possible_scores.append("--" if saved_scores[self.__score_keys[index]] is None else saved_scores[self.__score_keys[index]])
 
         strings = ["      1) Ones:           ", "      2) Twos:           ", "      3) Threes:         ", "      4) Fours:          ",
                    "      5) Fives:          ", "      6) Sixes:          ", "      7) Three of a Kind:", "      8) Four of a Kind: ",
@@ -273,7 +273,7 @@ class Terminal:
         print(f"{Text.REGULAR}    Your scores are:")
         print("      Upper Section:")
         for index in range(13):
-            print(f""" {Text.REGULAR}{strings[index]}   {Text.SCORE + str(saved_scores[self.score_keys[index]]) if possible_scores[index] is None
+            print(f""" {Text.REGULAR}{strings[index]}   {Text.SCORE + str(saved_scores[self.__score_keys[index]]) if possible_scores[index] is None
             else Text.IMPORTANT + str(possible_scores[index])}""")
 
             if index == 5:
@@ -294,7 +294,7 @@ class Terminal:
         found = False
         for index in range(13):
             if score_number == str(index + 1):
-                saved_scores[self.score_keys[index]] = possible_scores[index] if saved_scores[self.score_keys[index]] is None else (
+                saved_scores[self.__score_keys[index]] = possible_scores[index] if saved_scores[self.__score_keys[index]] is None else (
                     self._error_handler("already set"), self._save_round_score(player))
 
                 found = True
@@ -306,9 +306,9 @@ class Terminal:
 
     def _save_game(self):
         """pickles the current game, creates a Message Authentication code and saves everything into a binary file"""
-        pickled_game = pickle.dumps(self.current_game)
-        mac = hmac.new(str(self.current_game.key).encode(), pickled_game, hashlib.sha256).digest()
-        game_data_b = mac + str(self.current_game.key).encode() + pickled_game
+        pickled_game = pickle.dumps(self._current_game)
+        mac = hmac.new(str(self._current_game.key).encode(), pickled_game, hashlib.sha256).digest()
+        game_data_b = mac + str(self._current_game.key).encode() + pickled_game
         try:
             with open("games.bin", "wb") as file:
                 pickle.dump(game_data_b, file)
@@ -330,7 +330,7 @@ class Terminal:
             game_data = data[52:(len(data) - 2)]
             mac_new = hmac.new(key, game_data, hashlib.sha256).digest()
             if hmac.compare_digest(mac, mac_new):
-                self.current_game = pickle.loads(game_data)
+                self._current_game = pickle.loads(game_data)
             else:
                 self._error_handler("integrity fail")
                 self.__delete_game()
