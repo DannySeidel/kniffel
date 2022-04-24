@@ -25,7 +25,7 @@ class Terminal:
         self.score_keys = list(Game(uuid4()).player_1.scores.keys())
 
     @staticmethod
-    def error_handler(error_str):
+    def _error_handler(error_str):
         """handles all errors for the program
 
         Args:
@@ -88,7 +88,7 @@ class Terminal:
         action = input(f"\n{Text.REGULAR}    Enter action: ")
 
         if action in ("s", "S"):
-            if self.check_for_game():
+            if self.__check_for_game():
                 overwrite_query = input(
                     """
     There is a currently a saved game.
@@ -97,45 +97,45 @@ class Terminal:
     Do you want to continue? [Y/N]: """
                 )
                 if overwrite_query in ("y", "Y"):
-                    self.create_new_game()
-                    self.play_game()
+                    self._create_new_game()
+                    self._play_game()
                 elif overwrite_query in ("n", "N"):
                     print("    Game creation was cancelled.")
                     self.menu_input()
                 else:
-                    self.error_handler("unsupported input")
+                    self._error_handler("unsupported input")
                     self.menu_input()
             else:
-                self.create_new_game()
-                self.play_game()
+                self._create_new_game()
+                self._play_game()
 
         elif action in ("l", "L"):
-            self.load_game()
+            self._load_game()
             if self.current_game:
-                self.play_game()
+                self._play_game()
             else:
                 self.menu_input()
         elif action in ("q", "Q"):
             sys.exit(0)
         else:
-            self.error_handler("unsupported input")
+            self._error_handler("unsupported input")
             self.menu_input()
 
-    def create_new_game(self):
+    def _create_new_game(self):
         """creates a new game object"""
 
         game_id = uuid4()
         self.current_game = Game(game_id)
 
-    def play_game(self):
+    def _play_game(self):
         """looping through game turns and printing the winner"""
 
         turn = self.current_game.get_current_turn()
 
         while turn < 13:
             for index in range(1, 3):
-                self.player_action(index, turn)
-            self.save_game()
+                self.__player_action(index, turn)
+            self._save_game()
             turn += 1
 
         self.clear_console()
@@ -146,7 +146,7 @@ class Terminal:
                 player = self.current_game.player_2
 
             print(f"{Text.PLAYER}    Player {index}:{Color.END}")
-            self.show_scoreboard(player)
+            self._show_scoreboard(player)
             print(f"{Text.SCORE}      Total:             {player.get_total_score()}{Color.END}")
 
         winner_id = self.current_game.get_winner()
@@ -158,9 +158,9 @@ class Terminal:
         else:
             print(f"{Text.IMPORTANT}\n          It's a draw!{Color.END}")
 
-        self.delete_game()
+        self.__delete_game()
 
-    def player_action(self, player_id, turn):
+    def __player_action(self, player_id, turn):
         """handling the actions for one player turn
 
         Args:
@@ -180,15 +180,15 @@ class Terminal:
             self.clear_console()
             print(f"\n{Text.TURN}    Turn {turn + 1}{Color.END}")
             print(f"\n{Text.PLAYER}    Player {player_id} is on:{Color.END}")
-            self.show_scoreboard(player)
+            self._show_scoreboard(player)
             player.throw_dice()
 
             if attempt < 3:
                 print(f"\n{Text.REGULAR}    You have thrown:")
-                self.print_dice_symbols(player.dice_used)
+                self._print_dice_symbols(player.dice_used)
                 if len(player.dice_put_aside) > 0:
                     print(f"{Text.REGULAR}    The following dice are put aside:\n")
-                    self.print_dice_symbols(player.dice_put_aside)
+                    self._print_dice_symbols(player.dice_put_aside)
                     player.reuse_dice()
                 for value in player.dice_used:
                     print(f"{Text.REGULAR}    Keep all remaining dice [K]: ")
@@ -208,12 +208,12 @@ class Terminal:
 
         self.clear_console()
         print(f"\n{Text.IMPORTANT}    Results {Text.TURN}Turn {turn + 1} {Text.IMPORTANT}| {Text.PLAYER}Player {player_id}")
-        self.print_dice_symbols(player.dice_put_aside)
-        self.show_scoreboard(player, calculate_possible_scores=True)
-        self.save_round_score(player)
+        self._print_dice_symbols(player.dice_put_aside)
+        self._show_scoreboard(player, calculate_possible_scores=True)
+        self._save_round_score(player)
 
     @staticmethod
-    def print_dice_symbols(array):
+    def _print_dice_symbols(array):
         """print dice symbols for given int array"""
 
         dice = []
@@ -249,7 +249,7 @@ class Terminal:
             ]
             print(''.join(padded_dice))
 
-    def show_scoreboard(self, player, calculate_possible_scores=False):
+    def _show_scoreboard(self, player, calculate_possible_scores=False):
         """shows results for one player
 
         Args:
@@ -279,7 +279,7 @@ class Terminal:
             if index == 5:
                 print(f"{Text.REGULAR}      Lower Section:")
 
-    def save_round_score(self, player):
+    def _save_round_score(self, player):
         """saves score of current round to dict
 
         Args:
@@ -295,16 +295,16 @@ class Terminal:
         for index in range(13):
             if score_number == str(index + 1):
                 saved_scores[self.score_keys[index]] = possible_scores[index] if saved_scores[self.score_keys[index]] is None else (
-                    self.error_handler("already set"), self.save_round_score(player))
+                    self._error_handler("already set"), self._save_round_score(player))
 
                 found = True
                 break
 
         if not found:
-            self.error_handler("number not found")
-            self.save_round_score(player)
+            self._error_handler("number not found")
+            self._save_round_score(player)
 
-    def save_game(self):
+    def _save_game(self):
         """pickles the current game, creates a Message Authentication code and saves everything into a binary file"""
         pickled_game = pickle.dumps(self.current_game)
         mac = hmac.new(str(self.current_game.key).encode(), pickled_game, hashlib.sha256).digest()
@@ -314,16 +314,16 @@ class Terminal:
                 pickle.dump(game_data_b, file)
             print("saved")
         except FileNotFoundError:
-            self.error_handler("file not found")
+            self._error_handler("file not found")
             self.menu_input()
         except PermissionError:
-            self.error_handler("permission error")
+            self._error_handler("permission error")
             self.menu_input()
 
-    def load_game(self):
+    def _load_game(self):
         """Checks Message Authentication codes. If the codes are the same, the game gets loaded, otherwise it gets deleted."""
 
-        data = self.check_for_game()
+        data = self.__check_for_game()
         if data:
             mac = data[16:48]
             key = data[48:52]
@@ -332,12 +332,12 @@ class Terminal:
             if hmac.compare_digest(mac, mac_new):
                 self.current_game = pickle.loads(game_data)
             else:
-                self.error_handler("integrity fail")
-                self.delete_game()
+                self._error_handler("integrity fail")
+                self.__delete_game()
         else:
-            self.error_handler("no saved game")
+            self._error_handler("no saved game")
 
-    def check_for_game(self):
+    def __check_for_game(self):
         """ checks if a game is saved in the binary file"""
 
         data = None
@@ -345,14 +345,14 @@ class Terminal:
             with open("games.bin", "rb") as file:
                 data = file.read()
         except FileNotFoundError:
-            self.error_handler("file not found")
+            self._error_handler("file not found")
         except PermissionError:
-            self.error_handler("permission error")
+            self._error_handler("permission error")
         except EOFError:
-            self.error_handler("no saved game")
+            self._error_handler("no saved game")
         return data
 
-    def delete_game(self):
+    def __delete_game(self):
         """ removes game save from binary file"""
 
         try:
@@ -361,10 +361,10 @@ class Terminal:
                 file.close()
             print("Game was removed from save file.")
         except FileNotFoundError:
-            self.error_handler("file not found")
+            self._error_handler("file not found")
             self.menu_input()
         except PermissionError:
-            self.error_handler("permission error")
+            self._error_handler("permission error")
             self.menu_input()
 
 

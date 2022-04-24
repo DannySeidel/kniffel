@@ -16,7 +16,7 @@ class TestMain(unittest.TestCase):
     def test_error_handler1(self):
         captured_output = io.StringIO()
         sys.stdout = captured_output
-        self.test_terminal.error_handler("unsupported input")
+        self.test_terminal._error_handler("unsupported input")
         sys.stdout = sys.__stdout__
         expected_str = "\n    Error: Input not supported.\n"
 
@@ -25,7 +25,7 @@ class TestMain(unittest.TestCase):
     def test_error_handler2(self):
         captured_output = io.StringIO()
         sys.stdout = captured_output
-        self.test_terminal.error_handler("already set")
+        self.test_terminal._error_handler("already set")
         sys.stdout = sys.__stdout__
         expected_str = "\n    Error: This value is already set. Enter a different number.\n"
 
@@ -34,7 +34,7 @@ class TestMain(unittest.TestCase):
     def test_error_handler3(self):
         captured_output = io.StringIO()
         sys.stdout = captured_output
-        self.test_terminal.error_handler("number not found")
+        self.test_terminal._error_handler("number not found")
         sys.stdout = sys.__stdout__
         expected_str = "\n    Error: The given number was not found.\n"
 
@@ -43,7 +43,7 @@ class TestMain(unittest.TestCase):
     def test_error_handler4(self):
         captured_output = io.StringIO()
         sys.stdout = captured_output
-        self.test_terminal.error_handler("file not found")
+        self.test_terminal._error_handler("file not found")
         sys.stdout = sys.__stdout__
         expected_str = "\n    Error: File 'games.bin' was not found. Please make sure this file exists.\n"
 
@@ -52,7 +52,7 @@ class TestMain(unittest.TestCase):
     def test_error_handler5(self):
         captured_output = io.StringIO()
         sys.stdout = captured_output
-        self.test_terminal.error_handler("permission error")
+        self.test_terminal._error_handler("permission error")
         sys.stdout = sys.__stdout__
         expected_str = "\n    Error: This programme does not have the necessary permissions to access the file 'games.bin'." \
                        "    Please make sure that the programme has full access to the file.\n"
@@ -62,7 +62,7 @@ class TestMain(unittest.TestCase):
     def test_error_handler6(self):
         captured_output = io.StringIO()
         sys.stdout = captured_output
-        self.test_terminal.error_handler("no saved game")
+        self.test_terminal._error_handler("no saved game")
         sys.stdout = sys.__stdout__
         expected_str = "\n    Error: There is no saved game.\n"
 
@@ -71,7 +71,7 @@ class TestMain(unittest.TestCase):
     def test_error_handler7(self):
         captured_output = io.StringIO()
         sys.stdout = captured_output
-        self.test_terminal.error_handler("integrity fail")
+        self.test_terminal._error_handler("integrity fail")
         sys.stdout = sys.__stdout__
         expected_str = "\n    Error: The game save file has been tampered with. The game is not recoverable and has to be deleted.\n"
 
@@ -80,14 +80,14 @@ class TestMain(unittest.TestCase):
     def test_error_handler8(self):
         captured_output = io.StringIO()
         sys.stdout = captured_output
-        self.test_terminal.error_handler("---")
+        self.test_terminal._error_handler("---")
         sys.stdout = sys.__stdout__
         expected_str = "\n    Error: A unknown error occurred.\n"
 
         self.assertEqual(expected_str, captured_output.getvalue())
 
     def test_create_game(self):
-        self.test_terminal.create_new_game()
+        self.test_terminal._create_new_game()
 
         self.assertTrue(self.test_terminal.current_game)
 
@@ -126,7 +126,7 @@ class TestMain(unittest.TestCase):
     def test_print_dice_symbols1(self):
         captured_output = io.StringIO()
         sys.stdout = captured_output
-        self.test_terminal.print_dice_symbols([1, 2, 3, 4, 5, 6])
+        self.test_terminal._print_dice_symbols([1, 2, 3, 4, 5, 6])
         sys.stdout = sys.__stdout__
         expected_output = f"""{(Text.DICE + "       ") * 6}
     ▄▀▀▀▀▀▀▀▀▀▀▄    ▄▀▀▀▀▀▀▀▀▀▀▄    ▄▀▀▀▀▀▀▀▀▀▀▄    ▄▀▀▀▀▀▀▀▀▀▀▄    ▄▀▀▀▀▀▀▀▀▀▀▄    ▄▀▀▀▀▀▀▀▀▀▀▄
@@ -144,7 +144,7 @@ class TestMain(unittest.TestCase):
 
         captured_output = io.StringIO()
         sys.stdout = captured_output
-        self.test_terminal.show_scoreboard(test_player, calculate_possible_scores=True)
+        self.test_terminal._show_scoreboard(test_player, calculate_possible_scores=True)
         sys.stdout = sys.__stdout__
 
         possible_scores = test_player.get_all_possible_scores()
@@ -187,7 +187,7 @@ class TestMain(unittest.TestCase):
 
         captured_output = io.StringIO()
         sys.stdout = captured_output
-        self.test_terminal.show_scoreboard(test_player)
+        self.test_terminal._show_scoreboard(test_player)
         sys.stdout = sys.__stdout__
 
         possible_scores = ["--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--"]
