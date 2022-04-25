@@ -16,7 +16,7 @@ class TestMain(unittest.TestCase):
     def test_error_handler1(self):
         captured_output = io.StringIO()
         sys.stdout = captured_output
-        self.test_terminal.error_handler("unsupported input")
+        self.test_terminal._error_handler("unsupported input")
         sys.stdout = sys.__stdout__
         expected_str = "\n    Error: Input not supported.\n"
 
@@ -25,7 +25,7 @@ class TestMain(unittest.TestCase):
     def test_error_handler2(self):
         captured_output = io.StringIO()
         sys.stdout = captured_output
-        self.test_terminal.error_handler("already set")
+        self.test_terminal._error_handler("already set")
         sys.stdout = sys.__stdout__
         expected_str = "\n    Error: This value is already set. Enter a different number.\n"
 
@@ -34,7 +34,7 @@ class TestMain(unittest.TestCase):
     def test_error_handler3(self):
         captured_output = io.StringIO()
         sys.stdout = captured_output
-        self.test_terminal.error_handler("number not found")
+        self.test_terminal._error_handler("number not found")
         sys.stdout = sys.__stdout__
         expected_str = "\n    Error: The given number was not found.\n"
 
@@ -43,7 +43,7 @@ class TestMain(unittest.TestCase):
     def test_error_handler4(self):
         captured_output = io.StringIO()
         sys.stdout = captured_output
-        self.test_terminal.error_handler("file not found")
+        self.test_terminal._error_handler("file not found")
         sys.stdout = sys.__stdout__
         expected_str = "\n    Error: File 'games.bin' was not found. Please make sure this file exists.\n"
 
@@ -52,7 +52,7 @@ class TestMain(unittest.TestCase):
     def test_error_handler5(self):
         captured_output = io.StringIO()
         sys.stdout = captured_output
-        self.test_terminal.error_handler("permission error")
+        self.test_terminal._error_handler("permission error")
         sys.stdout = sys.__stdout__
         expected_str = "\n    Error: This programme does not have the necessary permissions to access the file 'games.bin'." \
                        "    Please make sure that the programme has full access to the file.\n"
@@ -62,7 +62,7 @@ class TestMain(unittest.TestCase):
     def test_error_handler6(self):
         captured_output = io.StringIO()
         sys.stdout = captured_output
-        self.test_terminal.error_handler("no saved game")
+        self.test_terminal._error_handler("no saved game")
         sys.stdout = sys.__stdout__
         expected_str = "\n    Error: There is no saved game.\n"
 
@@ -71,7 +71,7 @@ class TestMain(unittest.TestCase):
     def test_error_handler7(self):
         captured_output = io.StringIO()
         sys.stdout = captured_output
-        self.test_terminal.error_handler("integrity fail")
+        self.test_terminal._error_handler("integrity fail")
         sys.stdout = sys.__stdout__
         expected_str = "\n    Error: The game save file has been tampered with. The game is not recoverable and has to be deleted.\n"
 
@@ -80,16 +80,16 @@ class TestMain(unittest.TestCase):
     def test_error_handler8(self):
         captured_output = io.StringIO()
         sys.stdout = captured_output
-        self.test_terminal.error_handler("---")
+        self.test_terminal._error_handler("---")
         sys.stdout = sys.__stdout__
         expected_str = "\n    Error: A unknown error occurred.\n"
 
         self.assertEqual(expected_str, captured_output.getvalue())
 
     def test_create_game(self):
-        self.test_terminal.create_new_game()
+        self.test_terminal._create_new_game()
 
-        self.assertTrue(self.test_terminal.current_game)
+        self.assertTrue(self.test_terminal._current_game)
 
     def test_print_menu(self):
         captured_output = io.StringIO()
@@ -126,7 +126,7 @@ class TestMain(unittest.TestCase):
     def test_print_dice_symbols1(self):
         captured_output = io.StringIO()
         sys.stdout = captured_output
-        self.test_terminal.print_dice_symbols([1, 2, 3, 4, 5, 6])
+        self.test_terminal._print_dice_symbols([1, 2, 3, 4, 5, 6])
         sys.stdout = sys.__stdout__
         expected_output = f"""{(Text.DICE + "       ") * 6}
     ▄▀▀▀▀▀▀▀▀▀▀▄    ▄▀▀▀▀▀▀▀▀▀▀▄    ▄▀▀▀▀▀▀▀▀▀▀▄    ▄▀▀▀▀▀▀▀▀▀▀▄    ▄▀▀▀▀▀▀▀▀▀▀▄    ▄▀▀▀▀▀▀▀▀▀▀▄
@@ -144,42 +144,41 @@ class TestMain(unittest.TestCase):
 
         captured_output = io.StringIO()
         sys.stdout = captured_output
-        self.test_terminal.show_scoreboard(test_player, calculate_possible_scores=True)
+        self.test_terminal._show_scoreboard(test_player, calculate_possible_scores=True)
         sys.stdout = sys.__stdout__
 
-        scores = test_player.get_all_possible_scores()
-        upper = test_player.upper_section_score
-        lower = test_player.lower_section_score
+        possible_scores = test_player.get_all_possible_scores()
+        saved_scores = test_player.scores
 
         expected_str = f"{Text.REGULAR}    Your scores are:\n" \
                        "      Upper Section:\n" \
-                       f""" {Text.REGULAR}      1) Ones:              {Text.SCORE + str(upper['ones']) if scores[0] is None
-                       else Text.IMPORTANT + str(scores[0])}\n"""\
-                       f""" {Text.REGULAR}      2) Twos:              {Text.SCORE + str(upper['twos']) if scores[1] is None
-                       else Text.IMPORTANT + str(scores[1])}\n"""\
-                       f""" {Text.REGULAR}      3) Threes:            {Text.SCORE + str(upper['threes']) if scores[2] is None
-                       else Text.IMPORTANT + str(scores[2])}\n"""\
-                       f""" {Text.REGULAR}      4) Fours:             {Text.SCORE + str(upper['fours']) if scores[3] is None
-                       else Text.IMPORTANT + str(scores[3])}\n"""\
-                       f""" {Text.REGULAR}      5) Fives:             {Text.SCORE + str(upper['fives']) if scores[4] is None
-                       else Text.IMPORTANT + str(scores[4])}\n"""\
-                       f""" {Text.REGULAR}      6) Sixes:             {Text.SCORE + str(upper['sixes']) if scores[5] is None
-                       else Text.IMPORTANT + str(scores[5])}\n"""\
+                       f""" {Text.REGULAR}      1) Ones:              {Text.SCORE + str(saved_scores['ones']) if possible_scores[0] is None
+                       else Text.IMPORTANT + str(possible_scores[0])}\n"""\
+                       f""" {Text.REGULAR}      2) Twos:              {Text.SCORE + str(saved_scores['twos']) if possible_scores[1] is None
+                       else Text.IMPORTANT + str(possible_scores[1])}\n"""\
+                       f""" {Text.REGULAR}      3) Threes:            {Text.SCORE + str(saved_scores['threes']) if possible_scores[2] is None
+                       else Text.IMPORTANT + str(possible_scores[2])}\n"""\
+                       f""" {Text.REGULAR}      4) Fours:             {Text.SCORE + str(saved_scores['fours']) if possible_scores[3] is None
+                       else Text.IMPORTANT + str(possible_scores[3])}\n"""\
+                       f""" {Text.REGULAR}      5) Fives:             {Text.SCORE + str(saved_scores['fives']) if possible_scores[4] is None
+                       else Text.IMPORTANT + str(possible_scores[4])}\n"""\
+                       f""" {Text.REGULAR}      6) Sixes:             {Text.SCORE + str(saved_scores['sixes']) if possible_scores[5] is None
+                       else Text.IMPORTANT + str(possible_scores[5])}\n"""\
                        f"{Text.REGULAR}      Lower Section:\n"\
-                       f""" {Text.REGULAR}      7) Three of a Kind:   {Text.SCORE + str(lower['three_of_a_kind']) if scores[6] is None
-                       else Text.IMPORTANT + str(scores[6])}\n"""\
-                       f""" {Text.REGULAR}      8) Four of a Kind:    {Text.SCORE + str(lower['four_of_a_kind']) if scores[7] is None
-                       else Text.IMPORTANT + str(scores[7])}\n"""\
-                       f""" {Text.REGULAR}      9) Full House:        {Text.SCORE + str(lower['full_house']) if scores[8] is None
-                       else Text.IMPORTANT + str(scores[8])}\n"""\
-                       f""" {Text.REGULAR}      10) Small Straight:   {Text.SCORE + str(lower['small_straight']) if scores[9] is None
-                       else Text.IMPORTANT + str(scores[9])}\n"""\
-                       f""" {Text.REGULAR}      11) Large Straight:   {Text.SCORE + str(lower['large_straight']) if scores[10] is None
-                       else Text.IMPORTANT + str(scores[10])}\n"""\
-                       f""" {Text.REGULAR}      12) Yahtzee:          {Text.SCORE + str(lower['yahtzee']) if scores[11] is None
-                       else Text.IMPORTANT + str(scores[11])}\n"""\
-                       f""" {Text.REGULAR}      13) Chance:           {Text.SCORE + str(lower['chance']) if scores[12] is None
-                       else Text.IMPORTANT + str(scores[12])}\n"""
+                       f""" {Text.REGULAR}      7) Three of a Kind:   {Text.SCORE + str(saved_scores['three_of_a_kind']) if possible_scores[6] is None
+                       else Text.IMPORTANT + str(possible_scores[6])}\n"""\
+                       f""" {Text.REGULAR}      8) Four of a Kind:    {Text.SCORE + str(saved_scores['four_of_a_kind']) if possible_scores[7] is None
+                       else Text.IMPORTANT + str(possible_scores[7])}\n"""\
+                       f""" {Text.REGULAR}      9) Full House:        {Text.SCORE + str(saved_scores['full_house']) if possible_scores[8] is None
+                       else Text.IMPORTANT + str(possible_scores[8])}\n"""\
+                       f""" {Text.REGULAR}      10) Small Straight:   {Text.SCORE + str(saved_scores['small_straight']) if possible_scores[9] is None
+                       else Text.IMPORTANT + str(possible_scores[9])}\n"""\
+                       f""" {Text.REGULAR}      11) Large Straight:   {Text.SCORE + str(saved_scores['large_straight']) if possible_scores[10] is None
+                       else Text.IMPORTANT + str(possible_scores[10])}\n"""\
+                       f""" {Text.REGULAR}      12) Yahtzee:          {Text.SCORE + str(saved_scores['yahtzee']) if possible_scores[11] is None
+                       else Text.IMPORTANT + str(possible_scores[11])}\n"""\
+                       f""" {Text.REGULAR}      13) Chance:           {Text.SCORE + str(saved_scores['chance']) if possible_scores[12] is None
+                       else Text.IMPORTANT + str(possible_scores[12])}\n"""
 
         self.assertEqual(expected_str, captured_output.getvalue())
 
@@ -188,41 +187,40 @@ class TestMain(unittest.TestCase):
 
         captured_output = io.StringIO()
         sys.stdout = captured_output
-        self.test_terminal.show_scoreboard(test_player)
+        self.test_terminal._show_scoreboard(test_player)
         sys.stdout = sys.__stdout__
 
-        scores = ["--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--"]
-        upper = test_player.upper_section_score
-        lower = test_player.lower_section_score
+        possible_scores = ["--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--"]
+        saved_scores = test_player.scores
 
         expected_str = f"{Text.REGULAR}    Your scores are:\n" \
                        "      Upper Section:\n" \
-                       f""" {Text.REGULAR}      1) Ones:              {Text.SCORE + str(upper['ones']) if scores[0] is None
-                       else Text.IMPORTANT + str(scores[0])}\n""" \
-                       f""" {Text.REGULAR}      2) Twos:              {Text.SCORE + str(upper['twos']) if scores[1] is None
-                       else Text.IMPORTANT + str(scores[1])}\n""" \
-                       f""" {Text.REGULAR}      3) Threes:            {Text.SCORE + str(upper['threes']) if scores[2] is None
-                       else Text.IMPORTANT + str(scores[2])}\n""" \
-                       f""" {Text.REGULAR}      4) Fours:             {Text.SCORE + str(upper['fours']) if scores[3] is None
-                       else Text.IMPORTANT + str(scores[3])}\n""" \
-                       f""" {Text.REGULAR}      5) Fives:             {Text.SCORE + str(upper['fives']) if scores[4] is None
-                       else Text.IMPORTANT + str(scores[4])}\n""" \
-                       f""" {Text.REGULAR}      6) Sixes:             {Text.SCORE + str(upper['sixes']) if scores[5] is None
-                       else Text.IMPORTANT + str(scores[5])}\n""" \
+                       f""" {Text.REGULAR}      1) Ones:              {Text.SCORE + str(saved_scores['ones']) if possible_scores[0] is None
+                       else Text.IMPORTANT + str(possible_scores[0])}\n""" \
+                       f""" {Text.REGULAR}      2) Twos:              {Text.SCORE + str(saved_scores['twos']) if possible_scores[1] is None
+                       else Text.IMPORTANT + str(possible_scores[1])}\n""" \
+                       f""" {Text.REGULAR}      3) Threes:            {Text.SCORE + str(saved_scores['threes']) if possible_scores[2] is None
+                       else Text.IMPORTANT + str(possible_scores[2])}\n""" \
+                       f""" {Text.REGULAR}      4) Fours:             {Text.SCORE + str(saved_scores['fours']) if possible_scores[3] is None
+                       else Text.IMPORTANT + str(possible_scores[3])}\n""" \
+                       f""" {Text.REGULAR}      5) Fives:             {Text.SCORE + str(saved_scores['fives']) if possible_scores[4] is None
+                       else Text.IMPORTANT + str(possible_scores[4])}\n""" \
+                       f""" {Text.REGULAR}      6) Sixes:             {Text.SCORE + str(saved_scores['sixes']) if possible_scores[5] is None
+                       else Text.IMPORTANT + str(possible_scores[5])}\n""" \
                        f"{Text.REGULAR}      Lower Section:\n" \
-                       f""" {Text.REGULAR}      7) Three of a Kind:   {Text.SCORE + str(lower['three_of_a_kind']) if scores[6] is None
-                       else Text.IMPORTANT + str(scores[6])}\n""" \
-                       f""" {Text.REGULAR}      8) Four of a Kind:    {Text.SCORE + str(lower['four_of_a_kind']) if scores[7] is None
-                       else Text.IMPORTANT + str(scores[7])}\n""" \
-                       f""" {Text.REGULAR}      9) Full House:        {Text.SCORE + str(lower['full_house']) if scores[8] is None
-                       else Text.IMPORTANT + str(scores[8])}\n""" \
-                       f""" {Text.REGULAR}      10) Small Straight:   {Text.SCORE + str(lower['small_straight']) if scores[9] is None
-                       else Text.IMPORTANT + str(scores[9])}\n""" \
-                       f""" {Text.REGULAR}      11) Large Straight:   {Text.SCORE + str(lower['large_straight']) if scores[10] is None
-                       else Text.IMPORTANT + str(scores[10])}\n""" \
-                       f""" {Text.REGULAR}      12) Yahtzee:          {Text.SCORE + str(lower['yahtzee']) if scores[11] is None
-                       else Text.IMPORTANT + str(scores[11])}\n""" \
-                       f""" {Text.REGULAR}      13) Chance:           {Text.SCORE + str(lower['chance']) if scores[12] is None
-                       else Text.IMPORTANT + str(scores[12])}\n"""
+                       f""" {Text.REGULAR}      7) Three of a Kind:   {Text.SCORE + str(saved_scores['three_of_a_kind']) if possible_scores[6] is None
+                       else Text.IMPORTANT + str(possible_scores[6])}\n""" \
+                       f""" {Text.REGULAR}      8) Four of a Kind:    {Text.SCORE + str(saved_scores['four_of_a_kind']) if possible_scores[7] is None
+                       else Text.IMPORTANT + str(possible_scores[7])}\n""" \
+                       f""" {Text.REGULAR}      9) Full House:        {Text.SCORE + str(saved_scores['full_house']) if possible_scores[8] is None
+                       else Text.IMPORTANT + str(possible_scores[8])}\n""" \
+                       f""" {Text.REGULAR}      10) Small Straight:   {Text.SCORE + str(saved_scores['small_straight']) if possible_scores[9] is None
+                       else Text.IMPORTANT + str(possible_scores[9])}\n""" \
+                       f""" {Text.REGULAR}      11) Large Straight:   {Text.SCORE + str(saved_scores['large_straight']) if possible_scores[10] is None
+                       else Text.IMPORTANT + str(possible_scores[10])}\n""" \
+                       f""" {Text.REGULAR}      12) Yahtzee:          {Text.SCORE + str(saved_scores['yahtzee']) if possible_scores[11] is None
+                       else Text.IMPORTANT + str(possible_scores[11])}\n""" \
+                       f""" {Text.REGULAR}      13) Chance:           {Text.SCORE + str(saved_scores['chance']) if possible_scores[12] is None
+                       else Text.IMPORTANT + str(possible_scores[12])}\n"""
 
         self.assertEqual(expected_str, captured_output.getvalue())

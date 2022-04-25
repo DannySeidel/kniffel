@@ -14,7 +14,7 @@ class Game:
     """handles game data and current game state"""
 
     def __init__(self, uuid):
-        self.uuid = uuid
+        self._uuid = uuid
         self.key = randint(1000, 9999)
         self.player_1 = Player(1)
         self.player_2 = Player(2)
@@ -28,17 +28,14 @@ class Game:
 
         turn = 0
 
-        for value in self.player_1.upper_section_score.values():
-            if value is not None:
-                turn += 1
-        for value in self.player_1.lower_section_score.values():
+        for value in self.player_1.scores.values():
             if value is not None:
                 turn += 1
 
         return turn
 
     def get_winner(self) -> int:
-        """returns winner of game / returns 0 if none has won (for draw)
+        """returns winner of game / returns 0 if game is a draw
 
         Returns:
             int: id/number of the winner
