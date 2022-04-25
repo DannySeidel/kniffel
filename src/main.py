@@ -109,7 +109,7 @@ class Terminal:
 
             elif action == "l" or action == "L":
                 self._load_game()
-                if self.current_game:
+                if self._current_game:
                     self._play_game()
 
             elif action == "q" or action == "Q":
@@ -155,6 +155,10 @@ class Terminal:
             print(f"{Text.IMPORTANT}\n          It's a draw!{Color.END}")
 
         self.__delete_game()
+        # "End screen"
+        input(f"{Text.REGULAR}Press Enter to return to main menu")
+        self.clear_console()
+        self.print_menu()
 
     def __player_action(self, player_id, turn):
         """handling the actions for one player turn
@@ -311,50 +315,49 @@ class Terminal:
             print("saved")
         except FileNotFoundError:
             self._error_handler("file not found")
-            self.menu_input()
         except PermissionError:
             self._error_handler("permission error")
-            self.menu_input()
 
     def _load_game(self):
         """Checks Message Authentication codes.
          If the codes are the same, the game gets loaded, otherwise it gets deleted."""
 
-        file_exists = self.__check_for_game()
-        if file_exists:
-            # read all file data into object
-            try:
-                with open("games.bin", "rb") as file:
-                    data = file.read()
-            except FileNotFoundError:
-                self._error_handler("file not found")
-            except PermissionError:
-                self._error_handler("permission error")
-            except EOFError:
-                self._error_handler("no saved game")
+        game_exists = self.__check_for_game()
+        if game_exists:
+            # pulls the necessary data from the "data" object
+            mac = game_exists[16:48]
+            key = game_exists[48:52]
+            game_data = game_exists[52:(len(game_exists) - 2)]
+            # creates new MAC with data read from file and compares it the the old MAC
+            mac_new = hmac.new(key, game_data, hashlib.sha256).digest()
+            if hmac.compare_digest(mac, mac_new):
+                self.current_game = pickle.loads(game_data)
             else:
-                # pulls the necessary data from the "data" object
-                mac = data[16:48]
-                key = data[48:52]
-                game_data = data[52:(len(data) - 2)]
-                # creates new MAC with data read from file and compares it the the old MAC
-                mac_new = hmac.new(key, game_data, hashlib.sha256).digest()
-                if hmac.compare_digest(mac, mac_new):
-                    self.current_game = pickle.loads(game_data)
-                else:
-                    self._error_handler("integrity fail")
-                    self.__delete_game()
+                self._error_handler("integrity fail")
+                self.__delete_game()
         else:
-            self._error_handler("file not found")
+            self._error_handler("no saved game")
 
-    @staticmethod
-    def __check_for_game():
+    def __check_for_game(self):
         """
-        checks if the file games.bin exists
-        :return: if the file was found
+        checks if the file games.bin has data in it
+        :return: If True: return file content
+                 If False: return false
         """
-        file_exists = os.path.exists("games.bin")
-        return file_exists
+        try:
+            with open("games.bin", "rb") as file:
+                game_data = file.read()
+        except FileNotFoundError:
+            self._error_handler("file not found")
+        except PermissionError:
+            self._error_handler("permission error")
+        except EOFError:
+            self._error_handler("no saved game")
+
+        if game_data:
+            return game_data
+        else:
+            return False
 
     def __delete_game(self):
         """ removes game save from binary file"""
