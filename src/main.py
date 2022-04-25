@@ -84,41 +84,38 @@ class Terminal:
     def menu_input(self):
         """handles inputs for main menu"""
 
-        action = input(f"\n{Text.REGULAR}    Enter action: ")
+        while True:
+            action = input(f"\n{Text.REGULAR}    Enter action: ")
 
-        if action == "s" or action == "S":
-            if self.check_for_game():
-                overwrite_query = input(
-                    """
-    There is a currently a saved game.
-    If you start a new game, the saved game will be lost.
-
-    Do you want to continue? [Y/N]: """
-                )
-                if overwrite_query == "y" or overwrite_query == "Y":
+            if action == "s" or action == "S":
+                if self.check_for_game():
+                    overwrite_query = input(
+                        """
+        There is a currently a saved game.
+        If you start a new game, the saved game will be lost.
+    
+        Do you want to continue? [Y/N]: """
+                    )
+                    if overwrite_query == "y" or overwrite_query == "Y":
+                        self.create_new_game()
+                        self.play_game()
+                    elif overwrite_query == "n" or overwrite_query == "N":
+                        print("    Game creation was cancelled.")
+                    else:
+                        self.error_handler("unsupported input")
+                else:
                     self.create_new_game()
                     self.play_game()
-                elif overwrite_query == "n" or overwrite_query == "N":
-                    print("    Game creation was cancelled.")
-                    self.menu_input()
-                else:
-                    self.error_handler("unsupported input")
-                    self.menu_input()
-            else:
-                self.create_new_game()
-                self.play_game()
 
-        elif action == "l" or action == "L":
-            self.load_game()
-            if self.current_game:
-                self.play_game()
+            elif action == "l" or action == "L":
+                self.load_game()
+                if self.current_game:
+                    self.play_game()
+
+            elif action == "q" or action == "Q":
+                sys.exit(0)
             else:
-                self.menu_input()
-        elif action == "q" or action == "Q":
-            sys.exit(0)
-        else:
-            self.error_handler("unsupported input")
-            self.menu_input()
+                self.error_handler("unsupported input")
 
     def create_new_game(self):
         """creates a new game object"""
@@ -343,34 +340,41 @@ class Terminal:
         """Checks Message Authentication codes. If the codes are the same,
          the game gets loaded, otherwise it gets deleted."""
 
-        data = self.check_for_game()
-        if data:
-            mac = data[16:48]
-            key = data[48:52]
-            game_data = data[52:(len(data) - 2)]
-            mac_new = hmac.new(key, game_data, hashlib.sha256).digest()
-            if hmac.compare_digest(mac, mac_new):
-                self.current_game = pickle.loads(game_data)
+        file_exists = self.check_for_game()
+        if file_exists:
+            # read all file data into object
+            try:
+                with open("games.bin", "rb") as file:
+                    data = file.read()
+            except FileNotFoundError:
+                self.error_handler("file not found")
+            except PermissionError:
+                self.error_handler("permission error")
+            except EOFError:
+                self.error_handler("no saved game")
             else:
-                self.error_handler("integrity fail")
-                self.delete_game()
+                # pulls the necessary data from the "data" object
+                mac = data[16:48]
+                key = data[48:52]
+                game_data = data[52:(len(data) - 2)]
+                # creates new MAC with data read from file and compares it the the old MAC
+                mac_new = hmac.new(key, game_data, hashlib.sha256).digest()
+                if hmac.compare_digest(mac, mac_new):
+                    self.current_game = pickle.loads(game_data)
+                else:
+                    self.error_handler("integrity fail")
+                    self.delete_game()
         else:
-            self.error_handler("no saved game")
-
-    def check_for_game(self):
-        """ checks if a game is saved in the binary file"""
-
-        data = None
-        try:
-            with open("games.bin", "rb") as file:
-                data = file.read()
-        except FileNotFoundError:
             self.error_handler("file not found")
-        except PermissionError:
-            self.error_handler("permission error")
-        except EOFError:
-            self.error_handler("no saved game")
-        return data
+
+    @staticmethod
+    def check_for_game():
+        """
+        checks if the file games.bin exists
+        :return: if the file was found
+        """
+        file_exists = os.path.exists("games.bin")
+        return file_exists
 
     def delete_game(self):
         """ removes game save from binary file"""
@@ -382,10 +386,8 @@ class Terminal:
             print("Game was removed from save file.")
         except FileNotFoundError:
             self.error_handler("file not found")
-            self.menu_input()
         except PermissionError:
             self.error_handler("permission error")
-            self.menu_input()
 
 
 if __name__ == "__main__":
