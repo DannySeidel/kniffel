@@ -19,7 +19,7 @@ class Player:
             :param player_id: used for identification of the player
         """
         self._player_id = player_id
-        self.dice_used = []
+        self.dice_thrown = []
         self.dice_put_aside = []
         self.scores = dict.fromkeys(["ones", "twos", "threes", "fours", "fives", "sixes", "three_of_a_kind", "four_of_a_kind", "full_house", "small_straight",
                                      "large_straight", "yahtzee", "chance"])
@@ -29,13 +29,12 @@ class Player:
         Creating an array with random integers between 1 and 6"""
 
         dice_count = 5 - len(self.dice_put_aside)
-        self.dice_used = []
 
         for _ in range(dice_count):
             random_int = randint(1, 6)
-            self.dice_used.append(random_int)
+            self.dice_thrown.append(random_int)
 
-        self.dice_used.sort()
+        self.dice_thrown.sort()
 
     def get_all_possible_scores(self) -> list[int | None]:
         """returns an array with all possible scores
@@ -191,7 +190,7 @@ class Player:
         self.dice_put_aside.append(value)
 
     def reuse_dice(self):
-        """appends dice_put_aside to dice_used to reuse them"""
+        """appends dice_put_aside to dice_thrown to reuse them"""
 
-        self.dice_used += self.dice_put_aside
+        self.dice_thrown += self.dice_put_aside
         self.dice_put_aside = []

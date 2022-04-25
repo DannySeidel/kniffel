@@ -13,9 +13,9 @@ class TestPlayer(TestCase):
         expected_value = 3
 
         self.test_player.throw_dice()
-        self.assertEqual(expected_value, len(self.test_player.dice_used))
-        self.assertTrue(self.test_player.dice_used[0] <= self.test_player.dice_used[1])
-        self.assertTrue(self.test_player.dice_used[1] <= self.test_player.dice_used[2])
+        self.assertEqual(expected_value, len(self.test_player.dice_thrown))
+        self.assertTrue(self.test_player.dice_thrown[0] <= self.test_player.dice_thrown[1])
+        self.assertTrue(self.test_player.dice_thrown[1] <= self.test_player.dice_thrown[2])
 
     def test_get_all_possible_scores1(self):
         self.test_player.dice_put_aside = [1, 2, 3, 4, 5]
@@ -60,12 +60,12 @@ class TestPlayer(TestCase):
         self.assertEqual(expected_value, self.test_player.dice_put_aside)
 
     def test_reuse_dice(self):
-        self.test_player.dice_used = [1, 4]
+        self.test_player.dice_thrown = [1, 4]
         self.test_player.dice_put_aside = [1, 3, 6]
 
         expected_value1 = [1, 4, 1, 3, 6]
         expected_value2 = []
 
         self.test_player.reuse_dice()
-        self.assertEqual(expected_value1, self.test_player.dice_used)
+        self.assertEqual(expected_value1, self.test_player.dice_thrown)
         self.assertEqual(expected_value2, self.test_player.dice_put_aside)
