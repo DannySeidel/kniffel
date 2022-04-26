@@ -203,7 +203,8 @@ class Terminal:
                     elif action == "k" or action == "K":
                         for value_2 in player.dice_thrown:
                             player.put_dice_aside(value_2)
-                            player.dice_thrown.remove(value_2)
+
+                        player.dice_thrown.clear()
                         break
                     
                 attempt += 1
