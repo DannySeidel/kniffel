@@ -87,7 +87,7 @@ class Terminal:
 
         while True:
             action = input(f"\n{Text.REGULAR}    Enter action: ")
-            if action == "s" or action == "S":
+            if action.upper() == "S":
                 if self.__check_for_game():
                     overwrite_query = input(
                         """
@@ -96,10 +96,10 @@ class Terminal:
     
         Do you want to continue? [Y/N]: """
                     )
-                    if overwrite_query == "y" or overwrite_query == "Y":
+                    if overwrite_query.upper() == "Y":
                         self._create_new_game()
                         self._play_game()
-                    elif overwrite_query == "n" or overwrite_query == "N":
+                    elif overwrite_query.upper() == "N":
                         print("    Game creation was cancelled.")
                     else:
                         self._error_handler("unsupported input")
@@ -107,12 +107,12 @@ class Terminal:
                     self._create_new_game()
                     self._play_game()
 
-            elif action == "l" or action == "L":
+            elif action.upper() == "L":
                 self._load_game()
                 if self._current_game:
                     self._play_game()
 
-            elif action == "q" or action == "Q":
+            elif action.upper() == "Q":
                 sys.exit(0)
             else:
                 self._error_handler("unsupported input")
@@ -195,12 +195,12 @@ class Terminal:
                     print(f"    Do you want rethrow the dice with current value {Text.SCORE + str(value) + Color.END}?")
                     action = input(f"{Text.REGULAR}    Enter action [Y/N/K]: ")
 
-                    if action == "n" or action == "N":
+                    if action.upper() == "N":
                         player.put_dice_aside(value)
                         #remove the dice from the list of thrown dice
                         player.dice_thrown.remove(value)
 
-                    elif action == "k" or action == "K":
+                    elif action.upper() == "K":
                         for value_2 in player.dice_thrown:
                             player.put_dice_aside(value_2)
 
