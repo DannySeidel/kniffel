@@ -159,11 +159,10 @@ class Terminal:
         input(f"{Text.REGULAR}Press Enter to return to main menu")
         self.clear_console()
         self.print_menu()
-        
-        
+
+
     def __player_action(self, player_id, turn):
         """handling the actions for one player turn
-
         Args:
             :param player_id: current player id (player 1 or 2)
             :param turn: current game turn
@@ -177,17 +176,14 @@ class Terminal:
         attempt = 1
         player.dice_put_aside = []
 
-        while attempt <= 3:
+        while attempt <= 3 and len(player.dice_put_aside) != 5:
             self.clear_console()
             print(f"\n{Text.TURN}    Turn {turn + 1}{Color.END}")
             print(f"\n{Text.PLAYER}    Player {player_id} is on:{Color.END}")
             self._show_scoreboard(player)
             player.throw_dice()
 
-            if len(player.dice_put_aside) == 5:
-               break
-
-            elif attempt < 3:
+            if attempt < 3:
                 print(f"\n{Text.REGULAR}    You have thrown:")
                 self._print_dice_symbols(player.dice_thrown)
                 if len(player.dice_put_aside) > 0:
@@ -198,18 +194,22 @@ class Terminal:
                     print(f"{Text.REGULAR}    Keep all remaining dice [K]: ")
                     print(f"    Do you want rethrow the dice with current value {Text.SCORE + str(value) + Color.END}?")
                     action = input(f"{Text.REGULAR}    Enter action [Y/N/K]: ")
-                    if action == "n" or action == "N":
-                        player.put_dice_aside(value)
-                    elif action == "k" or action == "K":
-                        for i in player.dice_thrown:
-                            player.put_dice_aside(i)
-                        break
-                attempt += 1
 
+                    if action in ("n", "N"):
+                        player.put_dice_aside(value)
+                        #remove the dice from the list of thrown dice
+                        player.dice_thrown.remove(value)
+
+                    elif action in ("k", "K"):
+                        for dice in player.dice_thrown:
+                            player.put_dice_aside(dice)
+                            player.dice_thrown.remove(dice)
+                        break
+                    
+                attempt += 1
             else:
                 for value in player.dice_thrown:
                     player.put_dice_aside(value)
-
             player.dice_put_aside.sort()
 
         self.clear_console()
@@ -217,8 +217,8 @@ class Terminal:
         self._print_dice_symbols(player.dice_put_aside)
         self._show_scoreboard(player, calculate_possible_scores=True)
         self._save_round_score(player)
-        player.dice_thrown.clear()
-
+        
+        
     @staticmethod
     def _print_dice_symbols(array):
         """print dice symbols for given int array"""

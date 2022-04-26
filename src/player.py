@@ -27,7 +27,8 @@ class Player:
     def throw_dice(self):
         """Player throwing his dices.
         Creating an array with random integers between 1 and 6"""
-
+        
+        self.dice_thrown = []
         dice_count = 5 - len(self.dice_put_aside)
 
         for _ in range(dice_count):
