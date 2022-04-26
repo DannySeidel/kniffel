@@ -195,15 +195,15 @@ class Terminal:
                     print(f"    Do you want rethrow the dice with current value {Text.SCORE + str(value) + Color.END}?")
                     action = input(f"{Text.REGULAR}    Enter action [Y/N/K]: ")
 
-                    if action in ("n", "N"):
+                    if action == "n" or action == "N":
                         player.put_dice_aside(value)
                         #remove the dice from the list of thrown dice
                         player.dice_thrown.remove(value)
 
-                    elif action in ("k", "K"):
-                        for dice in player.dice_thrown:
-                            player.put_dice_aside(dice)
-                            player.dice_thrown.remove(dice)
+                    elif action == "k" or action == "K":
+                        for value_2 in player.dice_thrown:
+                            player.put_dice_aside(value_2)
+                            player.dice_thrown.remove(value_2)
                         break
                     
                 attempt += 1
