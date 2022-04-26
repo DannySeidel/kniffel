@@ -93,7 +93,7 @@ class Terminal:
                         """
         There is a currently a saved game.
         If you start a new game, the saved game will be lost.
-    
+
         Do you want to continue? [Y/N]: """
                     )
                     if overwrite_query.upper() == "Y":
@@ -160,7 +160,6 @@ class Terminal:
         self.clear_console()
         self.print_menu()
 
-
     def __player_action(self, player_id, turn):
         """handling the actions for one player turn
         Args:
@@ -197,7 +196,7 @@ class Terminal:
 
                     if action.upper() == "N":
                         player.put_dice_aside(value)
-                        #remove the dice from the list of thrown dice
+                        # remove the dice from the list of thrown dice
                         player.dice_thrown.remove(value)
 
                     elif action.upper() == "K":
@@ -206,7 +205,7 @@ class Terminal:
 
                         player.dice_thrown.clear()
                         break
-                    
+
                 attempt += 1
             else:
                 for value in player.dice_thrown:
@@ -218,8 +217,7 @@ class Terminal:
         self._print_dice_symbols(player.dice_put_aside)
         self._show_scoreboard(player, calculate_possible_scores=True)
         self._save_round_score(player)
-        
-        
+
     @staticmethod
     def _print_dice_symbols(array):
         """print dice symbols for given int array"""
@@ -339,7 +337,7 @@ class Terminal:
             # creates new MAC with data read from file and compares it the the old MAC
             mac_new = hmac.new(key, game_data, hashlib.sha256).digest()
             if hmac.compare_digest(mac, mac_new):
-                self.current_game = pickle.loads(game_data)
+                self._current_game = pickle.loads(game_data)
             else:
                 self._error_handler("integrity fail")
                 self.__delete_game()
@@ -364,8 +362,8 @@ class Terminal:
 
         if game_data:
             return game_data
-        else:
-            return False
+
+        return False
 
     def __delete_game(self):
         """ removes game save from binary file"""
