@@ -196,8 +196,6 @@ class Terminal:
 
                     if action.upper() == "N":
                         player.put_dice_aside(value)
-                        # remove the dice from the list of thrown dice
-                        player.dice_thrown.remove(value)
 
                     elif action.upper() == "K":
                         for value_2 in player.dice_thrown:
