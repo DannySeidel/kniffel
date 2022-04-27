@@ -12,10 +12,14 @@ import hashlib
 import os
 import sys
 from uuid import uuid4
-
-from game import Game
-from error_handler import ErrorHandler
-from formatting import Color, Text, Dice
+try:
+    from game import Game
+    from error_handler import ErrorHandler
+    from formatting import Color, Text, Dice
+except FileNotFoundError:
+    # TODO: des schöner machen
+    print("Core files missing. Game can't be started")
+    sys.exit(0)
 
 
 class Terminal:
@@ -63,7 +67,7 @@ class Terminal:
         while True:
             action = input(f"\n{Text.REGULAR}    Enter action: ")
             if action.upper() == "S":
-                if self.__check_for_game():
+                if self._check_for_game():
                     overwrite_query = input(
                         """
         There is a currently a saved game.
@@ -129,7 +133,7 @@ class Terminal:
         else:
             print(f"{Text.IMPORTANT}\n          It's a draw!{Color.END}")
 
-        self.__delete_game()
+        self._delete_game()
         # "End screen"
         input(f"{Text.REGULAR}Enter anything to return to main menu")
         self.clear_console()
@@ -326,33 +330,36 @@ class Terminal:
         """Checks Message Authentication codes.
          If the codes are the same, the game gets loaded, otherwise it gets deleted."""
 
-        game_exists = self.__check_for_game()
+        game_exists = self._check_for_game()
         if game_exists:
-            # checks length of file data to prevent AttributeErrors later
+            # checks length of file data to prevent Errors later
+            # also an integrity fail because this scenario can only happen through human tampering
             if len(game_exists) <= 55:
                 self.__error_handler.file_error("integrity fail")
-                self.__delete_game()
+                self._delete_game()
             else:
                 # pulls the necessary data from the "data" object
                 mac = game_exists[16:48]
                 key = game_exists[48:52]
                 game_data = game_exists[52:(len(game_exists) - 2)]
+
                 # creates new MAC with data read from file and compares it the the old MAC
                 mac_new = hmac.new(key, game_data, hashlib.sha256).digest()
                 if hmac.compare_digest(mac, mac_new):
                     self._current_game = pickle.loads(game_data)
                 else:
                     self.__error_handler.file_error("integrity fail")
-                    self.__delete_game()
+                    self._delete_game()
         else:
             self.__error_handler.file_error("no saved game")
 
-    def __check_for_game(self):
+    def _check_for_game(self):
         """
         checks if the file games.bin has data in it
         :return: If True: return file content
-                 If False: return false
+                 If False: return False
         """
+        game_data = False
         try:
             with open("games.bin", "rb") as file:
                 game_data = file.read()
@@ -363,12 +370,9 @@ class Terminal:
         except EOFError:
             self.__error_handler.file_error("no saved game")
 
-        if game_data:
-            return game_data
+        return game_data
 
-        return False
-
-    def __delete_game(self):
+    def _delete_game(self):
         """ removes game save from binary file"""
 
         try:
