@@ -298,7 +298,7 @@ class Terminal:
         Args:
             :param player: player object of player 1 or 2
         """
-        # TODO: fix (None,None) bug: if someone tries to set the same score twice, the score turns into (None,None)
+
         possible_scores = player.get_all_possible_scores()
         saved_scores = player.scores
 
@@ -306,9 +306,13 @@ class Terminal:
 
         found = False
         for index in range(13):
+            # checks if inputted number exists
             if score_number == str(index + 1):
-                saved_scores[self.__score_keys[index]] = possible_scores[index] if saved_scores[self.__score_keys[index]] is None else (
-                    self._error_handler("already set"), self._save_round_score(player))
+                # checks if value has already been set
+                if saved_scores[self.__score_keys[index]] is None:
+                    saved_scores[self.__score_keys[index]] = possible_scores[index]
+                else:
+                    self._error_handler("already set"), self._save_round_score(player)
 
                 found = True
                 break
@@ -319,9 +323,14 @@ class Terminal:
 
     def _save_game(self):
         """pickles the current game, creates a Message Authentication code and saves everything into a binary file"""
+
+        # pickle current game
         pickled_game = pickle.dumps(self._current_game)
+        # create MAC
         mac = hmac.new(str(self._current_game.key).encode(), pickled_game, hashlib.sha256).digest()
+        # combine pickled game, MAC, and game key into one binary output
         game_data_b = mac + str(self._current_game.key).encode() + pickled_game
+        # save output to game file
         try:
             with open("games.bin", "wb") as file:
                 pickle.dump(game_data_b, file)
