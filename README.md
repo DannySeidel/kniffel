@@ -8,5 +8,21 @@
 - Pickle
 - Hashlib
 - Hmac
-- Random
+- Pytest
+
+## Pytest
+Run all tests with:
+```shell
+pytest tests
+```
+
+Run tests for one file:
+```shell
+pytest tests/"filename"
+```
+
+Run tests with coverage:
+```shell
+pytest tests --cov src --cov-report=html
+```
 
