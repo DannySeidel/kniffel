@@ -14,79 +14,6 @@ from src.game import Game
 class TestMain(unittest.TestCase):
     test_terminal = Terminal()
 
-    def test_error_handler1(self):
-        captured_output = io.StringIO()
-        sys.stdout = captured_output
-        self.test_terminal._error_handler("unsupported input")
-        sys.stdout = sys.__stdout__
-        expected_str = "\n    Error: Input not supported.\n"
-
-        self.assertEqual(expected_str, captured_output.getvalue())
-
-    def test_error_handler2(self):
-        captured_output = io.StringIO()
-        sys.stdout = captured_output
-        self.test_terminal._error_handler("already set")
-        sys.stdout = sys.__stdout__
-        expected_str = "\n    Error: This value is already set. Enter a different number.\n"
-
-        self.assertEqual(expected_str, captured_output.getvalue())
-
-    def test_error_handler3(self):
-        captured_output = io.StringIO()
-        sys.stdout = captured_output
-        self.test_terminal._error_handler("number not found")
-        sys.stdout = sys.__stdout__
-        expected_str = "\n    Error: The given number was not found.\n"
-
-        self.assertEqual(expected_str, captured_output.getvalue())
-
-    def test_error_handler4(self):
-        captured_output = io.StringIO()
-        sys.stdout = captured_output
-        self.test_terminal._error_handler("file not found")
-        sys.stdout = sys.__stdout__
-        expected_str = "\n    Error: File 'games.bin' was not found. Please make sure this file exists.\n"
-
-        self.assertEqual(expected_str, captured_output.getvalue())
-
-    def test_error_handler5(self):
-        captured_output = io.StringIO()
-        sys.stdout = captured_output
-        self.test_terminal._error_handler("permission error")
-        sys.stdout = sys.__stdout__
-        expected_str = "\n    Error: This programme does not have the necessary permissions to access the file 'games.bin'." \
-                       "    Please make sure that the programme has full access to the file.\n"
-
-        self.assertEqual(expected_str, captured_output.getvalue())
-
-    def test_error_handler6(self):
-        captured_output = io.StringIO()
-        sys.stdout = captured_output
-        self.test_terminal._error_handler("no saved game")
-        sys.stdout = sys.__stdout__
-        expected_str = "\n    Error: There is no saved game.\n"
-
-        self.assertEqual(expected_str, captured_output.getvalue())
-
-    def test_error_handler7(self):
-        captured_output = io.StringIO()
-        sys.stdout = captured_output
-        self.test_terminal._error_handler("integrity fail")
-        sys.stdout = sys.__stdout__
-        expected_str = "\n    Error: The game save file has been tampered with. The game is not recoverable and has to be deleted.\n"
-
-        self.assertEqual(expected_str, captured_output.getvalue())
-
-    def test_error_handler8(self):
-        captured_output = io.StringIO()
-        sys.stdout = captured_output
-        self.test_terminal._error_handler("---")
-        sys.stdout = sys.__stdout__
-        expected_str = "\n    Error: A unknown error occurred.\n"
-
-        self.assertEqual(expected_str, captured_output.getvalue())
-
     def test_create_game(self):
         self.test_terminal._create_new_game()
 
@@ -234,6 +161,6 @@ class TestMain(unittest.TestCase):
         self.test_terminal._save_game()
         sys.stdout = sys.__stdout__
 
-        expected_str = "saved"
+        expected_str = "saved\n"
 
         self.assertEqual(expected_str, captured_output.getvalue())
