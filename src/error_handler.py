@@ -9,7 +9,7 @@ by Tobias Welti, Luca Kaiser, Joshua Miller, Danny Seidel
 
 class ErrorHandler:
     """
-    handling possible errors and throwing corresponding errortext in terminal
+    handling possible errors and throwing corresponding errortext
     """
 
     @staticmethod
