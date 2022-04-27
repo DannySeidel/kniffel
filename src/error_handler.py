@@ -9,15 +9,15 @@ by Tobias Welti, Luca Kaiser, Joshua Miller, Danny Seidel
 
 class ErrorHandler:
     """
-    ...
+    handling possible errors and throwing corresponding errortext in terminal
     """
 
     @staticmethod
     def input_error(error_str):
-        """handles all errors for the program
+        """handles all input related errors for the program
 
         Args:
-            :param error_str: the type of error represented by a string
+            :param error_str: the type of input error represented by a string
         """
 
         match error_str:
@@ -32,10 +32,10 @@ class ErrorHandler:
 
     @staticmethod
     def file_error(error_str):
-        """handles all errors for the program
+        """handles all file related errors for the program
 
         Args:
-            :param error_str: the type of error represented by a string
+            :param error_str: the type of file error represented by a string
         """
 
         match error_str:
