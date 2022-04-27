@@ -189,32 +189,32 @@ class Terminal:
                     print(f"{Text.REGULAR}    The following dice are put aside:\n")
                     self._print_dice_symbols(player.dice_put_aside)
                     player.reuse_dice()
-                for value in player.dice_thrown:
+                for counter in range(len(player.dice_thrown)):
                     print(f"{Text.REGULAR}    Keep all remaining dice [K]: ")
-                    print(f"    Do you want rethrow the dice with current value {Text.SCORE + str(value) + Color.END}?")
-                    # Debug
-                    print(player.dice_thrown)
-                    # Debug end
+                    print(f"    Do you want rethrow the dice with current value"
+                          f" {Text.SCORE + str(player.dice_thrown[counter]) + Color.END}?")
                     action = input(f"{Text.REGULAR}    Enter action [Y/N/K]: ")
 
                     if action.upper() == "N":
-                        player.put_dice_aside(value)
+                        player.put_dice_aside(player.dice_thrown[counter])
 
                     elif action.upper() == "K":
-                        # checks remaining dice for rethrowing, and puts dice aside with value <= 6
+                        # Clears put_aside list to properly re-add the dice,
+                        # checks all dice for rethrowing, and puts dice aside with value <= 6,
                         # if value is > 6, the dice gets rethrown
-                        for value_2 in range(len(player.dice_put_aside), len(player.dice_thrown)):
+                        player.dice_put_aside.clear()
+                        for value_2 in player.dice_thrown:
                             if value_2 <= 6:
-                                player.put_dice_aside(player.dice_thrown[value_2])
-
+                                player.put_dice_aside(value_2)
                         player.dice_thrown.clear()
                         break
                     else:
                         # increase value of dice that will be rethrown, so it can be filtered out later
-                        player.dice_thrown[value] += 20
+                        player.dice_thrown[counter] += 6
 
                 attempt += 1
             else:
+                # puts all dice aside
                 for value in player.dice_thrown:
                     player.put_dice_aside(value)
             player.dice_put_aside.sort()
@@ -298,7 +298,7 @@ class Terminal:
         Args:
             :param player: player object of player 1 or 2
         """
-
+        # TODO: fix (None,None) bug: if someone tries to set the same score twice, the score turns into (None,None)
         possible_scores = player.get_all_possible_scores()
         saved_scores = player.scores
 
