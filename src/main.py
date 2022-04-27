@@ -127,13 +127,13 @@ class Terminal:
         """looping through game turns and printing the winner"""
 
         turn = self._current_game.get_current_turn()
-
+        # loops through game turns
         while turn < 13:
             for index in range(1, 3):
                 self.__player_action(index, turn)
             self._save_game()
             turn += 1
-
+        # prints final scoreboard for both players
         self.clear_console()
         for index in range(1, 3):
             if index == 1:
@@ -144,7 +144,7 @@ class Terminal:
             print(f"{Text.PLAYER}    Player {index}:{Color.END}")
             self._show_scoreboard(player)
             print(f"{Text.SCORE}      Total:             {player.get_total_score()}{Color.END}")
-
+        # get winner
         winner_id = self._current_game.get_winner()
 
         if winner_id == 1:
@@ -156,7 +156,7 @@ class Terminal:
 
         self.__delete_game()
         # "End screen"
-        input(f"{Text.REGULAR}Press Enter to return to main menu")
+        input(f"{Text.REGULAR}Enter anything to return to main menu")
         self.clear_console()
         self.print_menu()
 
@@ -199,8 +199,8 @@ class Terminal:
                         player.put_dice_aside(player.dice_thrown[counter])
 
                     elif action.upper() == "K":
-                        # Clears put_aside list to properly re-add the dice,
-                        # checks all dice for rethrowing, and puts dice aside with value <= 6,
+                        # Clears put_aside list to properly re-add the dice
+                        # checks all dice for rethrowing, and puts dice aside with value <= 6
                         # if value is > 6, the dice gets rethrown
                         player.dice_put_aside.clear()
                         for value_2 in player.dice_thrown:
@@ -346,17 +346,22 @@ class Terminal:
 
         game_exists = self.__check_for_game()
         if game_exists:
-            # pulls the necessary data from the "data" object
-            mac = game_exists[16:48]
-            key = game_exists[48:52]
-            game_data = game_exists[52:(len(game_exists) - 2)]
-            # creates new MAC with data read from file and compares it the the old MAC
-            mac_new = hmac.new(key, game_data, hashlib.sha256).digest()
-            if hmac.compare_digest(mac, mac_new):
-                self._current_game = pickle.loads(game_data)
-            else:
+            # checks length of file data to prevent AttributeErrors later
+            if len(game_exists) <= 55:
                 self._error_handler("integrity fail")
                 self.__delete_game()
+            else:
+                # pulls the necessary data from the "data" object
+                mac = game_exists[16:48]
+                key = game_exists[48:52]
+                game_data = game_exists[52:(len(game_exists) - 2)]
+                # creates new MAC with data read from file and compares it the the old MAC
+                mac_new = hmac.new(key, game_data, hashlib.sha256).digest()
+                if hmac.compare_digest(mac, mac_new):
+                    self._current_game = pickle.loads(game_data)
+                else:
+                    self._error_handler("integrity fail")
+                    self.__delete_game()
         else:
             self._error_handler("no saved game")
 
@@ -388,7 +393,7 @@ class Terminal:
             with open("games.bin", "wb") as file:
                 file.truncate()
                 file.close()
-            print("Game was removed from save file.")
+            print("    Game was removed from save file.")
         except FileNotFoundError:
             self._error_handler("file not found")
         except PermissionError:
