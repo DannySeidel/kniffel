@@ -8,6 +8,7 @@ import unittest
 from src.main import Terminal
 from src.player import Player
 from src.formatting import Text
+from src.game import Game
 
 
 class TestMain(unittest.TestCase):
@@ -222,5 +223,17 @@ class TestMain(unittest.TestCase):
                        else Text.IMPORTANT + str(possible_scores[11])}\n""" \
                        f""" {Text.REGULAR}      13) Chance:           {Text.SCORE + str(saved_scores['chance']) if possible_scores[12] is None
                        else Text.IMPORTANT + str(possible_scores[12])}\n"""
+
+        self.assertEqual(expected_str, captured_output.getvalue())
+
+    def test_save_game(self):
+        test_game = self.test_terminal._create_new_game()
+
+        captured_output = io.StringIO()
+        sys.stdout = captured_output
+        self.test_terminal._save_game()
+        sys.stdout = sys.__stdout__
+
+        expected_str = "saved"
 
         self.assertEqual(expected_str, captured_output.getvalue())
