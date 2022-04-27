@@ -189,28 +189,8 @@ class Terminal:
                     print(f"{Text.REGULAR}    The following dice are put aside:\n")
                     self._print_dice_symbols(player.dice_put_aside)
                     player.reuse_dice()
-                for counter in range(len(player.dice_thrown)):
-                    print(f"{Text.REGULAR}    Keep all remaining dice [K]: ")
-                    print(f"    Do you want rethrow the dice with current value"
-                          f" {Text.SCORE + str(player.dice_thrown[counter]) + Color.END}?")
-                    action = input(f"{Text.REGULAR}    Enter action [Y/N/K]: ")
 
-                    if action.upper() == "N":
-                        player.put_dice_aside(player.dice_thrown[counter])
-
-                    elif action.upper() == "K":
-                        # Clears put_aside list to properly re-add the dice
-                        # checks all dice for rethrowing, and puts dice aside with value <= 6
-                        # if value is > 6, the dice gets rethrown
-                        player.dice_put_aside.clear()
-                        for value_2 in player.dice_thrown:
-                            if value_2 <= 6:
-                                player.put_dice_aside(value_2)
-                        player.dice_thrown.clear()
-                        break
-                    else:
-                        # increase value of dice that will be rethrown, so it can be filtered out later
-                        player.dice_thrown[counter] += 6
+                self.__player_dice_input(player)
 
                 attempt += 1
             else:
@@ -224,6 +204,31 @@ class Terminal:
         self._print_dice_symbols(player.dice_put_aside)
         self._show_scoreboard(player, calculate_possible_scores=True)
         self._save_round_score(player)
+
+    @staticmethod
+    def __player_dice_input(player):
+        for _, dice in enumerate(player.dice_thrown, start=0):
+            print(f"{Text.REGULAR}    Keep all remaining dice [K]: ")
+            print(f"    Do you want rethrow the dice with current value"
+                  f" {Text.SCORE + str(dice) + Color.END}?")
+            action = input(f"{Text.REGULAR}    Enter action [Y/N/K]: ")
+
+            if action.upper() == "N":
+                player.put_dice_aside(dice)
+
+            elif action.upper() == "K":
+                # Clears put_aside list to properly re-add the dice
+                # checks all dice for rethrowing, and puts dice aside with value <= 6
+                # if value is > 6, the dice gets rethrown
+                player.dice_put_aside.clear()
+                for value in player.dice_thrown:
+                    if value <= 6:
+                        player.put_dice_aside(value)
+                player.dice_thrown.clear()
+                break
+            else:
+                # increase value of dice that will be rethrown, so it can be filtered out later
+                dice += 6
 
     @staticmethod
     def _print_dice_symbols(array):
@@ -312,7 +317,8 @@ class Terminal:
                 if saved_scores[self.__score_keys[index]] is None:
                     saved_scores[self.__score_keys[index]] = possible_scores[index]
                 else:
-                    self._error_handler("already set"), self._save_round_score(player)
+                    self._error_handler("already set")
+                    self._save_round_score(player)
 
                 found = True
                 break
