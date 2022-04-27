@@ -4,15 +4,18 @@
 import io
 import sys
 import unittest
+import os
+from unittest.mock import patch
 
 from src.main import Terminal
 from src.player import Player
 from src.formatting import Text
-from src.game import Game
 
 
 class TestMain(unittest.TestCase):
-    test_terminal = Terminal()
+
+    def setUp(self):
+        self.test_terminal = Terminal()
 
     def test_create_game(self):
         self.test_terminal._create_new_game()
@@ -154,13 +157,80 @@ class TestMain(unittest.TestCase):
         self.assertEqual(expected_str, captured_output.getvalue())
 
     def test_save_game(self):
-        test_game = self.test_terminal._create_new_game()
 
-        captured_output = io.StringIO()
-        sys.stdout = captured_output
-        self.test_terminal._save_game()
-        sys.stdout = sys.__stdout__
+        # creates test binary file
+        with open("games.bin", "xb"):
+            pass
 
+        # creates new game that can be saved
+        self.test_terminal._create_new_game()
         expected_str = "saved\n"
 
-        self.assertEqual(expected_str, captured_output.getvalue())
+        # tests correct saving procedure
+        with patch("sys.stdout", new=io.StringIO()) as fake_out:
+            self.test_terminal._save_game()
+            self.assertEqual(expected_str, fake_out.getvalue())
+        self.test_terminal._delete_game()
+
+    def test_check_for_game(self):
+
+        # creates test binary file
+        with open("games.bin", "xb"):
+            pass
+
+        # tests empty file handling
+        expected_value_empty_file = False
+        with patch("Sys.stdout", new=io.StringIO()) as fake_out:
+            self.test_terminal._check_for_game()
+            self.assertEqual(expected_value_empty_file, fake_out.getvalue())
+
+        # sets up test for the correct procedure
+        self.test_terminal._create_new_game()
+        self.test_terminal._save_game()
+        with open("games.bin", "rb") as file:
+            expected_value_success = file.read()
+
+        # tests correct game checking procedure
+        with patch("Sys.stdout", new=io.StringIO()) as fake_out:
+            self.test_terminal._check_for_game()
+            self.assertEqual(expected_value_success, fake_out.getvalue())
+
+        # removes file to check "file not found" handling
+        os.remove("games.bin")
+
+        # tests "file not found" handling
+        expected_value_fnf = "\n    Error: File 'games.bin' was not found. Please make sure this file exists."
+        with patch("Sys.stdout", new=io.StringIO()) as fake_out:
+            self.test_terminal._check_for_game()
+            self.assertEqual(expected_value_fnf, fake_out.getvalue())
+
+    def test_load_game(self):
+        # creates test binary file
+        with open("games.bin", "xb"):
+            pass
+
+        # tests empty file handling
+        expected_str_empty_file = "\n    Error: There is no saved game."
+        with patch("Sys.stdout", new=io.StringIO()) as fake_out:
+            self.test_terminal._load_game()
+            self.assertEqual(expected_str_empty_file, fake_out.getvalue())
+
+        # sets up test for too short file length
+        expected_str_integrity_fail = "\n    Error: The game save file has been tampered with. The game is not recoverable and has to be deleted."
+
+        with open("games.bin", "wb") as file:
+            file.write("Random String".encode())
+
+        # tests too short file length
+        with patch("Sys.stdout", new=io.StringIO()) as fake_out:
+            self.test_terminal._load_game()
+            self.assertEqual(expected_str_integrity_fail, fake_out.getvalue())
+        self.test_terminal._delete_game()
+
+        # sets up test for failed MAC comparison
+
+        # tests failes MAC comparison
+
+        # sets up test for successful loading
+
+        # tests successful loading
