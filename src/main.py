@@ -182,7 +182,7 @@ class Terminal:
 
     @staticmethod
     def __player_dice_input(player):
-        for _, dice in enumerate(player.dice_thrown, start=0):
+        for dice in player.dice_thrown:
             print(f"{Text.REGULAR}    Keep all remaining dice [K]: ")
             print(f"    Do you want rethrow the dice with current value"
                   f" {Text.SCORE + str(dice) + Color.END}?")
