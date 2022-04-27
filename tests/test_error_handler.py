@@ -83,3 +83,12 @@ class TestErrorHandler(unittest.TestCase):
         expected_str = "\n    Error: A unknown error occurred.\n"
 
         self.assertEqual(expected_str, captured_output.getvalue())
+
+    def test_error_handler9(self):
+        captured_output = io.StringIO()
+        sys.stdout = captured_output
+        self.test_error_handler.input_error("---")
+        sys.stdout = sys.__stdout__
+        expected_str = "\n    Error: A unknown error occurred.\n"
+
+        self.assertEqual(expected_str, captured_output.getvalue())
