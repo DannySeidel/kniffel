@@ -12,7 +12,7 @@ from random import randint
 class Player:
     """handling player actions and player score"""
 
-    def __init__(self, player_id):
+    def __init__(self, player_id, error_handling_class):
         """initializing the player
 
         Args:
@@ -23,6 +23,7 @@ class Player:
         self.dice_put_aside = []
         self.scores = dict.fromkeys(["ones", "twos", "threes", "fours", "fives", "sixes", "three_of_a_kind", "four_of_a_kind", "full_house", "small_straight",
                                      "large_straight", "yahtzee", "chance"])
+        self.__error_handler = error_handling_class
 
     def throw_dice(self):
         """Player throwing his dices.
@@ -36,6 +37,31 @@ class Player:
             self.dice_thrown.append(random_int)
 
         self.dice_thrown.sort()
+
+    def _save_round_score(self, score_number):
+        """saves score of current round to dict
+
+        """
+
+        possible_scores = self.get_all_possible_scores()
+
+        found = False
+        for index in range(13):
+            # checks if inputted number exists
+            if score_number == str(index + 1):
+                # checks if value has already been set
+                if self.scores[list(self.scores.keys())[index]] is None:
+                    self.scores[list(self.scores.keys())[index]] = possible_scores[index]
+                else:
+                    self.__error_handler.input_error("already set")
+                    self._save_round_score()
+
+                found = True
+                break
+
+        if not found:
+            self.__error_handler.input_error("number not found")
+            self._save_round_score()
 
     def get_all_possible_scores(self) -> list[int | None]:
         """returns an array with all possible scores

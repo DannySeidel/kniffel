@@ -27,8 +27,8 @@ class Terminal:
 
     def __init__(self):
         self._current_game = None
-        self.__score_keys = list(Game(uuid4()).player_1.scores.keys())
-        self.__error_handler = ErrorHandler()
+        self._error_handler = ErrorHandler()
+        self.__score_keys = list(Game(uuid4(), self._error_handler).player_1.scores.keys())
 
     @staticmethod
     def clear_console():
@@ -81,7 +81,7 @@ class Terminal:
                     elif overwrite_query.upper() == "N":
                         print("    Game creation was cancelled.")
                     else:
-                        self.__error_handler.input_error("unsupported input")
+                        self._error_handler.input_error("unsupported input")
                 else:
                     self._create_new_game()
                     self._play_game()
@@ -94,13 +94,13 @@ class Terminal:
             elif action.upper() == "Q":
                 sys.exit(0)
             else:
-                self.__error_handler.input_error("unsupported input")
+                self._error_handler.input_error("unsupported input")
 
     def _create_new_game(self):
         """creates a new game object"""
 
         game_id = uuid4()
-        self._current_game = Game(game_id)
+        self._current_game = Game(game_id, self._error_handler)
 
     def _play_game(self):
         """looping through game turns and printing the winner"""
@@ -182,7 +182,9 @@ class Terminal:
         print(f"\n{Text.IMPORTANT}    Results {Text.TURN}Turn {turn + 1} {Text.IMPORTANT}| {Text.PLAYER}Player {player_id}")
         self._print_dice_symbols(player.dice_put_aside)
         self._show_scoreboard(player, calculate_possible_scores=True)
-        self._save_round_score(player)
+        # gives scoreboard number to player for saving
+        score_number = input(f"\n{Text.REGULAR}    Enter the matching number to save the score: ")
+        player.save_round_score(score_number)
 
     @staticmethod
     def __player_dice_input(player):
@@ -277,36 +279,6 @@ class Terminal:
             if index == 5:
                 print(f"{Text.REGULAR}      Lower Section:")
 
-    def _save_round_score(self, player):
-        """saves score of current round to dict
-
-        Args:
-            :param player: player object of player 1 or 2
-        """
-
-        possible_scores = player.get_all_possible_scores()
-        saved_scores = player.scores
-
-        score_number = input(f"\n{Text.REGULAR}    Enter the matching number to save the score: ")
-
-        found = False
-        for index in range(13):
-            # checks if inputted number exists
-            if score_number == str(index + 1):
-                # checks if value has already been set
-                if saved_scores[self.__score_keys[index]] is None:
-                    saved_scores[self.__score_keys[index]] = possible_scores[index]
-                else:
-                    self.__error_handler.input_error("already set")
-                    self._save_round_score(player)
-
-                found = True
-                break
-
-        if not found:
-            self.__error_handler.input_error("number not found")
-            self._save_round_score(player)
-
     def _save_game(self):
         """pickles the current game, creates a Message Authentication code and saves everything into a binary file"""
 
@@ -322,9 +294,9 @@ class Terminal:
                 pickle.dump(game_data_b, file)
             print("saved")
         except FileNotFoundError:
-            self.__error_handler.file_error("file not found")
+            self._error_handler.file_error("file not found")
         except PermissionError:
-            self.__error_handler.file_error("permission error")
+            self._error_handler.file_error("permission error")
 
     def _load_game(self):
         """Checks Message Authentication codes.
@@ -335,7 +307,7 @@ class Terminal:
             # checks length of file data to prevent Errors later
             # also an integrity fail because this scenario can only happen through human tampering
             if len(game_exists) <= 55:
-                self.__error_handler.file_error("integrity fail")
+                self._error_handler.file_error("integrity fail")
                 self._delete_game()
             else:
                 # pulls the necessary data from the "data" object
@@ -349,10 +321,10 @@ class Terminal:
                     self._current_game = pickle.loads(game_data)
                     print("Loading success")
                 else:
-                    self.__error_handler.file_error("integrity fail")
+                    self._error_handler.file_error("integrity fail")
                     self._delete_game()
         else:
-            self.__error_handler.file_error("no saved game")
+            self._error_handler.file_error("no saved game")
 
     def _check_for_game(self):
         """
@@ -365,11 +337,11 @@ class Terminal:
             with open("games.bin", "rb") as file:
                 game_data = file.read()
         except FileNotFoundError:
-            self.__error_handler.file_error("file not found")
+            self._error_handler.file_error("file not found")
         except PermissionError:
-            self.__error_handler.file_error("permission error")
+            self._error_handler.file_error("permission error")
         except EOFError:
-            self.__error_handler.file_error("no saved game")
+            self._error_handler.file_error("no saved game")
 
         if game_data:
             return game_data
@@ -384,9 +356,9 @@ class Terminal:
                 file.close()
             print("    Game was removed from save file.")
         except FileNotFoundError:
-            self.__error_handler.file_error("file not found")
+            self._error_handler.file_error("file not found")
         except PermissionError:
-            self.__error_handler.file_error("permission error")
+            self._error_handler.file_error("permission error")
 
 
 if __name__ == "__main__":
