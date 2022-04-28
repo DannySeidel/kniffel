@@ -27,6 +27,8 @@ class ErrorHandler:
                 print("\n    Error: This value is already set. Enter a different number.")
             case "number not found":
                 print("\n    Error: The given number was not found.")
+            case "invalid number":
+                print("\n    Error: Please choose a number between 1 and 13.")
             case _:
                 print("\n    Error: A unknown error occurred.")
 

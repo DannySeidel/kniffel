@@ -186,8 +186,10 @@ class Terminal:
         while True:
             score_number = input(f"\n{Text.REGULAR}    Enter the matching number to save the score: ")
             success = player.save_round_score(score_number)
-            if success:
+            if success and ((score_number > str(0)) and (score_number < str(14))):
                 break
+            else:
+                self._error_handler.input_error("invalid number")
 
     @staticmethod
     def __player_dice_input(player):
