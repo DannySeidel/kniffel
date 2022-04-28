@@ -347,6 +347,7 @@ class Terminal:
                 mac_new = hmac.new(key, game_data, hashlib.sha256).digest()
                 if hmac.compare_digest(mac, mac_new):
                     self._current_game = pickle.loads(game_data)
+                    print("Loading success")
                 else:
                     self.__error_handler.file_error("integrity fail")
                     self._delete_game()
