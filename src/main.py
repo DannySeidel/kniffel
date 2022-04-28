@@ -152,17 +152,18 @@ class Terminal:
         else:
             player = self._current_game.player_2
 
-        attempt = 1
+        attempt = 0
         player.dice_put_aside = []
 
-        while attempt <= 3 and len(player.dice_put_aside) != 5:
-            self.clear_console()
-            print(f"\n{Text.TURN}    Turn {turn + 1}{Color.END}")
-            print(f"\n{Text.PLAYER}    Player {player_id} is on:{Color.END}")
-            self._show_scoreboard(player)
+        while attempt < 4 and len(player.dice_put_aside) != 5:
             player.throw_dice()
 
             if attempt < 3:
+                self.clear_console()
+                print(f"\n{Text.TURN}    Turn {turn + 1}{Color.END}")
+                print(f"\n{Text.PLAYER}    Player {player_id} is on:{Color.END}")
+                self._show_scoreboard(player)
+
                 print(f"\n{Text.REGULAR}    You have thrown:")
                 self._print_dice_symbols(player.dice_thrown)
                 if len(player.dice_put_aside) > 0:
@@ -172,14 +173,15 @@ class Terminal:
 
                 self.__player_dice_input(player)
 
-                attempt += 1
             else:
                 # puts all dice aside
-                for value in player.dice_thrown:
-                    player.put_dice_aside(value)
-            player.dice_put_aside.sort()
+                for dice in player.dice_thrown:
+                    player.put_dice_aside(dice)
+
+            attempt += 1
 
         self.clear_console()
+        player.dice_put_aside.sort()
         print(f"\n{Text.IMPORTANT}    Results {Text.TURN}Turn {turn + 1} {Text.IMPORTANT}| {Text.PLAYER}Player {player_id}")
         self._print_dice_symbols(player.dice_put_aside)
         self._show_scoreboard(player, calculate_possible_scores=True)
@@ -195,28 +197,24 @@ class Terminal:
 
     @staticmethod
     def __player_dice_input(player):
-        for counter, _ in enumerate(player.dice_thrown):
-            print(f"{Text.REGULAR}    Keep all remaining dice [K]: ")
-            print(f"    Do you want rethrow the dice with current value"
-                  f" {Text.SCORE + str(player.dice_thrown[counter]) + Color.END}?")
-            action = input(f"{Text.REGULAR}    Enter action [Y/N/K]: ")
+        action = ""
+        for dice in player.dice_thrown:
+            if action != "k":
+                print(f"{Text.REGULAR}    Keep all remaining dice [K]")
+                print(f"    Do you want rethrow the dice with current value"
+                      f" {Text.SCORE + str(dice) + Color.END}?")
+                action = input(f"{Text.REGULAR}    Enter action [Y/N/K]: ")
 
             if action.upper() == "N":
-                player.put_dice_aside(player.dice_thrown[counter])
+                player.put_dice_aside(dice)
+                action = ""
 
             elif action.upper() == "K":
-                # Clears put_aside list to properly re-add the dice
-                # checks all dice for rethrowing, and puts dice aside with value <= 6
-                # if value is > 6, the dice gets rethrown
-                player.dice_put_aside.clear()
-                for value in player.dice_thrown:
-                    if value <= 6:
-                        player.put_dice_aside(value)
-                player.dice_thrown.clear()
-                break
+                player.put_dice_aside(dice)
+                action = "k"
+
             else:
-                # increase value of dice that will be rethrown, so it can be filtered out later
-                player.dice_thrown[counter] += 6
+                action = ""
 
     @staticmethod
     def _print_dice_symbols(array):
