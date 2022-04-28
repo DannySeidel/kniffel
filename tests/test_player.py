@@ -31,6 +31,7 @@ class TestPlayer(TestCase):
         with patch("sys.stdout", new=io.StringIO()) as fake_out:
             self.test_player.save_round_score(15)
             self.assertEqual(expected_str_out_of_range, fake_out.getvalue())
+        self.assertFalse(self.test_player.save_round_score(15))
 
         # tests correct handling
         actual_value = self.test_player.save_round_score("10")
@@ -44,6 +45,7 @@ class TestPlayer(TestCase):
         with patch("sys.stdout", new=io.StringIO()) as fake_out:
             self.test_player.save_round_score("12")
             self.assertEqual(expected_str_score_already_set, fake_out.getvalue())
+        self.assertFalse(self.test_player.save_round_score("12"))
 
     def test_get_all_possible_scores1(self):
         self.test_player.dice_put_aside = [1, 2, 3, 4, 5]
