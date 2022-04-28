@@ -43,6 +43,7 @@ class Player:
     def save_round_score(self, score_number):
         """saves score of current round to dict
 
+        :param score_number: number of the given figure to save the score in
         """
 
         possible_scores = self.get_all_possible_scores()
