@@ -8,11 +8,13 @@ by Tobias Welti, Luca Kaiser, Joshua Miller, Danny Seidel
 
 from random import randint
 
+from error_handler import ErrorHandler
+
 
 class Player:
     """handling player actions and player score"""
 
-    def __init__(self, player_id, error_handling_class):
+    def __init__(self, player_id):
         """initializing the player
 
         Args:
@@ -23,7 +25,7 @@ class Player:
         self.dice_put_aside = []
         self.scores = dict.fromkeys(["ones", "twos", "threes", "fours", "fives", "sixes", "three_of_a_kind", "four_of_a_kind", "full_house", "small_straight",
                                      "large_straight", "yahtzee", "chance"])
-        self.__error_handler = error_handling_class
+        self.__error_handler = ErrorHandler()
 
     def throw_dice(self):
         """Player throwing his dices.

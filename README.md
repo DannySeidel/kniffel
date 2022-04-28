@@ -13,7 +13,7 @@
 ## Pytest
 Run all tests with:
 ```shell
-pytest tests
+pytest
 ```
 
 Run tests for one file:
