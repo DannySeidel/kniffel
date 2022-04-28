@@ -54,14 +54,14 @@ class Player:
                     self.scores[list(self.scores.keys())[index]] = possible_scores[index]
                 else:
                     self.__error_handler.input_error("already set")
-                    self._save_round_score()
+                    self._save_round_score(score_number)
 
                 found = True
                 break
 
         if not found:
             self.__error_handler.input_error("number not found")
-            self._save_round_score()
+            self._save_round_score(score_number)
 
     def get_all_possible_scores(self) -> list[int | None]:
         """returns an array with all possible scores

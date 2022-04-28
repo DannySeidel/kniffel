@@ -18,7 +18,7 @@ class Game:
         self.key = randint(1000, 9999)
         self.player_1 = Player(1, error_handling_class)
         self.player_2 = Player(2, error_handling_class)
-        self.__error_handler = error_handling_class
+        # self.__error_handler = error_handling_class
 
     def get_current_turn(self) -> int:
         """returns the number of the current turn
