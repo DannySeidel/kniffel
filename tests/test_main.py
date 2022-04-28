@@ -180,9 +180,8 @@ class TestMain(unittest.TestCase):
 
         # tests empty file handling
         expected_value_empty_file = False
-        with patch("sys.stdout", new=io.StringIO()) as fake_out:
-            self.test_terminal._check_for_game()
-            self.assertEqual(expected_value_empty_file, fake_out.getvalue())
+        actual_value = self.test_terminal._check_for_game()
+        self.assertEqual(expected_value_empty_file, actual_value)
 
         # sets up test for the correct procedure
         self.test_terminal._create_new_game()
@@ -191,9 +190,8 @@ class TestMain(unittest.TestCase):
             expected_value_success = file.read()
 
         # tests correct game checking procedure
-        with patch("sys.stdout", new=io.StringIO()) as fake_out:
-            self.test_terminal._check_for_game()
-            self.assertEqual(expected_value_success, fake_out.getvalue())
+        actual_value_correct = self.test_terminal._check_for_game()
+        self.assertEqual(expected_value_success, actual_value_correct)
 
         # removes file to check "file not found" handling
         os.remove("games.bin")
