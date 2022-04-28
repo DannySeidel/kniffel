@@ -194,28 +194,24 @@ class Terminal:
 
     @staticmethod
     def __player_dice_input(player):
-        for counter, _ in enumerate(player.dice_thrown):
-            print(f"{Text.REGULAR}    Keep all remaining dice [K]: ")
-            print(f"    Do you want rethrow the dice with current value"
-                  f" {Text.SCORE + str(player.dice_thrown[counter]) + Color.END}?")
-            action = input(f"{Text.REGULAR}    Enter action [Y/N/K]: ")
+        action = ""
+        for dice in player.dice_thrown:
+            if action != "k":
+                print(f"{Text.REGULAR}    Keep all remaining dice [K]")
+                print(f"    Do you want rethrow the dice with current value"
+                      f" {Text.SCORE + str(dice) + Color.END}?")
+                action = input(f"{Text.REGULAR}    Enter action [Y/N/K]: ")
 
             if action.upper() == "N":
-                player.put_dice_aside(player.dice_thrown[counter])
+                player.put_dice_aside(dice)
+                action = ""
 
             elif action.upper() == "K":
-                # Clears put_aside list to properly re-add the dice
-                # checks all dice for rethrowing, and puts dice aside with value <= 6
-                # if value is > 6, the dice gets rethrown
-                player.dice_put_aside.clear()
-                for value in player.dice_thrown:
-                    if value <= 6:
-                        player.put_dice_aside(value)
-                player.dice_thrown.clear()
-                break
+                player.put_dice_aside(dice)
+                action = "k"
+
             else:
-                # increase value of dice that will be rethrown, so it can be filtered out later
-                player.dice_thrown[counter] += 6
+                action = ""
 
     @staticmethod
     def _print_dice_symbols(array):
