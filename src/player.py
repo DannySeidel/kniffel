@@ -47,15 +47,15 @@ class Player:
 
         possible_scores = self.get_all_possible_scores()
         # checks if inputted number exists
-        if int(score_number) <= 13:
+        if 0 < score_number < 14:
             # checks if value has already been set
-            index = int(score_number) - 1
+            index = score_number - 1
             if self.scores[list(self.scores.keys())[index]] is None:
                 self.scores[list(self.scores.keys())[index]] = possible_scores[index]
                 return True
             self.__error_handler.input_error("already set")
             return False
-        self.__error_handler.input_error("number not found")
+        self.__error_handler.input_error("invalid number")
         return False
 
     def get_all_possible_scores(self) -> list[int | None]:

@@ -25,7 +25,7 @@ class TestPlayer(TestCase):
         self.test_player.dice_put_aside = [1, 2, 3, 4, 5]
 
         # sets up test for out of range error
-        expected_str_out_of_range = "\n    Error: The given number was not found.\n"
+        expected_str_out_of_range = "\n    Error: Please choose a number between 1 and 13.\n"
 
         # tests out of range error
         with patch("sys.stdout", new=io.StringIO()) as fake_out:
@@ -34,18 +34,18 @@ class TestPlayer(TestCase):
         self.assertFalse(self.test_player.save_round_score(15))
 
         # tests correct handling
-        actual_value = self.test_player.save_round_score("10")
+        actual_value = self.test_player.save_round_score(10)
         self.assertTrue(actual_value)
 
         # sets up test for already set game score
         expected_str_score_already_set = "\n    Error: This value is already set. Enter a different number.\n"
-        self.test_player.save_round_score("12")
+        self.test_player.save_round_score(12)
 
         # tests "already set" error
         with patch("sys.stdout", new=io.StringIO()) as fake_out:
-            self.test_player.save_round_score("12")
+            self.test_player.save_round_score(12)
             self.assertEqual(expected_str_score_already_set, fake_out.getvalue())
-        self.assertFalse(self.test_player.save_round_score("12"))
+        self.assertFalse(self.test_player.save_round_score(12))
 
     def test_get_all_possible_scores1(self):
         self.test_player.dice_put_aside = [1, 2, 3, 4, 5]

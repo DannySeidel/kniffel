@@ -12,6 +12,7 @@ import hashlib
 import os
 import sys
 from uuid import uuid4
+
 try:
     from game import Game
     from error_handler import ErrorHandler
@@ -184,11 +185,12 @@ class Terminal:
         self._show_scoreboard(player, calculate_possible_scores=True)
         # gives scoreboard number to player for saving
         while True:
-            score_number = input(f"\n{Text.REGULAR}    Enter the matching number to save the score: ")
-            success = player.save_round_score(score_number)
-            if success and ((score_number > str(0)) and (score_number < str(14))):
-                break
-            else:
+            try:
+                score_number = input(f"\n{Text.REGULAR}    Enter the matching number to save the score: ")
+                success = player.save_round_score(int(score_number))
+                if success:
+                    break
+            except ValueError:
                 self._error_handler.input_error("invalid number")
 
     @staticmethod
