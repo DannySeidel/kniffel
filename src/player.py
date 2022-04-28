@@ -40,30 +40,23 @@ class Player:
 
         self.dice_thrown.sort()
 
-    def _save_round_score(self, score_number):
+    def save_round_score(self, score_number):
         """saves score of current round to dict
 
         """
 
         possible_scores = self.get_all_possible_scores()
-
-        found = False
-        for index in range(13):
-            # checks if inputted number exists
-            if score_number == str(index + 1):
-                # checks if value has already been set
-                if self.scores[list(self.scores.keys())[index]] is None:
-                    self.scores[list(self.scores.keys())[index]] = possible_scores[index]
-                else:
-                    self.__error_handler.input_error("already set")
-                    self._save_round_score(score_number)
-
-                found = True
-                break
-
-        if not found:
-            self.__error_handler.input_error("number not found")
-            self._save_round_score(score_number)
+        # checks if inputted number exists
+        if int(score_number) <= 13:
+            # checks if value has already been set
+            index = int(score_number) - 1
+            if self.scores[list(self.scores.keys())[index]] is None:
+                self.scores[list(self.scores.keys())[index]] = possible_scores[index]
+                return True
+            self.__error_handler.input_error("already set")
+            return False
+        self.__error_handler.input_error("number not found")
+        return False
 
     def get_all_possible_scores(self) -> list[int | None]:
         """returns an array with all possible scores

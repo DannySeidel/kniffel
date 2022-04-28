@@ -183,8 +183,11 @@ class Terminal:
         self._print_dice_symbols(player.dice_put_aside)
         self._show_scoreboard(player, calculate_possible_scores=True)
         # gives scoreboard number to player for saving
-        score_number = input(f"\n{Text.REGULAR}    Enter the matching number to save the score: ")
-        player.save_round_score(score_number)
+        while True:
+            score_number = input(f"\n{Text.REGULAR}    Enter the matching number to save the score: ")
+            success = player.save_round_score(score_number)
+            if success:
+                break
 
     @staticmethod
     def __player_dice_input(player):

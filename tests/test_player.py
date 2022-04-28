@@ -1,12 +1,16 @@
 # pylint: disable=C
 # pylint: disable=protected-access
-
+import io
 from unittest import TestCase
+from unittest.mock import patch
+
 from src.player import Player
 
 
 class TestPlayer(TestCase):
-    test_player = Player(1)
+
+    def setUp(self):
+        self.test_player = Player(1)
 
     def test_throw_dice(self):
         self.test_player.dice_put_aside = [3, 3]
@@ -16,6 +20,30 @@ class TestPlayer(TestCase):
         self.assertEqual(expected_value, len(self.test_player.dice_thrown))
         self.assertTrue(self.test_player.dice_thrown[0] <= self.test_player.dice_thrown[1])
         self.assertTrue(self.test_player.dice_thrown[1] <= self.test_player.dice_thrown[2])
+
+    def test_save_round_score(self):
+        self.test_player.dice_put_aside = [1, 2, 3, 4, 5]
+
+        # sets up test for out of range error
+        expected_str_out_of_range = "\n    Error: The given number was not found.\n"
+
+        # tests out of range error
+        with patch("sys.stdout", new=io.StringIO()) as fake_out:
+            self.test_player.save_round_score(15)
+            self.assertEqual(expected_str_out_of_range, fake_out.getvalue())
+
+        # tests correct handling
+        actual_value = self.test_player.save_round_score("10")
+        self.assertTrue(actual_value)
+
+        # sets up test for already set game score
+        expected_str_score_already_set = "\n    Error: This value is already set. Enter a different number.\n"
+        self.test_player.save_round_score("12")
+
+        # tests "already set" error
+        with patch("sys.stdout", new=io.StringIO()) as fake_out:
+            self.test_player.save_round_score("12")
+            self.assertEqual(expected_str_score_already_set, fake_out.getvalue())
 
     def test_get_all_possible_scores1(self):
         self.test_player.dice_put_aside = [1, 2, 3, 4, 5]
