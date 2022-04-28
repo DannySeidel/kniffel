@@ -2,7 +2,6 @@
 # pylint: disable=protected-access
 
 import io
-import sys
 import unittest
 import os
 from unittest.mock import patch
@@ -23,10 +22,6 @@ class TestMain(unittest.TestCase):
         self.assertTrue(self.test_terminal._current_game)
 
     def test_print_menu(self):
-        captured_output = io.StringIO()
-        sys.stdout = captured_output
-        self.test_terminal.print_menu()
-        sys.stdout = sys.__stdout__
         expected_str1 = f"""{Text.IMPORTANT}
     ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
     █▄─█▀▀▀█─▄█▄─▄█▄─▄███▄─▄███▄─█─▄█─▄▄─█▄─▀█▀─▄█▄─▀█▀─▄█▄─▄▄─█▄─▀█▄─▄███░▄▄░▄█▄─██─▄█
@@ -52,13 +47,11 @@ class TestMain(unittest.TestCase):
 
         expected_output = expected_str1 + expected_str2 + expected_str3 + expected_str4 + expected_str5
 
-        self.assertEqual(expected_output, captured_output.getvalue())
+        with patch("sys.stdout", new=io.StringIO()) as fake_out:
+            self.test_terminal.print_menu()
+            self.assertEqual(expected_output, fake_out.getvalue())
 
     def test_print_dice_symbols1(self):
-        captured_output = io.StringIO()
-        sys.stdout = captured_output
-        self.test_terminal._print_dice_symbols([1, 2, 3, 4, 5, 6])
-        sys.stdout = sys.__stdout__
         expected_output = f"""{(Text.DICE + "       ") * 6}
     ▄▀▀▀▀▀▀▀▀▀▀▄    ▄▀▀▀▀▀▀▀▀▀▀▄    ▄▀▀▀▀▀▀▀▀▀▀▄    ▄▀▀▀▀▀▀▀▀▀▀▄    ▄▀▀▀▀▀▀▀▀▀▀▄    ▄▀▀▀▀▀▀▀▀▀▀▄
     █          █    █  ▄▄      █    █ ██       █    █  ██  ██  █    █ ██    ██ █    █  ▀▀  ▀▀  █
@@ -67,16 +60,14 @@ class TestMain(unittest.TestCase):
     ▀▄▄▄▄▄▄▄▄▄▄▀    ▀▄▄▄▄▄▄▄▄▄▄▀    ▀▄▄▄▄▄▄▄▄▄▄▀    ▀▄▄▄▄▄▄▄▄▄▄▀    ▀▄▄▄▄▄▄▄▄▄▄▀    ▀▄▄▄▄▄▄▄▄▄▄▀
                                                                                                 \n"""
 
-        self.assertEqual(expected_output, captured_output.getvalue())
+        with patch("sys.stdout", new=io.StringIO()) as fake_out:
+            self.test_terminal._print_dice_symbols([1, 2, 3, 4, 5, 6])
+
+        self.assertEqual(expected_output, fake_out.getvalue())
 
     def test_show_scoreboard1(self):
         test_player = Player(1)
         test_player.dice_put_aside = [2, 3, 4, 5, 5]
-
-        captured_output = io.StringIO()
-        sys.stdout = captured_output
-        self.test_terminal._show_scoreboard(test_player, calculate_possible_scores=True)
-        sys.stdout = sys.__stdout__
 
         possible_scores = test_player.get_all_possible_scores()
         saved_scores = test_player.scores
@@ -111,15 +102,12 @@ class TestMain(unittest.TestCase):
                        f""" {Text.REGULAR}      13) Chance:           {Text.SCORE + str(saved_scores['chance']) if possible_scores[12] is None
                        else Text.IMPORTANT + str(possible_scores[12])}\n"""
 
-        self.assertEqual(expected_str, captured_output.getvalue())
+        with patch("sys.stdout", new=io.StringIO()) as fake_out:
+            self.test_terminal._show_scoreboard(test_player, calculate_possible_scores=True)
+            self.assertEqual(expected_str, fake_out.getvalue())
 
     def test_show_scoreboard2(self):
         test_player = Player(2)
-
-        captured_output = io.StringIO()
-        sys.stdout = captured_output
-        self.test_terminal._show_scoreboard(test_player)
-        sys.stdout = sys.__stdout__
 
         possible_scores = ["--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--"]
         saved_scores = test_player.scores
@@ -154,7 +142,9 @@ class TestMain(unittest.TestCase):
                        f""" {Text.REGULAR}      13) Chance:           {Text.SCORE + str(saved_scores['chance']) if possible_scores[12] is None
                        else Text.IMPORTANT + str(possible_scores[12])}\n"""
 
-        self.assertEqual(expected_str, captured_output.getvalue())
+        with patch("sys.stdout", new=io.StringIO()) as fake_out:
+            self.test_terminal._show_scoreboard(test_player)
+            self.assertEqual(expected_str, fake_out.getvalue())
 
     def test_save_game(self):
 
