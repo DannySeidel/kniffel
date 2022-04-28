@@ -23,6 +23,11 @@ pytest tests/"filename"
 
 Run tests with coverage:
 ```shell
-pytest tests --cov src --cov-report=html
+pytest --cov src
 ```
+
+Run tests and save coverage to html files:
+````shell
+pytest --cov src --cov-report=html
+````
 
