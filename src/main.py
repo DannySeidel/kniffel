@@ -186,14 +186,14 @@ class Terminal:
 
     @staticmethod
     def __player_dice_input(player):
-        for dice in player.dice_thrown:
+        for counter, _ in enumerate(player.dice_thrown):
             print(f"{Text.REGULAR}    Keep all remaining dice [K]: ")
             print(f"    Do you want rethrow the dice with current value"
-                  f" {Text.SCORE + str(dice) + Color.END}?")
+                  f" {Text.SCORE + str(player.dice_thrown[counter]) + Color.END}?")
             action = input(f"{Text.REGULAR}    Enter action [Y/N/K]: ")
 
             if action.upper() == "N":
-                player.put_dice_aside(dice)
+                player.put_dice_aside(player.dice_thrown[counter])
 
             elif action.upper() == "K":
                 # Clears put_aside list to properly re-add the dice
@@ -207,7 +207,7 @@ class Terminal:
                 break
             else:
                 # increase value of dice that will be rethrown, so it can be filtered out later
-                dice += 6
+                player.dice_thrown[counter] += 6
 
     @staticmethod
     def _print_dice_symbols(array):
