@@ -371,7 +371,9 @@ class Terminal:
         except EOFError:
             self.__error_handler.file_error("no saved game")
 
-        return game_data
+        if game_data:
+            return game_data
+        return False
 
     def _delete_game(self):
         """ removes game save from binary file"""
