@@ -33,8 +33,9 @@ class Terminal:
     @staticmethod
     def clear_console():
         """clears console based on operating system"""
-
-        os.system("cls" if os.name == "nt" else "clear")
+        # skips console clearing for testing
+        if __name__ == "__main__":
+            os.system("cls" if os.name == "nt" else "clear")
 
     @staticmethod
     def print_menu():
@@ -128,14 +129,14 @@ class Terminal:
                 self.__player_action(index, turn)
             self._save_game()
             turn += 1
-        self.__print_end_results()
+        self._print_end_results()
 
         # End screen
         input(f"{Text.REGULAR}Enter anything to return to main menu: ")
         self.clear_console()
         self.print_menu()
 
-    def __print_end_results(self):
+    def _print_end_results(self):
         """prints final scoreboard for both players"""
 
         self.clear_console()
@@ -176,7 +177,15 @@ class Terminal:
         player.dice_put_aside = []
 
         while attempt < 4 and len(player.dice_put_aside) != 5:
-            player.throw_dice()
+            # if you're playing the game, get random dice throws.
+            # For testing, always throw 1,2,3,4,5
+            if __name__ == "__main__":
+                player.throw_dice()
+            else:
+                player.dice_thrown = []
+                dice_count = 5 - len(player.dice_put_aside)
+                for i in range(dice_count):
+                    player.dice_thrown.append(i+1)
 
             if attempt < 3:
                 self.clear_console()
@@ -364,8 +373,6 @@ class Terminal:
             self._error_handler.file_error("file not found")
         except PermissionError:
             self._error_handler.file_error("permission error")
-        except EOFError:
-            self._error_handler.file_error("no saved game")
 
         if game_data:
             return game_data

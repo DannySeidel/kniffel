@@ -8,7 +8,7 @@ from unittest.mock import patch
 
 from src.main import Terminal
 from src.player import Player
-from src.formatting import Text
+from src.formatting import Color, Text
 
 
 class TestMain(unittest.TestCase):
@@ -97,7 +97,190 @@ class TestMain(unittest.TestCase):
         self.assertEqual(expected_str_error, actual_str[26])
 
     def test_play_game(self):
-        pass
+        # sets up a new game
+        self.test_terminal._create_new_game()
+
+        # tests game procedure
+        with patch("sys.stdout", new=io.StringIO()) as fake_out:
+            with patch("sys.stdin", new=io.StringIO("y\ny\nk\nn\ny\nk\n"
+            "y\nk\n1\nn\nn\nn\ny\ny\ny\ny\nk\nn\nk\n1.2\n1\nk\n2\nk\n2\nk\n3\n"
+            "k\n3\nk\n4\nk\n4\nk\n5\nk\n5\nk\n6\nk\n6\nk\n7\nk\n7\nk\n8\n"
+            "k\n8\nk\n9\nk\n9\nk\n10\nk\n10\nk\n11\nk\n11\nk\n12\nk\n12\n"
+            "k\n13\nk\n13\nfinish")):
+                self.test_terminal._play_game()
+                fake_out.seek(0)
+                actual_str = fake_out.readlines()
+        with open("log.txt", "w", encoding="utf-16") as game_log:
+            i = 0
+            for line in actual_str:
+                game_log.write(str(i)+line)
+                i += 1
+
+        exp_str_t1 = f"{Text.TURN}    Turn 1{Color.END}\n"
+        exp_str_t2 = f"{Text.TURN}    Turn 2{Color.END}\n"
+        exp_str_t3 = f"{Text.TURN}    Turn 3{Color.END}\n"
+        exp_str_t4 = f"{Text.TURN}    Turn 4{Color.END}\n"
+        exp_str_t5 = f"{Text.TURN}    Turn 5{Color.END}\n"
+        exp_str_t6 = f"{Text.TURN}    Turn 6{Color.END}\n"
+        exp_str_t7 = f"{Text.TURN}    Turn 7{Color.END}\n"
+        exp_str_t8 = f"{Text.TURN}    Turn 8{Color.END}\n"
+        exp_str_t9 = f"{Text.TURN}    Turn 9{Color.END}\n"
+        exp_str_t10 = f"{Text.TURN}    Turn 10{Color.END}\n"
+        exp_str_t11 = f"{Text.TURN}    Turn 11{Color.END}\n"
+        exp_str_t12 = f"{Text.TURN}    Turn 12{Color.END}\n"
+        exp_str_t13 = f"{Text.TURN}    Turn 13{Color.END}\n"
+
+        exp_str_p1 = f"{Text.PLAYER}    Player 1 is on:{Color.END}\n"
+        exp_str_p2 = f"{Text.PLAYER}    Player 2 is on:{Color.END}\n"
+
+        exp_str_you_have_thrown = f"{Text.REGULAR}    You have thrown:\n"
+        exp_str_you_put_aside = f"{Text.REGULAR}    The following dice are put aside:\n"
+
+        exp_str_t1_p1 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 1 {Text.IMPORTANT}| {Text.PLAYER}Player 1\n"
+        exp_str_t2_p1 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 2 {Text.IMPORTANT}| {Text.PLAYER}Player 1\n"
+        exp_str_t3_p1 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 3 {Text.IMPORTANT}| {Text.PLAYER}Player 1\n"
+        exp_str_t4_p1 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 4 {Text.IMPORTANT}| {Text.PLAYER}Player 1\n"
+        exp_str_t5_p1 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 5 {Text.IMPORTANT}| {Text.PLAYER}Player 1\n"
+        exp_str_t6_p1 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 6 {Text.IMPORTANT}| {Text.PLAYER}Player 1\n"
+        exp_str_t7_p1 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 7 {Text.IMPORTANT}| {Text.PLAYER}Player 1\n"
+        exp_str_t8_p1 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 8 {Text.IMPORTANT}| {Text.PLAYER}Player 1\n"
+        exp_str_t9_p1 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 9 {Text.IMPORTANT}| {Text.PLAYER}Player 1\n"
+        exp_str_t10_p1 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 10 {Text.IMPORTANT}| {Text.PLAYER}Player 1\n"
+        exp_str_t11_p1 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 11 {Text.IMPORTANT}| {Text.PLAYER}Player 1\n"
+        exp_str_t12_p1 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 12 {Text.IMPORTANT}| {Text.PLAYER}Player 1\n"
+        exp_str_t13_p1 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 13 {Text.IMPORTANT}| {Text.PLAYER}Player 1\n"
+        exp_str_t1_p2 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 1 {Text.IMPORTANT}| {Text.PLAYER}Player 2\n"
+        exp_str_t2_p2 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 2 {Text.IMPORTANT}| {Text.PLAYER}Player 2\n"
+        exp_str_t3_p2 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 3 {Text.IMPORTANT}| {Text.PLAYER}Player 2\n"
+        exp_str_t4_p2 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 4 {Text.IMPORTANT}| {Text.PLAYER}Player 2\n"
+        exp_str_t5_p2 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 5 {Text.IMPORTANT}| {Text.PLAYER}Player 2\n"
+        exp_str_t6_p2 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 6 {Text.IMPORTANT}| {Text.PLAYER}Player 2\n"
+        exp_str_t7_p2 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 7 {Text.IMPORTANT}| {Text.PLAYER}Player 2\n"
+        exp_str_t8_p2 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 8 {Text.IMPORTANT}| {Text.PLAYER}Player 2\n"
+        exp_str_t9_p2 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 9 {Text.IMPORTANT}| {Text.PLAYER}Player 2\n"
+        exp_str_t10_p2 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 10 {Text.IMPORTANT}| {Text.PLAYER}Player 2\n"
+        exp_str_t11_p2 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 11 {Text.IMPORTANT}| {Text.PLAYER}Player 2\n"
+        exp_str_t12_p2 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 12 {Text.IMPORTANT}| {Text.PLAYER}Player 2\n"
+        exp_str_t13_p2 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 13 {Text.IMPORTANT}| {Text.PLAYER}Player 2\n"
+
+        exp_str_enter_number_for_score = f"{Text.REGULAR}    Enter the matching number to save the score: \n"
+        exp_str_error_inp_number = "    Error: Please choose a number between 1 and 13.\n"
+        exp_str_other_inputs_are_y = f"{Text.REGULAR}    Other inputs are equal to [Y]\n"
+        exp_str_keep_all_dice = f"{Text.REGULAR}    Keep all remaining dice [K]\n"
+        exp_str_enter_action = "    Enter action [Y/N/K]: \n"
+        exp_str_enter_keep_all = f"    Enter action [Y/N/K]: {Text.REGULAR}    Keep all remaining dice [K]\n"
+
+        exp_str_dice_input_1 = f"    Do you want rethrow the dice with current value {Text.SCORE}1{Color.END}?\n"
+        exp_str_dice_input_2 = f"    Do you want rethrow the dice with current value {Text.SCORE}2{Color.END}?\n"
+        exp_str_dice_input_3 = f"    Do you want rethrow the dice with current value {Text.SCORE}3{Color.END}?\n"
+        exp_str_dice_input_4 = f"    Do you want rethrow the dice with current value {Text.SCORE}4{Color.END}?\n"
+        exp_str_dice_input_5 = f"    Do you want rethrow the dice with current value {Text.SCORE}5{Color.END}?\n"
+
+        exp_str_player_1_total_p = f"{Text.PLAYER}    Player 1:{Color.END}\n"
+        exp_str_players_total_t = f"{Text.SCORE}      Total:                 101{Color.END}\n"
+        exp_str_player_2_total_p = f"{Text.PLAYER}    Player 2:{Color.END}\n"
+        exp_str_draw = f"          It's a draw!{Color.END}\n"
+        exp_str_return_input = f"{Text.REGULAR}Enter anything to return to main menu: {Text.IMPORTANT}\n"
+
+        self.assertEqual(exp_str_t1, actual_str[1])
+        self.assertEqual(exp_str_p1, actual_str[3])
+        self.assertEqual(exp_str_you_have_thrown, actual_str[21])
+        self.assertEqual(exp_str_keep_all_dice, actual_str[29])
+        self.assertEqual(exp_str_dice_input_1, actual_str[30])
+        self.assertEqual(exp_str_other_inputs_are_y, actual_str[31])
+        self.assertEqual(exp_str_enter_keep_all, actual_str[32])
+        self.assertEqual(exp_str_dice_input_2, actual_str[33])
+        self.assertEqual(exp_str_dice_input_3, actual_str[36])
+        self.assertEqual(exp_str_enter_action, actual_str[38])
+        self.assertEqual(exp_str_you_put_aside, actual_str[67])
+
+        self.assertEqual(exp_str_enter_number_for_score, actual_str[155])
+        self.assertEqual(exp_str_p2, actual_str[158])
+        self.assertEqual(exp_str_dice_input_4, actual_str[194])
+        self.assertEqual(exp_str_dice_input_5, actual_str[197])
+
+        self.assertEqual(exp_str_error_inp_number, actual_str[317])
+        self.assertEqual(exp_str_t2, actual_str[321])
+        self.assertEqual(exp_str_t3, actual_str[438])
+        self.assertEqual(exp_str_t4, actual_str[555])
+        self.assertEqual(exp_str_t5, actual_str[672])
+        self.assertEqual(exp_str_t6, actual_str[789])
+        self.assertEqual(exp_str_t7, actual_str[906])
+        self.assertEqual(exp_str_t8, actual_str[1023])
+        self.assertEqual(exp_str_t9, actual_str[1140])
+        self.assertEqual(exp_str_t10, actual_str[1257])
+        self.assertEqual(exp_str_t11, actual_str[1374])
+        self.assertEqual(exp_str_t12, actual_str[1491])
+        self.assertEqual(exp_str_t13, actual_str[1608])
+
+        self.assertEqual(exp_str_t1_p1, actual_str[130])
+        self.assertEqual(exp_str_t2_p1, actual_str[353])
+        self.assertEqual(exp_str_t3_p1, actual_str[470])
+        self.assertEqual(exp_str_t4_p1, actual_str[587])
+        self.assertEqual(exp_str_t5_p1, actual_str[704])
+        self.assertEqual(exp_str_t6_p1, actual_str[821])
+        self.assertEqual(exp_str_t7_p1, actual_str[938])
+        self.assertEqual(exp_str_t8_p1, actual_str[1055])
+        self.assertEqual(exp_str_t9_p1, actual_str[1172])
+        self.assertEqual(exp_str_t10_p1, actual_str[1289])
+        self.assertEqual(exp_str_t11_p1, actual_str[1406])
+        self.assertEqual(exp_str_t12_p1, actual_str[1523])
+        self.assertEqual(exp_str_t13_p1, actual_str[1640])
+
+        self.assertEqual(exp_str_t1_p2, actual_str[291])
+        self.assertEqual(exp_str_t2_p2, actual_str[411])
+        self.assertEqual(exp_str_t3_p2, actual_str[528])
+        self.assertEqual(exp_str_t4_p2, actual_str[645])
+        self.assertEqual(exp_str_t5_p2, actual_str[762])
+        self.assertEqual(exp_str_t6_p2, actual_str[879])
+        self.assertEqual(exp_str_t7_p2, actual_str[996])
+        self.assertEqual(exp_str_t8_p2, actual_str[1113])
+        self.assertEqual(exp_str_t9_p2, actual_str[1230])
+        self.assertEqual(exp_str_t10_p2, actual_str[1347])
+        self.assertEqual(exp_str_t11_p2, actual_str[1464])
+        self.assertEqual(exp_str_t12_p2, actual_str[1581])
+        self.assertEqual(exp_str_t13_p2, actual_str[1698])
+
+        self.assertEqual(exp_str_player_1_total_p, actual_str[1724])
+        self.assertEqual(exp_str_player_2_total_p, actual_str[1742])
+        self.assertEqual(exp_str_players_total_t, actual_str[1741])
+        self.assertEqual(exp_str_players_total_t, actual_str[1759])
+        self.assertEqual(exp_str_draw, actual_str[1761])
+        self.assertEqual(exp_str_return_input, actual_str[1763])
+
+    def test_print_end_results1(self):
+
+        expected_str_winner = f"        Player 1 has won!{Color.END}\n"
+
+        # sets up test for player 1 winning
+        self.test_terminal._create_new_game()
+        self.test_terminal._current_game.player_1.scores = {x: 6 for x in self.test_terminal._current_game.player_1.scores}
+        self.test_terminal._current_game.player_2.scores = {x: 1 for x in self.test_terminal._current_game.player_2.scores}
+
+        # tests player 1 winning
+        with patch("sys.stdout", new=io.StringIO()) as fake_out:
+            self.test_terminal._print_end_results()
+            fake_out.seek(0)
+            actual_str = fake_out.readlines()
+        self.assertEqual(expected_str_winner, actual_str[37])
+        self.test_terminal._delete_game()
+
+    def test_print_end_results2(self):
+
+        expected_str_winner = f"        Player 2 has won!{Color.END}\n"
+
+        # sets up test for player 2 winning
+        self.test_terminal._create_new_game()
+        self.test_terminal._current_game.player_1.scores = {x: 1 for x in self.test_terminal._current_game.player_1.scores}
+        self.test_terminal._current_game.player_2.scores = {x: 6 for x in self.test_terminal._current_game.player_2.scores}
+
+        # tests player 2 winning
+        with patch("sys.stdout", new=io.StringIO()) as fake_out:
+            self.test_terminal._print_end_results()
+            fake_out.seek(0)
+            actual_str = fake_out.readlines()
+        self.assertEqual(expected_str_winner, actual_str[37])
+        self.test_terminal._delete_game()
 
     def test_print_dice_symbols1(self):
         expected_output = f"""{(Text.DICE + "       ") * 6}
