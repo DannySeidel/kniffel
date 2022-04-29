@@ -296,3 +296,6 @@ class TestMain(unittest.TestCase):
         with patch("sys.stdout", new=io.StringIO()) as fake_out:
             self.test_terminal._delete_game()
             self.assertEqual(expected_str_success, fake_out.getvalue())
+
+    def tearDown(self):
+        os.remove("games.bin")
