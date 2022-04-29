@@ -18,7 +18,6 @@ try:
     from error_handler import ErrorHandler
     from formatting import Color, Text, Dice
 except FileNotFoundError:
-    # TODO: des schöner machen
     print("Error: Core files missing. Game can't be started. Please make sure all files are in one folder")
     sys.exit(0)
 
@@ -318,8 +317,6 @@ class Terminal:
             with open("games.bin", "wb") as file:
                 pickle.dump(game_data_b, file)
             print("saved")
-        except FileNotFoundError:
-            self._error_handler.file_error("file not found")
         except PermissionError:
             self._error_handler.file_error("permission error")
 
@@ -374,16 +371,14 @@ class Terminal:
 
     def _delete_game(self):
         """ removes game save from binary file"""
-
-        try:
-            with open("games.bin", "wb") as file:
-                file.truncate()
-                file.close()
-            print("    Game was removed from save file.")
-        except FileNotFoundError:
-            self._error_handler.file_error("file not found")
-        except PermissionError:
-            self._error_handler.file_error("permission error")
+        if self._check_for_game():
+            try:
+                with open("games.bin", "wb") as file:
+                    file.truncate()
+                    file.close()
+                print("    Game was removed from save file.")
+            except PermissionError:
+                self._error_handler.file_error("permission error")
 
 
 if __name__ == "__main__":
