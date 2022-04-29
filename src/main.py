@@ -175,7 +175,7 @@ class Terminal:
         attempt = 0
         player.dice_put_aside = []
 
-        while attempt < 4 and len(player.dice_put_aside) != 5:
+        while attempt < 4 and len(player.dice_put_aside) < 5:
             player.throw_dice()
 
             if attempt < 3:
