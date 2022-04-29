@@ -110,11 +110,6 @@ class TestMain(unittest.TestCase):
                 self.test_terminal._play_game()
                 fake_out.seek(0)
                 actual_str = fake_out.readlines()
-        with open("log.txt", "w", encoding="utf-16") as game_log:
-            i = 0
-            for line in actual_str:
-                game_log.write(str(i)+line)
-                i += 1
 
         exp_str_t1 = f"{Text.TURN}    Turn 1{Color.END}\n"
         exp_str_t2 = f"{Text.TURN}    Turn 2{Color.END}\n"
