@@ -124,6 +124,7 @@ class Terminal:
         turn = self._current_game.get_current_turn()
         # loops through game turns
         while turn < 13:
+            #player action for both players
             for index in range(1, 3):
                 self.__player_action(index, turn)
             self._save_game()
