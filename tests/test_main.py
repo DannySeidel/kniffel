@@ -61,13 +61,15 @@ class TestMain(unittest.TestCase):
         # tests start without existing file and exit
         with patch("sys.stdout", new=io.StringIO()) as fake_out:
             with patch("sys.stdin", new=io.StringIO("s\nQ")):
-                self.test_terminal.menu_input()
+                with self.assertRaises(SystemExit) as system_shutdown:
+                    self.test_terminal.menu_input()
                 fake_out.seek(0)
                 actual_str = fake_out.readlines()
         self.assertEqual(expected_str_initial_input, actual_str[1])
         self.assertEqual(expected_str_success, actual_str[4])
         self.assertEqual(expected_str_initial_input, actual_str[6])
         self.assertEqual(expected_str_quit_game, actual_str[7])
+        self.assertEqual(0, system_shutdown.exception.code)
 
         # creates a game for next round of tests
         self.test_terminal._create_new_game()
@@ -83,7 +85,8 @@ class TestMain(unittest.TestCase):
         # tests options if there is a saved game
         with patch("sys.stdout", new=io.StringIO()) as fake_out:
             with patch("sys.stdin", new=io.StringIO("s\nN\ns\nabcd\ny\nl\nabcd\nq")):
-                self.test_terminal.menu_input()
+                with self.assertRaises(SystemExit):
+                    self.test_terminal.menu_input()
                 fake_out.seek(0)
                 actual_str = fake_out.readlines()
         self.assertEqual(expected_str_overwrite_game_query, actual_str[2]+actual_str[3]+actual_str[4]+actual_str[5])

@@ -84,10 +84,7 @@ class Terminal:
 
             elif action.upper() == "Q":
                 print("\n    Quitting game...")
-                if __name__ == "__main__":
-                    sys.exit(0)
-                else:
-                    break
+                sys.exit(0)
             else:
                 self._error_handler.input_error("unsupported input")
 
