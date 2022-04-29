@@ -1,7 +1,7 @@
 # Kniffel
 
 ## Used Software Versions
-- Python 3.10
+- Python 3.10.2
 - Pylint 2.13.5
 
 ## Used Libraries
@@ -9,8 +9,20 @@
 - Hashlib
 - Hmac
 - Pytest
+- Pytest-cov
 
 ## Pytest
+
+### Install Pytest
+```shell
+pip install pytest
+```
+
+### Install Pytest-Cov
+```shell
+pip install pytest-cov
+```
+
 Run all tests with:
 ```shell
 pytest
