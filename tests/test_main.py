@@ -52,13 +52,12 @@ class TestMain(unittest.TestCase):
             self.assertEqual(expected_output, fake_out.getvalue())
 
     def test_menu_input(self):
-        """
-        removed "play_game" function call to simplify test
-        """
+        # removed "play_game" function call to simplify test
         self.test_terminal._delete_game()
         expected_str_initial_input = f"{Text.REGULAR}    Enter action: \n"
         expected_str_success = "    Game was successfully created.\n"
         expected_str_quit_game = "    Quitting game...\n"
+
         # tests start without existing file and exit
         with patch("sys.stdout", new=io.StringIO()) as fake_out:
             with patch("sys.stdin", new=io.StringIO("s\nQ")):
@@ -66,9 +65,9 @@ class TestMain(unittest.TestCase):
                 fake_out.seek(0)
                 actual_str = fake_out.readlines()
         self.assertEqual(expected_str_initial_input, actual_str[1])
-        self.assertEqual(expected_str_success, actual_str[2])
-        self.assertEqual(expected_str_initial_input, actual_str[4])
-        self.assertEqual(expected_str_quit_game, actual_str[5])
+        self.assertEqual(expected_str_success, actual_str[4])
+        self.assertEqual(expected_str_initial_input, actual_str[6])
+        self.assertEqual(expected_str_quit_game, actual_str[7])
 
         # creates a game for next round of tests
         self.test_terminal._create_new_game()
@@ -86,13 +85,16 @@ class TestMain(unittest.TestCase):
             with patch("sys.stdin", new=io.StringIO("s\nN\ns\nabcd\ny\nl\nabcd\nq")):
                 self.test_terminal.menu_input()
                 fake_out.seek(0)
-        actual_str = fake_out.readlines()
+                actual_str = fake_out.readlines()
         self.assertEqual(expected_str_overwrite_game_query, actual_str[2]+actual_str[3]+actual_str[4]+actual_str[5])
         self.assertEqual(expected_str_cancel, actual_str[6])
         self.assertEqual(expected_str_error, actual_str[13])
         self.assertEqual(expected_str_success, actual_str[19])
         self.assertEqual(expected_str_load_success, actual_str[23])
         self.assertEqual(expected_str_error, actual_str[26])
+
+    def test_play_game(self):
+        pass
 
     def test_print_dice_symbols1(self):
         expected_output = f"""{(Text.DICE + "       ") * 6}
