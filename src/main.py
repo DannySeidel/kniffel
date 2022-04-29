@@ -131,7 +131,16 @@ class Terminal:
                 self.__player_action(index, turn)
             self._save_game()
             turn += 1
-        # prints final scoreboard for both players
+        self.__print_end_results()
+
+        # End screen
+        input(f"{Text.REGULAR}Enter anything to return to main menu: ")
+        self.clear_console()
+        self.print_menu()
+
+    def __print_end_results(self):
+        """prints final scoreboard for both players"""
+
         self.clear_console()
         for index in range(1, 3):
             if index == 1:
@@ -141,7 +150,7 @@ class Terminal:
 
             print(f"{Text.PLAYER}    Player {index}:{Color.END}")
             self._show_scoreboard(player)
-            print(f"{Text.SCORE}      Total:             {player.get_total_score()}{Color.END}")
+            print(f"{Text.SCORE}      Total:                 {player.get_total_score()}{Color.END}")
         # get winner
         winner_id = self._current_game.get_winner()
 
@@ -153,10 +162,6 @@ class Terminal:
             print(f"{Text.IMPORTANT}\n          It's a draw!{Color.END}")
 
         self._delete_game()
-        # "End screen"
-        input(f"{Text.REGULAR}Enter anything to return to main menu")
-        self.clear_console()
-        self.print_menu()
 
     def __player_action(self, player_id, turn):
         """handling the actions for one player turn
