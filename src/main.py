@@ -69,26 +69,7 @@ class Terminal:
             action = input(f"\n{Text.REGULAR}    Enter action: ")
             if action.upper() == "S":
                 if self._check_for_game():
-                    while True:
-                        overwrite_query = input(
-                            """
-        There is a currently a saved game.
-        If you start a new game, the saved game will be lost.
-
-        Do you want to continue? [Y/N]: """
-                        )
-                        if overwrite_query.upper() == "Y":
-                            print("\n    Game was successfully created.")
-                            self._create_new_game()
-                            # prevents calling play_game when testing
-                            if __name__ == "__main__":
-                                self._play_game()
-                            break
-                        elif overwrite_query.upper() == "N":
-                            print("\n    Game creation was cancelled.")
-                            break
-                        else:
-                            self._error_handler.input_error("unsupported input")
+                    self._overwrite_game_query()
                 else:
                     print("\n    Game was successfully created.")
                     self._create_new_game()
@@ -110,6 +91,30 @@ class Terminal:
                     break
             else:
                 self._error_handler.input_error("unsupported input")
+
+    def _overwrite_game_query(self):
+        """
+        Checks if user wants to overwrite a saved game when creating a new one
+        """
+        while True:
+            overwrite_query = input(
+                """
+        There is a currently a saved game.
+        If you start a new game, the saved game will be lost.
+
+        Do you want to continue? [Y/N]: """
+            )
+            if overwrite_query.upper() == "Y":
+                print("\n    Game was successfully created.")
+                self._create_new_game()
+                # prevents calling play_game when testing
+                if __name__ == "__main__":
+                    self._play_game()
+                break
+            if overwrite_query.upper() == "N":
+                print("\n    Game creation was cancelled.")
+                break
+            self._error_handler.input_error("unsupported input")
 
     def _create_new_game(self):
         """creates a new game object"""
