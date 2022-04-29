@@ -222,7 +222,8 @@ class Terminal:
                 print(f"{Text.REGULAR}    Keep all remaining dice [K]")
                 print(f"    Do you want rethrow the dice with current value"
                       f" {Text.SCORE + str(dice) + Color.END}?")
-                action = input(f"{Text.REGULAR}    Enter action [Y/N/K]: ")
+                print(f"{Text.REGULAR}    Other inputs are equal to [Y]")
+                action = input("    Enter action [Y/N/K]: ")
 
             if action.upper() == "N":
                 player.put_dice_aside(dice)
