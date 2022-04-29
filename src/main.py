@@ -69,31 +69,45 @@ class Terminal:
             action = input(f"\n{Text.REGULAR}    Enter action: ")
             if action.upper() == "S":
                 if self._check_for_game():
-                    overwrite_query = input(
-                        """
+                    while True:
+                        overwrite_query = input(
+                            """
         There is a currently a saved game.
         If you start a new game, the saved game will be lost.
 
         Do you want to continue? [Y/N]: """
-                    )
-                    if overwrite_query.upper() == "Y":
-                        self._create_new_game()
-                        self._play_game()
-                    elif overwrite_query.upper() == "N":
-                        print("    Game creation was cancelled.")
-                    else:
-                        self._error_handler.input_error("unsupported input")
+                        )
+                        if overwrite_query.upper() == "Y":
+                            print("\n    Game was successfully created.")
+                            self._create_new_game()
+                            # prevents calling play_game when testing
+                            if __name__ == "__main__":
+                                self._play_game()
+                            break
+                        elif overwrite_query.upper() == "N":
+                            print("\n    Game creation was cancelled.")
+                            break
+                        else:
+                            self._error_handler.input_error("unsupported input")
                 else:
+                    print("\n    Game was successfully created.")
                     self._create_new_game()
-                    self._play_game()
+                    if __name__ == "__main__":
+                        self._play_game()
 
             elif action.upper() == "L":
                 self._load_game()
                 if self._current_game:
-                    self._play_game()
+                    print("\n    Game was successfully loaded.")
+                    if __name__ == "__main__":
+                        self._play_game()
 
             elif action.upper() == "Q":
-                sys.exit(0)
+                print("\n    Quitting game...")
+                if __name__ == "__main__":
+                    sys.exit(0)
+                else:
+                    break
             else:
                 self._error_handler.input_error("unsupported input")
 
