@@ -168,11 +168,11 @@ class Terminal:
             :param player_id: current player id (player 1 or 2)
             :param turn: current game turn
         """
-
-        if player_id == 1:
-            player = self._current_game.player_1
-        else:
-            player = self._current_game.player_2
+        match player_id:
+            case 1:
+                player = self._current_game.player_1
+            case _:
+                player = self._current_game.player_2
 
         attempt = 0
         player.dice_put_aside = []
