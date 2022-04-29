@@ -19,7 +19,7 @@ try:
     from formatting import Color, Text, Dice
 except FileNotFoundError:
     # TODO: des schöner machen
-    print("Core files missing. Game can't be started")
+    print("Error: Core files missing. Game can't be started. Please make sure all files are in one folder")
     sys.exit(0)
 
 
