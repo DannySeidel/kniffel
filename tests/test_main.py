@@ -298,4 +298,7 @@ class TestMain(unittest.TestCase):
             self.assertEqual(expected_str_success, fake_out.getvalue())
 
     def tearDown(self):
-        os.remove("games.bin")
+        try:
+            os.remove("games.bin")
+        except FileNotFoundError:
+            pass
