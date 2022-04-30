@@ -17,7 +17,11 @@ class TestPlayer(TestCase):
         expected_value = 3
 
         self.test_player.throw_dice()
+
+        # Tests that correct amount of dice were thrown
         self.assertEqual(expected_value, len(self.test_player.dice_thrown))
+
+        # Tests correct thrown dice sorting
         self.assertTrue(self.test_player.dice_thrown[0] <= self.test_player.dice_thrown[1])
         self.assertTrue(self.test_player.dice_thrown[1] <= self.test_player.dice_thrown[2])
 
@@ -48,6 +52,8 @@ class TestPlayer(TestCase):
         self.assertFalse(self.test_player.save_round_score(12))
 
     def test_get_all_possible_scores1(self):
+
+        # Tests if straights get calculated properly
         self.test_player.dice_put_aside = [1, 2, 3, 4, 5]
         print(self.test_player.get_all_possible_scores())
         expected_value = [1, 2, 3, 4, 5, 0, 0, 0, 0, 30, 40, 0, 15]
@@ -55,6 +61,8 @@ class TestPlayer(TestCase):
         self.assertEqual(expected_value, self.test_player.get_all_possible_scores())
 
     def test_get_all_possible_scores2(self):
+
+        # Also tests if straights get calculated properly
         self.test_player.dice_put_aside = [2, 3, 4, 5, 6]
         print(self.test_player.get_all_possible_scores())
         expected_value = [0, 2, 3, 4, 5, 6, 0, 0, 0, 30, 40, 0, 20]
@@ -62,6 +70,7 @@ class TestPlayer(TestCase):
         self.assertEqual(expected_value, self.test_player.get_all_possible_scores())
 
     def test_get_all_possible_scores3(self):
+        # Tests if full house gets calculated properly
         self.test_player.dice_put_aside = [2, 2, 4, 4, 4]
         print(self.test_player.get_all_possible_scores())
         expected_value = [0, 4, 0, 12, 0, 0, 16, 0, 25, 0, 0, 0, 16]
@@ -69,6 +78,8 @@ class TestPlayer(TestCase):
         self.assertEqual(expected_value, self.test_player.get_all_possible_scores())
 
     def test_get_all_possible_scores4(self):
+
+        # Tests if small straight gets calculated properly
         self.test_player.dice_put_aside = [3, 3, 4, 5, 6]
         print(self.test_player.get_all_possible_scores())
         expected_value = [0, 0, 6, 4, 5, 6, 0, 0, 0, 30, 0, 0, 21]
@@ -76,6 +87,8 @@ class TestPlayer(TestCase):
         self.assertEqual(expected_value, self.test_player.get_all_possible_scores())
 
     def test_get_all_possible_scores5(self):
+
+        # Tests if yahtzee gets calculated properly
         self.test_player.dice_put_aside = [3, 3, 3, 3, 3]
         print(self.test_player.get_all_possible_scores())
         expected_value = [0, 0, 15, 0, 0, 0, 15, 15, 0, 0, 0, 50, 15]
@@ -83,19 +96,25 @@ class TestPlayer(TestCase):
         self.assertEqual(expected_value, self.test_player.get_all_possible_scores())
 
     def test_put_dice_aside(self):
+
+        # Sets up test for putting a dice aside
         self.test_player.dice_put_aside = [2, 4, 5]
         expected_value = [2, 4, 5, 3]
 
+        # Tests putting a dice aside
         self.test_player.put_dice_aside(3)
         self.assertEqual(expected_value, self.test_player.dice_put_aside)
 
     def test_reuse_dice(self):
+
+        # Sets up test for reusing dice
         self.test_player.dice_thrown = [1, 4]
         self.test_player.dice_put_aside = [1, 3, 6]
 
         expected_value1 = [1, 4, 1, 3, 6]
         expected_value2 = []
 
+        # Tests reusing dice
         self.test_player.reuse_dice()
         self.assertEqual(expected_value1, self.test_player.dice_thrown)
         self.assertEqual(expected_value2, self.test_player.dice_put_aside)

@@ -23,6 +23,8 @@ class Player:
         self._player_id = player_id
         self.dice_thrown = []
         self.dice_put_aside = []
+
+        # creates empty scoresheet
         self.scores = dict.fromkeys(["ones", "twos", "threes", "fours", "fives", "sixes", "three_of_a_kind", "four_of_a_kind", "full_house", "small_straight",
                                      "large_straight", "yahtzee", "chance"])
         self.__error_handler = ErrorHandler()
@@ -32,6 +34,7 @@ class Player:
         Creating an array with random integers between 1 and 6"""
 
         self.dice_thrown = []
+        # Calculates how many dice need to be thrown
         dice_count = 5 - len(self.dice_put_aside)
 
         for _ in range(dice_count):
@@ -47,8 +50,10 @@ class Player:
         """
 
         possible_scores = self.get_all_possible_scores()
+
         # checks if inputted number exists
         if 0 < score_number < 14:
+
             # checks if value has already been set
             index = score_number - 1
             if self.scores[list(self.scores.keys())[index]] is None:
@@ -63,7 +68,7 @@ class Player:
         """returns an array with all possible scores
 
         Returns:
-            list: array of scores or None if score already assigned
+            list: array of scores or "None" if score is already assigned
         """
 
         scores = [self.__get_number_score(1) if self.scores["ones"] is None else None,
@@ -83,7 +88,7 @@ class Player:
         return scores
 
     def __get_number_score(self, number) -> int:
-        """creating a score for a specific number/dice
+        """creates a score for a specific number/dice for the upper half of the scoresheet
 
         Args:
             :param number: the dice number
@@ -93,7 +98,6 @@ class Player:
         """
 
         count = 0
-
         for value in self.dice_put_aside:
             if value == number:
                 count += 1

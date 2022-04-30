@@ -58,7 +58,7 @@ class TestMain(unittest.TestCase):
         expected_str_success = "    Game was successfully created.\n"
         expected_str_quit_game = "    Quitting game...\n"
 
-        # tests start without existing file and exit
+        # tests starting without existing file and exit
         with patch("sys.stdout", new=io.StringIO()) as fake_out:
             with patch("sys.stdin", new=io.StringIO("s\nQ")):
                 with self.assertRaises(SystemExit) as system_shutdown:
@@ -111,36 +111,44 @@ class TestMain(unittest.TestCase):
                 fake_out.seek(0)
                 actual_str = fake_out.readlines()
 
-        exp_str_t1 = f"{Text.TURN}    Turn 1{Color.END}\n"
-        self.assertEqual(exp_str_t1, actual_str[1])
+        exp_str_keep_dice_input = f"{Text.REGULAR}    You have thrown:\n" \
+                                  f"{Text.REGULAR}    The following dice are put aside:\n" \
+                                  f"{Text.REGULAR}    Keep all remaining dice [K]\n" \
+                                  f"{Text.REGULAR}    Other inputs are equal to [Y]\n" \
+                                  f"    Enter action [Y/N/K]: {Text.REGULAR}    Keep all remaining dice [K]\n" \
+                                  "    Enter action [Y/N/K]: \n" \
+                                  f"{Text.REGULAR}    Enter the matching number to save the score: \n" \
+                                  "    Error: Please choose a number between 1 and 13.\n" \
 
-        exp_str_keep_dice_input = f"{Text.REGULAR}    You have thrown:\n"\
-                                f"{Text.REGULAR}    The following dice are put aside:\n"\
-                                f"{Text.REGULAR}    Keep all remaining dice [K]\n"\
-                                f"{Text.REGULAR}    Other inputs are equal to [Y]\n"\
-                                f"    Enter action [Y/N/K]: {Text.REGULAR}    Keep all remaining dice [K]\n"\
-                                "    Enter action [Y/N/K]: \n"\
-                                f"{Text.REGULAR}    Enter the matching number to save the score: \n"\
-                                "    Error: Please choose a number between 1 and 13.\n"\
-
+        # Tests string outputs for player_action
         self.assertEqual(exp_str_keep_dice_input, actual_str[21] + actual_str[67] + actual_str[29] + actual_str[31] + actual_str[32] + actual_str[38] +
                          actual_str[155] + actual_str[317])
 
+        # Tests string outputs for dice rethrowing
         for dice in range(5):
             exp_str_dice_input = f"    Do you want rethrow the dice with current value {Text.SCORE}{dice + 1}{Color.END}?\n"
             self.assertEqual(exp_str_dice_input, actual_str[185 + (3 * dice)])
 
         for player in range(2):
+
+            # Tests string outputs for printing which player's turn it is
             exp_str_p1 = f"{Text.PLAYER}    Player {player + 1} is on:{Color.END}\n"
             self.assertEqual(exp_str_p1, actual_str[3 + (player * 155)])
 
+            # Tests string outputs for each player's turn 1 result header
             exp_str_t1_p = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 1 {Text.IMPORTANT}| {Text.PLAYER}Player {player + 1}\n"
             self.assertEqual(exp_str_t1_p, actual_str[130 + (player * 161)])
 
+            # Tests string output for turn 1 header
+            exp_str_t1 = f"{Text.TURN}    Turn 1{Color.END}\n"
+            self.assertEqual(exp_str_t1, actual_str[1])
             for turn in range(12):
+
+                # Tests string outputs for the other turn headers
                 exp_str_t = f"{Text.TURN}    Turn {turn + 2}{Color.END}\n"
                 self.assertEqual(exp_str_t, actual_str[321 + (117 * turn)])
 
+                # Tests string outputs for remaining result headers
                 exp_str_t_p1 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn {turn + 2} {Text.IMPORTANT}| {Text.PLAYER}Player {player + 1}\n"
                 self.assertEqual(exp_str_t_p1, actual_str[353 + (58 * player) + (117 * turn)])
 
@@ -152,12 +160,12 @@ class TestMain(unittest.TestCase):
         exp_str_draw = f"          It's a draw!{Color.END}\n"
         exp_str_return_input = f"{Text.REGULAR}Enter anything to return to main menu: {Text.IMPORTANT}\n"
 
-        # sets up test for player 1 winning
+        # Sets up test for a draw
         self.test_terminal._create_new_game()
         self.test_terminal._current_game.player_1.scores = {x: 3 for x in self.test_terminal._current_game.player_1.scores}
         self.test_terminal._current_game.player_2.scores = {x: 3 for x in self.test_terminal._current_game.player_2.scores}
 
-        # tests player 1 winning
+        # Tests a draw, output strings for final player scores and end screen
         with patch("sys.stdout", new=io.StringIO()) as fake_out:
             with patch("sys.stdin", new=io.StringIO("finish")):
                 self.test_terminal._print_end_results()
@@ -209,6 +217,7 @@ class TestMain(unittest.TestCase):
         self.test_terminal._delete_game()
 
     def test_print_dice_symbols1(self):
+
         expected_output = f"""{(Text.DICE + "       ") * 6}
     ▄▀▀▀▀▀▀▀▀▀▀▄    ▄▀▀▀▀▀▀▀▀▀▀▄    ▄▀▀▀▀▀▀▀▀▀▀▄    ▄▀▀▀▀▀▀▀▀▀▀▄    ▄▀▀▀▀▀▀▀▀▀▀▄    ▄▀▀▀▀▀▀▀▀▀▀▄
     █          █    █  ▄▄      █    █ ██       █    █  ██  ██  █    █ ██    ██ █    █  ▀▀  ▀▀  █
@@ -220,9 +229,12 @@ class TestMain(unittest.TestCase):
         with patch("sys.stdout", new=io.StringIO()) as fake_out:
             self.test_terminal._print_dice_symbols([1, 2, 3, 4, 5, 6])
 
+        # tests correct printing of dice symbols
         self.assertEqual(expected_output, fake_out.getvalue())
 
     def test_show_scoreboard1(self):
+
+        # Sets up test for printing a scorboard with calculating values
         test_player = Player(1)
         test_player.dice_put_aside = [2, 3, 4, 5, 5]
 
@@ -259,11 +271,14 @@ class TestMain(unittest.TestCase):
                        f""" {Text.REGULAR}      13) Chance:           {Text.SCORE + str(saved_scores['chance']) if possible_scores[12] is None
                        else Text.IMPORTANT + str(possible_scores[12])}\n"""
 
+        # Tests printing a scoreboard with calculating values
         with patch("sys.stdout", new=io.StringIO()) as fake_out:
             self.test_terminal._show_scoreboard(test_player, calculate_possible_scores=True)
             self.assertEqual(expected_str, fake_out.getvalue())
 
     def test_show_scoreboard2(self):
+
+        # Sets up test for printing a scoreboard without calculating values
         test_player = Player(2)
 
         possible_scores = ["--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--", "--"]
@@ -299,6 +314,7 @@ class TestMain(unittest.TestCase):
                        f""" {Text.REGULAR}      13) Chance:           {Text.SCORE + str(saved_scores['chance']) if possible_scores[12] is None
                        else Text.IMPORTANT + str(possible_scores[12])}\n"""
 
+        # Tests printing a scoreboard without printing values
         with patch("sys.stdout", new=io.StringIO()) as fake_out:
             self.test_terminal._show_scoreboard(test_player)
             self.assertEqual(expected_str, fake_out.getvalue())
@@ -350,6 +366,7 @@ class TestMain(unittest.TestCase):
             self.assertEqual(expected_value_fnf, fake_out.getvalue())
 
     def test_load_game(self):
+
         # creates test binary file
         with open("games.bin", "wb"):
             pass
@@ -363,7 +380,6 @@ class TestMain(unittest.TestCase):
         # sets up test for too short file length
         expected_str_integrity_fail = "\n    Error: The game save file has been tampered with. The game is not recoverable and has to be deleted.\n" \
                                       "    Game was removed from save file.\n"
-
         with open("games.bin", "wb") as file:
             file.write("Random String".encode())
 
@@ -397,6 +413,7 @@ class TestMain(unittest.TestCase):
         self.test_terminal._delete_game()
 
     def test_delete_game(self):
+
         with open("games.bin", "wb"):
             pass
         # sets up test for successful deleting
@@ -410,6 +427,7 @@ class TestMain(unittest.TestCase):
             self.assertEqual(expected_str_success, fake_out.getvalue())
 
     def tearDown(self):
+
         try:
             os.remove("games.bin")
         except FileNotFoundError:

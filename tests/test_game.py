@@ -7,9 +7,13 @@ from src.game import Game
 
 
 class TestGame(unittest.TestCase):
-    test_game = Game(uuid.uuid4())
+
+    def setUp(self) -> None:
+        self.test_game = Game(uuid.uuid4())
 
     def test_get_current_turn(self):
+
+        # Sets up Test for getting current game turn
         self.test_game.player_1.scores["ones"] = 3
         self.test_game.player_1.scores["twos"] = 4
         self.test_game.player_1.scores["threes"] = None
@@ -27,9 +31,12 @@ class TestGame(unittest.TestCase):
 
         expected_value = 8
 
+        # Tests if current game turn is correctly calculated
         self.assertEqual(expected_value, self.test_game.get_current_turn())
 
     def test_get_winner(self):
+
+        # Sets up test for calculating the winner
         self.test_game.player_1.scores["ones"] = 5
         self.test_game.player_1.scores["twos"] = 10
         self.test_game.player_1.scores["threes"] = 9
@@ -61,18 +68,22 @@ class TestGame(unittest.TestCase):
         self.test_game.player_2.scores["chance"] = 16
         expected_value = 1
 
+        # Tests Player 1 winning
         self.assertEqual(expected_value, self.test_game.get_winner())
 
         self.test_game.player_2.scores["chance"] = 21
         expected_value = 2
 
+        # Tests Player 2 winning
         self.assertEqual(expected_value, self.test_game.get_winner())
 
         self.test_game.player_2.scores["chance"] = 19
         expected_value = 0
 
+        # Tests a draw
         self.assertEqual(expected_value, self.test_game.get_winner())
 
+        # Tests if bonus points are given correctly
         expected_value = sum(self.test_game.player_2.scores.values()) + 35
         actual_value = self.test_game.player_2.get_total_score()
 

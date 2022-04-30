@@ -45,6 +45,7 @@ class Game:
         player_1_score = self.player_1.get_total_score()
         player_2_score = self.player_2.get_total_score()
 
+        # 1 = Player 1 wins; 2 = Player 2 wins; 0 = Draw
         if player_1_score > player_2_score:
             return 1
         if player_1_score < player_2_score:

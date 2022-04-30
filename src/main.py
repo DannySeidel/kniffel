@@ -33,7 +33,7 @@ class Terminal:
     @staticmethod
     def clear_console():
         """clears console based on operating system"""
-        # skips console clearing for testing
+        # Skips console clearing for testing
         if __name__ == "__main__":
             os.system("cls" if os.name == "nt" else "clear")
 
@@ -67,22 +67,29 @@ class Terminal:
 
         while True:
             action = input(f"\n{Text.REGULAR}    Enter action: ")
+
+            # Option "start new game"
             if action.upper() == "S":
+                # If a game currently exists
                 if self._check_for_game():
                     self._overwrite_game_query()
                 else:
                     print("\n    Game was successfully created.")
                     self._create_new_game()
+                    # Prevents calling play_game when testing
                     if __name__ == "__main__":
                         self._play_game()
 
+            # Option "load game"
             elif action.upper() == "L":
                 self._load_game()
                 if self._current_game:
                     print("\n    Game was successfully loaded.")
+                    # prevents caPling play_game when testing
                     if __name__ == "__main__":
                         self._play_game()
 
+            # Option "quit game"
             elif action.upper() == "Q":
                 print("\n    Quitting game...")
                 sys.exit(0)
@@ -93,6 +100,7 @@ class Terminal:
         """
         Checks if user wants to overwrite a saved game when creating a new one
         """
+        # Loop for easy error-handling
         while True:
             overwrite_query = input(
                 """
@@ -104,7 +112,7 @@ class Terminal:
             if overwrite_query.upper() == "Y":
                 print("\n    Game was successfully created.")
                 self._create_new_game()
-                # prevents calling play_game when testing
+                # Prevents calling play_game when testing
                 if __name__ == "__main__":
                     self._play_game()
                 break
@@ -123,19 +131,22 @@ class Terminal:
         """looping through game turns and printing the winner"""
 
         turn = self._current_game.get_current_turn()
-        # loops through game turns
+        # Loops through game turns
         while turn < 13:
-            # player action for both players
+            # Player action for both players
             for index in range(1, 3):
                 self.__player_action(index, turn)
             self._save_game()
             turn += 1
+
         self._print_end_results()
 
     def _print_end_results(self):
         """prints final scoreboard for both players"""
 
         self.clear_console()
+
+        # Prints final scoreboard for both players
         for index in range(1, 3):
             if index == 1:
                 player = self._current_game.player_1
@@ -145,7 +156,8 @@ class Terminal:
             print(f"{Text.PLAYER}    Player {index}:{Color.END}")
             self._show_scoreboard(player)
             print(f"{Text.SCORE}      Total:                 {player.get_total_score()}{Color.END}")
-        # get winner
+
+        # Calculates winner
         winner_id = self._current_game.get_winner()
 
         if winner_id == 1:
@@ -180,7 +192,7 @@ class Terminal:
         while attempt < 4 and len(player.dice_put_aside) < 5:
             player.throw_dice()
 
-            # if you're playing the game, get random dice throws.
+            # If you're playing the game, get random dice throws.
             # For testing, always throw 1,2,3,4,5
             if __name__ == "__main__":
                 player.throw_dice()
@@ -192,10 +204,12 @@ class Terminal:
 
             if attempt < 3:
                 self.clear_console()
+                # "Header"
                 print(f"\n{Text.TURN}    Turn {turn + 1}{Color.END}")
                 print(f"\n{Text.PLAYER}    Player {player_id} is on:{Color.END}")
                 self._show_scoreboard(player)
 
+                # Shows currect dice situation
                 print(f"\n{Text.REGULAR}    You have thrown:")
                 self._print_dice_symbols(player.dice_thrown)
                 if len(player.dice_put_aside) > 0:
@@ -206,7 +220,7 @@ class Terminal:
                 self.__player_dice_input(player)
 
             else:
-                # puts all dice aside
+                # Puts all dice aside if all dice throws were used
                 for dice in player.dice_thrown:
                     player.put_dice_aside(dice)
 
@@ -214,9 +228,12 @@ class Terminal:
 
         self.clear_console()
         player.dice_put_aside.sort()
+
+        # End of Round
         print(f"\n{Text.IMPORTANT}    Results {Text.TURN}Turn {turn + 1} {Text.IMPORTANT}| {Text.PLAYER}Player {player_id}")
         self._print_dice_symbols(player.dice_put_aside)
         self._show_scoreboard(player, calculate_possible_scores=True)
+
         # gives scoreboard number to player for saving
         while True:
             try:
@@ -230,7 +247,9 @@ class Terminal:
     @staticmethod
     def __player_dice_input(player):
         action = ""
+        # Iterate every dice
         for dice in player.dice_thrown:
+            # Skips input if "keep all dice" was chosen
             if action != "k":
                 print(f"{Text.REGULAR}    Keep all remaining dice [K]")
                 print(f"    Do you want rethrow the dice with current value"
@@ -238,6 +257,7 @@ class Terminal:
                 print(f"{Text.REGULAR}    Other inputs are equal to [Y]")
                 action = input("    Enter action [Y/N/K]: ")
 
+            # clears action string to re-call input
             if action.upper() == "N":
                 player.put_dice_aside(dice)
                 action = ""
@@ -246,6 +266,7 @@ class Terminal:
                 player.put_dice_aside(dice)
                 action = "k"
 
+            # All other inputs are valued as "rethrow dice"
             else:
                 action = ""
 
@@ -270,10 +291,9 @@ class Terminal:
                 case 6:
                     dice.append(Dice.SIX)
 
+        # Ensures correct printing for dice images
         columns = [column.split('\n') for column in dice]
-
         lines = zip(*columns)
-
         max_length_of_column = [
             max([len(element) for element in column])
             for column in columns
@@ -297,6 +317,9 @@ class Terminal:
         saved_scores = player.scores
         possible_scores = []
 
+        # 2 Options:
+        # 1.(here: if): calculate all possible score and show them in the scoreboard
+        # 2.(here: else): only show current scoreboard without calculating potential values
         if calculate_possible_scores:
             possible_scores = player.get_all_possible_scores()
         else:
@@ -308,6 +331,7 @@ class Terminal:
                    "      9) Full House:     ", "      10) Small Straight:", "      11) Large Straight:", "      12) Yahtzee:       ",
                    "      13) Chance:        "]
 
+        # Prints scoreboard
         print(f"{Text.REGULAR}    Your scores are:")
         print("      Upper Section:")
         for index in range(13):
@@ -322,10 +346,13 @@ class Terminal:
 
         # pickle current game
         pickled_game = pickle.dumps(self._current_game)
+
         # create MAC
         mac = hmac.new(str(self._current_game.key).encode(), pickled_game, hashlib.sha256).digest()
+
         # combine pickled game, MAC, and game key into one binary output
         game_data_b = mac + str(self._current_game.key).encode() + pickled_game
+
         # save output to game file
         try:
             with open("games.bin", "wb") as file:
@@ -340,12 +367,14 @@ class Terminal:
 
         game_exists = self._check_for_game()
         if game_exists:
+
             # checks length of file data to prevent Errors later
             # also an integrity fail because this scenario can only happen through human tampering
             if len(game_exists) <= 55:
                 self._error_handler.file_error("integrity fail")
                 self._delete_game()
             else:
+
                 # pulls the necessary data from the "data" object
                 mac = game_exists[16:48]
                 key = game_exists[48:52]
@@ -383,6 +412,7 @@ class Terminal:
 
     def _delete_game(self):
         """ removes game save from binary file"""
+
         if self._check_for_game():
             try:
                 with open("games.bin", "wb") as file:
