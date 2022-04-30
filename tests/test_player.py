@@ -1,5 +1,6 @@
 # pylint: disable=C
 # pylint: disable=protected-access
+
 import io
 from unittest import TestCase
 from unittest.mock import patch

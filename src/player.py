@@ -62,6 +62,7 @@ class Player:
             self.__error_handler.input_error("already set")
             return False
         self.__error_handler.input_error("invalid number")
+
         return False
 
     def get_all_possible_scores(self) -> list[int | None]:

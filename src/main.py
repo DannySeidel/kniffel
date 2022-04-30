@@ -19,7 +19,7 @@ try:
     from formatting import Color, Text, Dice
 except FileNotFoundError:
     print("Error: Core files missing. Game can't be started. Please make sure all files are in one folder")
-    sys.exit(0)
+    sys.exit(-1)
 
 
 class Terminal:
@@ -85,7 +85,7 @@ class Terminal:
                 self._load_game()
                 if self._current_game:
                     print("\n    Game was successfully loaded.")
-                    # prevents caPling play_game when testing
+                    # prevents calling play_game when testing
                     if __name__ == "__main__":
                         self._play_game()
 
@@ -179,6 +179,7 @@ class Terminal:
             :param player_id: current player id (player 1 or 2)
             :param turn: current game turn
         """
+
         match player_id:
             case 1:
                 player = self._current_game.player_1
@@ -191,7 +192,7 @@ class Terminal:
         while attempt < 4 and len(player.dice_put_aside) < 5:
             player.throw_dice()
 
-            # If you're playing the game, get random dice throws.
+            # If you're playing the game, get random dice values.
             # For testing, always throw 1,2,3,4,5
             if __name__ == "__main__":
                 player.throw_dice()
@@ -203,12 +204,13 @@ class Terminal:
 
             if attempt < 3:
                 self.clear_console()
-                # "Header"
+                # Header
                 print(f"\n{Text.TURN}    Turn {turn + 1}{Color.END}")
                 print(f"\n{Text.PLAYER}    Player {player_id} is on:{Color.END}")
                 self._show_scoreboard(player)
 
-                # Shows currect dice situation
+                # Shows current dice situation
+                player.dice_put_aside.sort()
                 print(f"\n{Text.REGULAR}    You have thrown:")
                 self._print_dice_symbols(player.dice_thrown)
                 if len(player.dice_put_aside) > 0:
@@ -219,7 +221,7 @@ class Terminal:
                 self.__player_dice_input(player)
 
             else:
-                # Puts all dice aside if all dice throws were used
+                # Puts all dice aside if all attempts were used
                 for dice in player.dice_thrown:
                     player.put_dice_aside(dice)
 
@@ -245,6 +247,8 @@ class Terminal:
 
     @staticmethod
     def __player_dice_input(player):
+        """handles inputs if player wants to rethrow or put dice aside"""
+
         action = ""
         # Iterate every dice
         for dice in player.dice_thrown:
@@ -256,7 +260,7 @@ class Terminal:
                 print(f"{Text.REGULAR}    Other inputs are equal to [Y]")
                 action = input("    Enter action [Y/N/K]: ")
 
-            # clears action string to re-call input
+            # Clears action string to re-call input
             if action.upper() == "N":
                 player.put_dice_aside(dice)
                 action = ""
@@ -333,6 +337,7 @@ class Terminal:
         # Prints scoreboard
         print(f"{Text.REGULAR}    Your scores are:")
         print("      Upper Section:")
+
         for index in range(13):
             print(f""" {Text.REGULAR}{strings[index]}   {Text.SCORE + str(saved_scores[self.__score_keys[index]]) if possible_scores[index] is None
             else Text.IMPORTANT + str(possible_scores[index])}""")
@@ -365,6 +370,7 @@ class Terminal:
          If the codes are the same, the game gets loaded, otherwise it gets deleted."""
 
         game_exists = self._check_for_game()
+
         if game_exists:
 
             # checks length of file data to prevent Errors later
@@ -396,6 +402,7 @@ class Terminal:
         :return: If True: return file content
                  If False: return False
         """
+
         game_data = False
         try:
             with open("games.bin", "rb") as file:
@@ -407,6 +414,7 @@ class Terminal:
 
         if game_data:
             return game_data
+
         return False
 
     def _delete_game(self):

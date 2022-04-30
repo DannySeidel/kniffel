@@ -10,7 +10,7 @@ from src.error_handler import ErrorHandler
 
 class TestErrorHandler(unittest.TestCase):
 
-    def setUp(self) -> None:
+    def setUp(self):
         self.test_error_handler = ErrorHandler()
 
     def test_error_handler1(self):
@@ -55,7 +55,7 @@ class TestErrorHandler(unittest.TestCase):
 
     def test_error_handler6(self):
 
-        # Tests PermissonError
+        # Tests PermissionError
         expected_str = "\n    Error: This programme does not have the necessary permissions to access the file 'games.bin'." \
                        "    Please make sure that the programme has full access to the file.\n"
         with patch("sys.stdout", new=io.StringIO()) as fake_out:

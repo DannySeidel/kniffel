@@ -65,6 +65,7 @@ class TestMain(unittest.TestCase):
                     self.test_terminal.menu_input()
                 fake_out.seek(0)
                 actual_str = fake_out.readlines()
+
         self.assertEqual(expected_str_initial_input, actual_str[1])
         self.assertEqual(expected_str_success, actual_str[4])
         self.assertEqual(expected_str_initial_input, actual_str[6])
@@ -74,6 +75,7 @@ class TestMain(unittest.TestCase):
         # creates a game for next round of tests
         self.test_terminal._create_new_game()
         self.test_terminal._save_game()
+
         expected_str_overwrite_game_query = """        There is a currently a saved game.
         If you start a new game, the saved game will be lost.
 
@@ -82,13 +84,14 @@ class TestMain(unittest.TestCase):
         expected_str_error = "    Error: Input not supported.\n"
         expected_str_load_success = "    Game was successfully loaded.\n"
 
-        # tests options if there is a saved game
+        # Test options if there is a saved game
         with patch("sys.stdout", new=io.StringIO()) as fake_out:
             with patch("sys.stdin", new=io.StringIO("s\nN\ns\nabcd\ny\nl\nabcd\nq")):
                 with self.assertRaises(SystemExit):
                     self.test_terminal.menu_input()
                 fake_out.seek(0)
                 actual_str = fake_out.readlines()
+
         self.assertEqual(expected_str_overwrite_game_query, actual_str[2] + actual_str[3] + actual_str[4] + actual_str[5])
         self.assertEqual(expected_str_cancel, actual_str[6])
         self.assertEqual(expected_str_error, actual_str[13])
@@ -195,6 +198,7 @@ class TestMain(unittest.TestCase):
                 self.test_terminal._print_end_results()
                 fake_out.seek(0)
                 actual_str = fake_out.readlines()
+
         self.assertEqual(expected_str_winner, actual_str[37])
         self.test_terminal._delete_game()
 
@@ -213,6 +217,7 @@ class TestMain(unittest.TestCase):
                 self.test_terminal._print_end_results()
                 fake_out.seek(0)
                 actual_str = fake_out.readlines()
+
         self.assertEqual(expected_str_winner, actual_str[37])
         self.test_terminal._delete_game()
 
@@ -234,7 +239,7 @@ class TestMain(unittest.TestCase):
 
     def test_show_scoreboard1(self):
 
-        # Sets up test for printing a scorboard with calculating values
+        # Sets up test for printing a scoreboard with calculating values
         test_player = Player(1)
         test_player.dice_put_aside = [2, 3, 4, 5, 5]
 
@@ -380,6 +385,7 @@ class TestMain(unittest.TestCase):
         # sets up test for too short file length
         expected_str_integrity_fail = "\n    Error: The game save file has been tampered with. The game is not recoverable and has to be deleted.\n" \
                                       "    Game was removed from save file.\n"
+
         with open("games.bin", "wb") as file:
             file.write("Random String".encode())
 

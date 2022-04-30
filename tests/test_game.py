@@ -2,12 +2,13 @@
 # pylint: disable=protected-access
 
 import unittest
+
 from src.game import Game
 
 
 class TestGame(unittest.TestCase):
 
-    def setUp(self) -> None:
+    def setUp(self):
         self.test_game = Game()
 
     def test_get_current_turn(self):
