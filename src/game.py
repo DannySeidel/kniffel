@@ -7,6 +7,7 @@ by Tobias Welti, Luca Kaiser, Joshua Miller, Danny Seidel
 """
 
 from random import randint
+from uuid import uuid4
 
 from player import Player
 
@@ -14,8 +15,8 @@ from player import Player
 class Game:
     """handles game data and current game state"""
 
-    def __init__(self, uuid):
-        self._uuid = uuid
+    def __init__(self):
+        self._uuid = uuid4()
         self.key = randint(1000, 9999)
         self.player_1 = Player(1)
         self.player_2 = Player(2)

@@ -11,7 +11,7 @@ import pickle
 import hashlib
 import os
 import sys
-from uuid import uuid4
+
 
 try:
     from game import Game
@@ -27,7 +27,7 @@ class Terminal:
 
     def __init__(self):
         self._current_game = None
-        self.__score_keys = list(Game(uuid4()).player_1.scores.keys())
+        self.__score_keys = list(Game().player_1.scores.keys())
         self._error_handler = ErrorHandler()
 
     @staticmethod
@@ -124,8 +124,7 @@ class Terminal:
     def _create_new_game(self):
         """creates a new game object"""
 
-        game_id = uuid4()
-        self._current_game = Game(game_id)
+        self._current_game = Game()
 
     def _play_game(self):
         """looping through game turns and printing the winner"""

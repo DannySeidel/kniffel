@@ -2,14 +2,13 @@
 # pylint: disable=protected-access
 
 import unittest
-import uuid
 from src.game import Game
 
 
 class TestGame(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.test_game = Game(uuid.uuid4())
+        self.test_game = Game()
 
     def test_get_current_turn(self):
 
