@@ -132,11 +132,6 @@ class Terminal:
             turn += 1
         self._print_end_results()
 
-        # End screen
-        input(f"{Text.REGULAR}Enter anything to return to main menu: ")
-        self.clear_console()
-        self.print_menu()
-
     def _print_end_results(self):
         """prints final scoreboard for both players"""
 
@@ -161,6 +156,11 @@ class Terminal:
             print(f"{Text.IMPORTANT}\n          It's a draw!{Color.END}")
 
         self._delete_game()
+
+        # End screen
+        input(f"{Text.REGULAR}Enter anything to return to main menu: ")
+        self.clear_console()
+        self.print_menu()
 
     def __player_action(self, player_id, turn):
         """handling the actions for one player turn

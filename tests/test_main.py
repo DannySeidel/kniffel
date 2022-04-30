@@ -89,7 +89,7 @@ class TestMain(unittest.TestCase):
                     self.test_terminal.menu_input()
                 fake_out.seek(0)
                 actual_str = fake_out.readlines()
-        self.assertEqual(expected_str_overwrite_game_query, actual_str[2]+actual_str[3]+actual_str[4]+actual_str[5])
+        self.assertEqual(expected_str_overwrite_game_query, actual_str[2] + actual_str[3] + actual_str[4] + actual_str[5])
         self.assertEqual(expected_str_cancel, actual_str[6])
         self.assertEqual(expected_str_error, actual_str[13])
         self.assertEqual(expected_str_success, actual_str[19])
@@ -103,147 +103,76 @@ class TestMain(unittest.TestCase):
         # tests game procedure
         with patch("sys.stdout", new=io.StringIO()) as fake_out:
             with patch("sys.stdin", new=io.StringIO("y\ny\nk\nn\ny\nk\n"
-            "y\nk\n1\nn\nn\nn\ny\ny\ny\ny\nk\nn\nk\n1.2\n1\nk\n2\nk\n2\nk\n3\n"
-            "k\n3\nk\n4\nk\n4\nk\n5\nk\n5\nk\n6\nk\n6\nk\n7\nk\n7\nk\n8\n"
-            "k\n8\nk\n9\nk\n9\nk\n10\nk\n10\nk\n11\nk\n11\nk\n12\nk\n12\n"
-            "k\n13\nk\n13\nfinish")):
+                                                    "y\nk\n1\nn\nn\nn\ny\ny\ny\ny\nk\nn\nk\n1.2\n1\nk\n2\nk\n2\nk\n3\n"
+                                                    "k\n3\nk\n4\nk\n4\nk\n5\nk\n5\nk\n6\nk\n6\nk\n7\nk\n7\nk\n8\n"
+                                                    "k\n8\nk\n9\nk\n9\nk\n10\nk\n10\nk\n11\nk\n11\nk\n12\nk\n12\n"
+                                                    "k\n13\nk\n13\nfinish")):
                 self.test_terminal._play_game()
                 fake_out.seek(0)
                 actual_str = fake_out.readlines()
 
         exp_str_t1 = f"{Text.TURN}    Turn 1{Color.END}\n"
-        exp_str_t2 = f"{Text.TURN}    Turn 2{Color.END}\n"
-        exp_str_t3 = f"{Text.TURN}    Turn 3{Color.END}\n"
-        exp_str_t4 = f"{Text.TURN}    Turn 4{Color.END}\n"
-        exp_str_t5 = f"{Text.TURN}    Turn 5{Color.END}\n"
-        exp_str_t6 = f"{Text.TURN}    Turn 6{Color.END}\n"
-        exp_str_t7 = f"{Text.TURN}    Turn 7{Color.END}\n"
-        exp_str_t8 = f"{Text.TURN}    Turn 8{Color.END}\n"
-        exp_str_t9 = f"{Text.TURN}    Turn 9{Color.END}\n"
-        exp_str_t10 = f"{Text.TURN}    Turn 10{Color.END}\n"
-        exp_str_t11 = f"{Text.TURN}    Turn 11{Color.END}\n"
-        exp_str_t12 = f"{Text.TURN}    Turn 12{Color.END}\n"
-        exp_str_t13 = f"{Text.TURN}    Turn 13{Color.END}\n"
+        self.assertEqual(exp_str_t1, actual_str[1])
 
-        exp_str_p1 = f"{Text.PLAYER}    Player 1 is on:{Color.END}\n"
-        exp_str_p2 = f"{Text.PLAYER}    Player 2 is on:{Color.END}\n"
+        exp_str_keep_dice_input = f"{Text.REGULAR}    You have thrown:\n"\
+                                f"{Text.REGULAR}    The following dice are put aside:\n"\
+                                f"{Text.REGULAR}    Keep all remaining dice [K]\n"\
+                                f"{Text.REGULAR}    Other inputs are equal to [Y]\n"\
+                                f"    Enter action [Y/N/K]: {Text.REGULAR}    Keep all remaining dice [K]\n"\
+                                "    Enter action [Y/N/K]: \n"\
+                                f"{Text.REGULAR}    Enter the matching number to save the score: \n"\
+                                "    Error: Please choose a number between 1 and 13.\n"\
 
-        exp_str_you_have_thrown = f"{Text.REGULAR}    You have thrown:\n"
-        exp_str_you_put_aside = f"{Text.REGULAR}    The following dice are put aside:\n"
+        self.assertEqual(exp_str_keep_dice_input, actual_str[21] + actual_str[67] + actual_str[29] + actual_str[31] + actual_str[32] + actual_str[38] +
+                         actual_str[155] + actual_str[317])
 
-        exp_str_t1_p1 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 1 {Text.IMPORTANT}| {Text.PLAYER}Player 1\n"
-        exp_str_t2_p1 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 2 {Text.IMPORTANT}| {Text.PLAYER}Player 1\n"
-        exp_str_t3_p1 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 3 {Text.IMPORTANT}| {Text.PLAYER}Player 1\n"
-        exp_str_t4_p1 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 4 {Text.IMPORTANT}| {Text.PLAYER}Player 1\n"
-        exp_str_t5_p1 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 5 {Text.IMPORTANT}| {Text.PLAYER}Player 1\n"
-        exp_str_t6_p1 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 6 {Text.IMPORTANT}| {Text.PLAYER}Player 1\n"
-        exp_str_t7_p1 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 7 {Text.IMPORTANT}| {Text.PLAYER}Player 1\n"
-        exp_str_t8_p1 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 8 {Text.IMPORTANT}| {Text.PLAYER}Player 1\n"
-        exp_str_t9_p1 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 9 {Text.IMPORTANT}| {Text.PLAYER}Player 1\n"
-        exp_str_t10_p1 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 10 {Text.IMPORTANT}| {Text.PLAYER}Player 1\n"
-        exp_str_t11_p1 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 11 {Text.IMPORTANT}| {Text.PLAYER}Player 1\n"
-        exp_str_t12_p1 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 12 {Text.IMPORTANT}| {Text.PLAYER}Player 1\n"
-        exp_str_t13_p1 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 13 {Text.IMPORTANT}| {Text.PLAYER}Player 1\n"
-        exp_str_t1_p2 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 1 {Text.IMPORTANT}| {Text.PLAYER}Player 2\n"
-        exp_str_t2_p2 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 2 {Text.IMPORTANT}| {Text.PLAYER}Player 2\n"
-        exp_str_t3_p2 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 3 {Text.IMPORTANT}| {Text.PLAYER}Player 2\n"
-        exp_str_t4_p2 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 4 {Text.IMPORTANT}| {Text.PLAYER}Player 2\n"
-        exp_str_t5_p2 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 5 {Text.IMPORTANT}| {Text.PLAYER}Player 2\n"
-        exp_str_t6_p2 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 6 {Text.IMPORTANT}| {Text.PLAYER}Player 2\n"
-        exp_str_t7_p2 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 7 {Text.IMPORTANT}| {Text.PLAYER}Player 2\n"
-        exp_str_t8_p2 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 8 {Text.IMPORTANT}| {Text.PLAYER}Player 2\n"
-        exp_str_t9_p2 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 9 {Text.IMPORTANT}| {Text.PLAYER}Player 2\n"
-        exp_str_t10_p2 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 10 {Text.IMPORTANT}| {Text.PLAYER}Player 2\n"
-        exp_str_t11_p2 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 11 {Text.IMPORTANT}| {Text.PLAYER}Player 2\n"
-        exp_str_t12_p2 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 12 {Text.IMPORTANT}| {Text.PLAYER}Player 2\n"
-        exp_str_t13_p2 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 13 {Text.IMPORTANT}| {Text.PLAYER}Player 2\n"
+        for dice in range(5):
+            exp_str_dice_input = f"    Do you want rethrow the dice with current value {Text.SCORE}{dice + 1}{Color.END}?\n"
+            self.assertEqual(exp_str_dice_input, actual_str[185 + (3 * dice)])
 
-        exp_str_enter_number_for_score = f"{Text.REGULAR}    Enter the matching number to save the score: \n"
-        exp_str_error_inp_number = "    Error: Please choose a number between 1 and 13.\n"
-        exp_str_other_inputs_are_y = f"{Text.REGULAR}    Other inputs are equal to [Y]\n"
-        exp_str_keep_all_dice = f"{Text.REGULAR}    Keep all remaining dice [K]\n"
-        exp_str_enter_action = "    Enter action [Y/N/K]: \n"
-        exp_str_enter_keep_all = f"    Enter action [Y/N/K]: {Text.REGULAR}    Keep all remaining dice [K]\n"
+        for player in range(2):
+            exp_str_p1 = f"{Text.PLAYER}    Player {player + 1} is on:{Color.END}\n"
+            self.assertEqual(exp_str_p1, actual_str[3 + (player * 155)])
 
-        exp_str_dice_input_1 = f"    Do you want rethrow the dice with current value {Text.SCORE}1{Color.END}?\n"
-        exp_str_dice_input_2 = f"    Do you want rethrow the dice with current value {Text.SCORE}2{Color.END}?\n"
-        exp_str_dice_input_3 = f"    Do you want rethrow the dice with current value {Text.SCORE}3{Color.END}?\n"
-        exp_str_dice_input_4 = f"    Do you want rethrow the dice with current value {Text.SCORE}4{Color.END}?\n"
-        exp_str_dice_input_5 = f"    Do you want rethrow the dice with current value {Text.SCORE}5{Color.END}?\n"
+            exp_str_t1_p = f"{Text.IMPORTANT}    Results {Text.TURN}Turn 1 {Text.IMPORTANT}| {Text.PLAYER}Player {player + 1}\n"
+            self.assertEqual(exp_str_t1_p, actual_str[130 + (player * 161)])
+
+            for turn in range(12):
+                exp_str_t = f"{Text.TURN}    Turn {turn + 2}{Color.END}\n"
+                self.assertEqual(exp_str_t, actual_str[321 + (117 * turn)])
+
+                exp_str_t_p1 = f"{Text.IMPORTANT}    Results {Text.TURN}Turn {turn + 2} {Text.IMPORTANT}| {Text.PLAYER}Player {player + 1}\n"
+                self.assertEqual(exp_str_t_p1, actual_str[353 + (58 * player) + (117 * turn)])
+
+    def test_print_end_results1(self):
 
         exp_str_player_1_total_p = f"{Text.PLAYER}    Player 1:{Color.END}\n"
-        exp_str_players_total_t = f"{Text.SCORE}      Total:                 101{Color.END}\n"
+        exp_str_players_total_t = f"{Text.SCORE}      Total:                 39{Color.END}\n"
         exp_str_player_2_total_p = f"{Text.PLAYER}    Player 2:{Color.END}\n"
         exp_str_draw = f"          It's a draw!{Color.END}\n"
         exp_str_return_input = f"{Text.REGULAR}Enter anything to return to main menu: {Text.IMPORTANT}\n"
 
-        self.assertEqual(exp_str_t1, actual_str[1])
-        self.assertEqual(exp_str_p1, actual_str[3])
-        self.assertEqual(exp_str_you_have_thrown, actual_str[21])
-        self.assertEqual(exp_str_keep_all_dice, actual_str[29])
-        self.assertEqual(exp_str_dice_input_1, actual_str[30])
-        self.assertEqual(exp_str_other_inputs_are_y, actual_str[31])
-        self.assertEqual(exp_str_enter_keep_all, actual_str[32])
-        self.assertEqual(exp_str_dice_input_2, actual_str[33])
-        self.assertEqual(exp_str_dice_input_3, actual_str[36])
-        self.assertEqual(exp_str_enter_action, actual_str[38])
-        self.assertEqual(exp_str_you_put_aside, actual_str[67])
+        # sets up test for player 1 winning
+        self.test_terminal._create_new_game()
+        self.test_terminal._current_game.player_1.scores = {x: 3 for x in self.test_terminal._current_game.player_1.scores}
+        self.test_terminal._current_game.player_2.scores = {x: 3 for x in self.test_terminal._current_game.player_2.scores}
 
-        self.assertEqual(exp_str_enter_number_for_score, actual_str[155])
-        self.assertEqual(exp_str_p2, actual_str[158])
-        self.assertEqual(exp_str_dice_input_4, actual_str[194])
-        self.assertEqual(exp_str_dice_input_5, actual_str[197])
+        # tests player 1 winning
+        with patch("sys.stdout", new=io.StringIO()) as fake_out:
+            with patch("sys.stdin", new=io.StringIO("finish")):
+                self.test_terminal._print_end_results()
+                fake_out.seek(0)
+                actual_str = fake_out.readlines()
 
-        self.assertEqual(exp_str_error_inp_number, actual_str[317])
-        self.assertEqual(exp_str_t2, actual_str[321])
-        self.assertEqual(exp_str_t3, actual_str[438])
-        self.assertEqual(exp_str_t4, actual_str[555])
-        self.assertEqual(exp_str_t5, actual_str[672])
-        self.assertEqual(exp_str_t6, actual_str[789])
-        self.assertEqual(exp_str_t7, actual_str[906])
-        self.assertEqual(exp_str_t8, actual_str[1023])
-        self.assertEqual(exp_str_t9, actual_str[1140])
-        self.assertEqual(exp_str_t10, actual_str[1257])
-        self.assertEqual(exp_str_t11, actual_str[1374])
-        self.assertEqual(exp_str_t12, actual_str[1491])
-        self.assertEqual(exp_str_t13, actual_str[1608])
+        self.assertEqual(exp_str_draw, actual_str[37])
+        self.assertEqual(exp_str_player_1_total_p, actual_str[0])
+        self.assertEqual(exp_str_player_2_total_p, actual_str[18])
+        self.assertEqual(exp_str_players_total_t, actual_str[17])
+        self.assertEqual(exp_str_return_input, actual_str[40])
 
-        self.assertEqual(exp_str_t1_p1, actual_str[130])
-        self.assertEqual(exp_str_t2_p1, actual_str[353])
-        self.assertEqual(exp_str_t3_p1, actual_str[470])
-        self.assertEqual(exp_str_t4_p1, actual_str[587])
-        self.assertEqual(exp_str_t5_p1, actual_str[704])
-        self.assertEqual(exp_str_t6_p1, actual_str[821])
-        self.assertEqual(exp_str_t7_p1, actual_str[938])
-        self.assertEqual(exp_str_t8_p1, actual_str[1055])
-        self.assertEqual(exp_str_t9_p1, actual_str[1172])
-        self.assertEqual(exp_str_t10_p1, actual_str[1289])
-        self.assertEqual(exp_str_t11_p1, actual_str[1406])
-        self.assertEqual(exp_str_t12_p1, actual_str[1523])
-        self.assertEqual(exp_str_t13_p1, actual_str[1640])
+        self.test_terminal._delete_game()
 
-        self.assertEqual(exp_str_t1_p2, actual_str[291])
-        self.assertEqual(exp_str_t2_p2, actual_str[411])
-        self.assertEqual(exp_str_t3_p2, actual_str[528])
-        self.assertEqual(exp_str_t4_p2, actual_str[645])
-        self.assertEqual(exp_str_t5_p2, actual_str[762])
-        self.assertEqual(exp_str_t6_p2, actual_str[879])
-        self.assertEqual(exp_str_t7_p2, actual_str[996])
-        self.assertEqual(exp_str_t8_p2, actual_str[1113])
-        self.assertEqual(exp_str_t9_p2, actual_str[1230])
-        self.assertEqual(exp_str_t10_p2, actual_str[1347])
-        self.assertEqual(exp_str_t11_p2, actual_str[1464])
-        self.assertEqual(exp_str_t12_p2, actual_str[1581])
-        self.assertEqual(exp_str_t13_p2, actual_str[1698])
-
-        self.assertEqual(exp_str_player_1_total_p, actual_str[1724])
-        self.assertEqual(exp_str_player_2_total_p, actual_str[1742])
-        self.assertEqual(exp_str_players_total_t, actual_str[1741])
-        self.assertEqual(exp_str_players_total_t, actual_str[1759])
-        self.assertEqual(exp_str_draw, actual_str[1761])
-        self.assertEqual(exp_str_return_input, actual_str[1763])
-
-    def test_print_end_results1(self):
+    def test_print_end_results2(self):
 
         expected_str_winner = f"        Player 1 has won!{Color.END}\n"
 
@@ -254,13 +183,14 @@ class TestMain(unittest.TestCase):
 
         # tests player 1 winning
         with patch("sys.stdout", new=io.StringIO()) as fake_out:
-            self.test_terminal._print_end_results()
-            fake_out.seek(0)
-            actual_str = fake_out.readlines()
+            with patch("sys.stdin", new=io.StringIO("finish")):
+                self.test_terminal._print_end_results()
+                fake_out.seek(0)
+                actual_str = fake_out.readlines()
         self.assertEqual(expected_str_winner, actual_str[37])
         self.test_terminal._delete_game()
 
-    def test_print_end_results2(self):
+    def test_print_end_results3(self):
 
         expected_str_winner = f"        Player 2 has won!{Color.END}\n"
 
@@ -271,9 +201,10 @@ class TestMain(unittest.TestCase):
 
         # tests player 2 winning
         with patch("sys.stdout", new=io.StringIO()) as fake_out:
-            self.test_terminal._print_end_results()
-            fake_out.seek(0)
-            actual_str = fake_out.readlines()
+            with patch("sys.stdin", new=io.StringIO("finish")):
+                self.test_terminal._print_end_results()
+                fake_out.seek(0)
+                actual_str = fake_out.readlines()
         self.assertEqual(expected_str_winner, actual_str[37])
         self.test_terminal._delete_game()
 
@@ -301,30 +232,30 @@ class TestMain(unittest.TestCase):
         expected_str = f"{Text.REGULAR}    Your scores are:\n" \
                        "      Upper Section:\n" \
                        f""" {Text.REGULAR}      1) Ones:              {Text.SCORE + str(saved_scores['ones']) if possible_scores[0] is None
-                       else Text.IMPORTANT + str(possible_scores[0])}\n"""\
+                       else Text.IMPORTANT + str(possible_scores[0])}\n""" \
                        f""" {Text.REGULAR}      2) Twos:              {Text.SCORE + str(saved_scores['twos']) if possible_scores[1] is None
-                       else Text.IMPORTANT + str(possible_scores[1])}\n"""\
+                       else Text.IMPORTANT + str(possible_scores[1])}\n""" \
                        f""" {Text.REGULAR}      3) Threes:            {Text.SCORE + str(saved_scores['threes']) if possible_scores[2] is None
-                       else Text.IMPORTANT + str(possible_scores[2])}\n"""\
+                       else Text.IMPORTANT + str(possible_scores[2])}\n""" \
                        f""" {Text.REGULAR}      4) Fours:             {Text.SCORE + str(saved_scores['fours']) if possible_scores[3] is None
-                       else Text.IMPORTANT + str(possible_scores[3])}\n"""\
+                       else Text.IMPORTANT + str(possible_scores[3])}\n""" \
                        f""" {Text.REGULAR}      5) Fives:             {Text.SCORE + str(saved_scores['fives']) if possible_scores[4] is None
-                       else Text.IMPORTANT + str(possible_scores[4])}\n"""\
+                       else Text.IMPORTANT + str(possible_scores[4])}\n""" \
                        f""" {Text.REGULAR}      6) Sixes:             {Text.SCORE + str(saved_scores['sixes']) if possible_scores[5] is None
-                       else Text.IMPORTANT + str(possible_scores[5])}\n"""\
-                       f"{Text.REGULAR}      Lower Section:\n"\
+                       else Text.IMPORTANT + str(possible_scores[5])}\n""" \
+                       f"{Text.REGULAR}      Lower Section:\n" \
                        f""" {Text.REGULAR}      7) Three of a Kind:   {Text.SCORE + str(saved_scores['three_of_a_kind']) if possible_scores[6] is None
-                       else Text.IMPORTANT + str(possible_scores[6])}\n"""\
+                       else Text.IMPORTANT + str(possible_scores[6])}\n""" \
                        f""" {Text.REGULAR}      8) Four of a Kind:    {Text.SCORE + str(saved_scores['four_of_a_kind']) if possible_scores[7] is None
-                       else Text.IMPORTANT + str(possible_scores[7])}\n"""\
+                       else Text.IMPORTANT + str(possible_scores[7])}\n""" \
                        f""" {Text.REGULAR}      9) Full House:        {Text.SCORE + str(saved_scores['full_house']) if possible_scores[8] is None
-                       else Text.IMPORTANT + str(possible_scores[8])}\n"""\
+                       else Text.IMPORTANT + str(possible_scores[8])}\n""" \
                        f""" {Text.REGULAR}      10) Small Straight:   {Text.SCORE + str(saved_scores['small_straight']) if possible_scores[9] is None
-                       else Text.IMPORTANT + str(possible_scores[9])}\n"""\
+                       else Text.IMPORTANT + str(possible_scores[9])}\n""" \
                        f""" {Text.REGULAR}      11) Large Straight:   {Text.SCORE + str(saved_scores['large_straight']) if possible_scores[10] is None
-                       else Text.IMPORTANT + str(possible_scores[10])}\n"""\
+                       else Text.IMPORTANT + str(possible_scores[10])}\n""" \
                        f""" {Text.REGULAR}      12) Yahtzee:          {Text.SCORE + str(saved_scores['yahtzee']) if possible_scores[11] is None
-                       else Text.IMPORTANT + str(possible_scores[11])}\n"""\
+                       else Text.IMPORTANT + str(possible_scores[11])}\n""" \
                        f""" {Text.REGULAR}      13) Chance:           {Text.SCORE + str(saved_scores['chance']) if possible_scores[12] is None
                        else Text.IMPORTANT + str(possible_scores[12])}\n"""
 
