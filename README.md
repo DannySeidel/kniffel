@@ -1,4 +1,6 @@
 # Kniffel
+[![Pylint](https://github.com/DannySeidel/kniffel/actions/workflows/pylint.yml/badge.svg)](https://github.com/DannySeidel/kniffel/actions/workflows/pylint.yml)
+[![Pytest](https://github.com/DannySeidel/kniffel/actions/workflows/pytest.yml/badge.svg)](https://github.com/DannySeidel/kniffel/actions/workflows/pytest.yml)
 
 This Repository contains the game Kniffel / Yahtzee.\
 The game can be played by two human players.\
