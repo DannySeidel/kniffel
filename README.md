@@ -1,4 +1,6 @@
 # Kniffel
+[![forthebadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
+
 [![Pylint](https://github.com/DannySeidel/kniffel/actions/workflows/pylint.yml/badge.svg)](https://github.com/DannySeidel/kniffel/actions/workflows/pylint.yml)
 [![Pytest](https://github.com/DannySeidel/kniffel/actions/workflows/pytest.yml/badge.svg)](https://github.com/DannySeidel/kniffel/actions/workflows/pytest.yml)
 
